@@ -1,13 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
 
-function App() {
+// React.FC 타입을 사용하여 컴포넌트가 올바른 JSX 요소를 반환하도록 지정
+const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
+        <p className="text-3xl">
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
         <a
@@ -21,6 +20,6 @@ function App() {
       </header>
     </div>
   );
-}
+};
 
 export default App;
