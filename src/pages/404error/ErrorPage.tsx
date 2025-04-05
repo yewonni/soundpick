@@ -13,7 +13,7 @@ export default function ErrorPage() {
       <p className="text-gray-500 text-center max-w-xs mb-6">
         잘못된 주소로 접근하셨거나, 페이지가 삭제되었을 수 있습니다.
       </p>
-      <div className="px-4 w-full">
+      <div className="px-4 w-full md:w-[400px]">
         <Button size="full" onClick={() => navigate("/")}>
           홈으로 돌아가기
         </Button>
