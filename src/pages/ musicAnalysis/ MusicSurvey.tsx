@@ -63,18 +63,18 @@ export default function MusicSurvey() {
               <span className="text-primary ">{step} </span>/ 2
             </p>
           </div>
-          <h1 className="font-bold text-lg mt-8 md:text-2xl md:mb-1">
+          <h1 className="font-bold text-lg mt-8 md:text-2xl md:mb-1 text-[#333]">
             {step === 1
               ? "어떤 장르의 음악을 좋아하세요?"
               : "가장 좋아하는 아티스트는 누구인가요?"}
           </h1>
-          <p className="text-primary text-sm font-medium md:text-base">
+          <p className="text-[#333] text-sm font-medium md:text-base">
             {step === 1 ? "(최대 3곡 선택)" : "(최대 5명 선택)"}
           </p>
         </header>
       )}
 
-      <main className="px-4 mt-5 md:mt-8 md:px-[30%]">
+      <main className="px-4 mt-5 md:mt-8 md:px-[30%] ">
         <AnalysisCard
           step={step}
           music={musicMockData}
@@ -85,8 +85,10 @@ export default function MusicSurvey() {
         {step < 3 && (
           <div className="flex justify-between items-center mt-5 px-2 mb-11">
             <div className="flex items-center text-md md:text-lg font-bold gap-1">
-              <p>{step === 1 ? "선택된 음악 : " : "선택된 아티스트 : "}</p>
-              <p className="text-primary">2 {step === 1 ? "곡" : "명"}</p>
+              <p className="text-[#333]">
+                {step === 1 ? "선택된 음악 : " : "선택된 아티스트 : "}
+              </p>
+              <p className="text-purple-600">2 {step === 1 ? "곡" : "명"}</p>
             </div>
             <button
               className="flex items-center cursor-pointer"
