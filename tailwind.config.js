@@ -9,17 +9,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#7D3C98",
-        secondary: "#8e8d8d",
+        primary: "#6f78f6",
+        secondary: "#b1b6f8",
+        accent: "#3c4ddd",
+        text: {
+          base: "#F3F5FF",
+          subtle: "#BFCBFF",
+          hover: "#d2e9ff",
+        },
+        bg: {
+          sub: "#dbe4ff",
+        },
         purple: {
-          100: "#cfcfcf",
-          200: "#7a7a7a",
+          100: "#e5e6fb",
           400: "#b1b6f8",
           500: "#8887f2",
           600: "#5740c2",
-        },
-        bg: {
-          sub: "#F6FBF0",
         },
       },
     },
