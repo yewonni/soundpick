@@ -4,6 +4,7 @@ import switchIcon from "../../../images/switch.svg";
 import RegisterButton from "../../../components/RegisterButton";
 import sample from "../../../images/sample.png";
 import { useNavigate } from "react-router-dom";
+import Button from "../../../components/Button";
 
 const mockData = [
   {
@@ -63,38 +64,50 @@ export default function MyAllTimeHits() {
 
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-between">
+      <header className="p-4 bg-bg-sub flex justify-between md:justify-center md:px-[20%] md:relative items-center">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer"
+          className="cursor-pointer md:absolute md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg">My All-Time Hits</h1>
-        <FinishButton />
+        <h1 className="font-bold text-lg text-purple-900">My All-Time Hits</h1>
+        <div className="md:hidden">
+          <FinishButton />
+        </div>
       </header>
-      <main className="p-4">
-        <div className="flex flex-col text-sm font-semibold text-gray-600 mb-4">
-          <p>
-            <span className="text-primary font-bold">에옹님</span>이
-            <span className="text-primary font-bold underline">
-              {" "}
-              가장 사랑하는 곡
-            </span>
-            들을 모아둔 공간이에요.
-          </p>
-          <p>
-            언제든 자유롭게 업데이트하세요!
-            <span className="text-xs text-secondary"> (최대 10곡)</span>
-          </p>
+      <main className="p-4 md:px-[20%]">
+        <div className="md:flex md:justify-between md:items-center md:py-2">
+          <div className="flex flex-col text-sm md:text-base font-semibold text-gray-600 mb-4">
+            <p>
+              <span className="text-primary font-bold">에옹님</span>이
+              <span className="text-primary font-bold underline">
+                {" "}
+                가장 사랑하는 곡
+              </span>
+              들을 모아둔 공간이에요.
+            </p>
+            <p>
+              언제든 자유롭게 업데이트하세요!
+              <span className="text-xs text-white md:text-sm">
+                {" "}
+                (최대 10곡)
+              </span>
+            </p>
+          </div>
+          <div className="hidden md:block">
+            <Button outline size="md">
+              저장하기
+            </Button>
+          </div>
         </div>
         <section>
           <h2 className="sr-only">나의 All time hits 목록</h2>
-          <div className="bg-white w-full rounded-lg shadow-lg p-4 pb-6">
+          <div className="bg-white w-full rounded-lg shadow-lg p-4 pb-6 md:px-[50px] md:py-6">
             {mockData.map((song, index) => (
               <article
                 key={index}
-                className="border-b border-b-gray-200 flex items-center gap-5 py-3 relative"
+                className="border-b border-b-gray-200 flex items-center gap-5 py-3 relative md:hover:bg-gray-100 cursor-pointer"
               >
                 <p className="text-secondary pl-3">{index + 1}</p>
                 <div className="flex gap-3 items-center">
@@ -105,7 +118,7 @@ export default function MyAllTimeHits() {
                   />
                   <div className="flex flex-col gap-1">
                     <h3 className="font-bold text-sm">{song.title}</h3>
-                    <p className="text-xs text-secondary">{song.subTitle}</p>
+                    <p className="text-xs text-[#333]">{song.subTitle}</p>
                   </div>
                 </div>
                 <img
