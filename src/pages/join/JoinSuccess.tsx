@@ -34,7 +34,7 @@ export default function JoinSuccess() {
           </Button>
         </div>
         <button
-          className="underline text-sm text-secondary hover:text-primary mt-6 md:text-base"
+          className="underline text-sm text-text-base hover:text-primary mt-6 md:text-base"
           onClick={handleOpenModal}
         >
           지금 안 할래요.
