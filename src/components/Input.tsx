@@ -20,8 +20,8 @@ export default function Input({ width = "md", ...props }: InputProps) {
 
   return (
     <input
-      className={`border border-[#d9d9d9] rounded-md px-3 py-2 
-              focus:outline-none focus:ring-1 focus:ring-purple-400 focus:border-purple-400 ${getWidthClass()}`}
+      className={`border-b border-text-base bg-transparent placeholder-gray-200
+     py-1 text-sm text-text-base focus:outline-none focus:ring-0 ${getWidthClass()}`}
       {...props}
     />
   );
