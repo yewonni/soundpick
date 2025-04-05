@@ -18,12 +18,18 @@ export default function SearchBar({
     <div className="relative w-full max-w-md">
       <input
         type="text"
-        className="w-full p-2 pl-4 pr-10 text-sm focus:outline-none border border-purple-600 rounded-[20px]  focus:ring-purple-700"
+        className="w-full p-2 pl-4 pr-10 text-sm rounded-[20px] 
+    border border-white 
+    bg-white/70 
+    text-gray-800 
+    placeholder:text-gray-400 
+    focus:outline-none focus:ring-2 focus:ring-primary"
         placeholder={placeholderText}
         value={searchQuery}
         onChange={handleSearchChange}
         {...rest}
       />
+
       <svg
         className="absolute right-3 top-1/2 transform -translate-y-1/2"
         width="26"
