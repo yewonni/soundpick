@@ -40,7 +40,7 @@ export default function Search() {
       <div className="p-4">
         <SearchBar placeholder="아티스트, 음악, 플레이리스트 검색하기" />
       </div>
-      <main className="bg-white w-full min-h-screen p-4 pt-5">
+      <main className="w-full min-h-screen p-4 pt-5">
         {topSearchList.map((item, index) => (
           <article
             key={index}
@@ -53,9 +53,11 @@ export default function Search() {
                 className="w-[60px] h-[60px] rounded-sm"
               />
               <div className="flex flex-col gap-1">
-                <h2 className="font-bold text-sm">{item.title}</h2>
+                <h2 className="font-bold text-sm text-text-base">
+                  {item.title}
+                </h2>
                 {item.subTitle && (
-                  <p className="text-secondary text-xs">{item.subTitle}</p>
+                  <p className="text-text-base text-xs">{item.subTitle}</p>
                 )}
               </div>
             </div>
