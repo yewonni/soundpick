@@ -21,16 +21,18 @@ export default function LikedPlaylists() {
 
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-center items-center relative">
+      <header className="p-4 bg-bg-sub flex justify-center items-center relative md:px-[20%]">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer absolute left-4"
+          className="cursor-pointer absolute left-4 md:left-[20%] "
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg">내가 좋아한 플레이리스트</h1>
+        <h1 className="font-bold text-lg text-purple-900">
+          내가 좋아한 플레이리스트
+        </h1>
       </header>
-      <main className="w-full min-h-screen bg-white px-4 py-2">
+      <main className="w-full min-h-screen px-4 py-2 md:px-[20%]">
         {mockData.map((data, index) => (
           <article
             key={index}
@@ -40,9 +42,11 @@ export default function LikedPlaylists() {
             <img
               src={data.imageUrl}
               alt={data.title}
-              className="w-[60px] h-[60px] rounded-sm"
+              className="w-[60px] h-[60px] rounded-sm md:w-[120px] md:h-[120px]"
             />
-            <h2 className="font-bold ">{data.title}</h2>
+            <h2 className="font-bold  md:hover:underline text-white ">
+              {data.title}
+            </h2>
           </article>
         ))}
       </main>
