@@ -1,4 +1,9 @@
 import { useState } from "react";
+import confetti from "canvas-confetti";
+import { motion } from "framer-motion";
+
+import { useEffect } from "react";
+
 import sample from "../../../images/sample.png";
 import minus from "../../../images/minus-icon.svg";
 import RegisterButton from "../../../components/RegisterButton";
@@ -10,6 +15,17 @@ export default function Recommendation() {
   const navigate = useNavigate();
   const [isArtistRecommendation, setIsArtistRecommendation] = useState(false);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
+
+  // isAnalysisComplete === true 일 때 confetti 실행
+  useEffect(() => {
+    if (isAnalysisComplete) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    }
+  }, [isAnalysisComplete]);
 
   type RecommendationItem = {
     imageUrl: string;
@@ -45,7 +61,12 @@ export default function Recommendation() {
 
   if (isAnalysisComplete) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen p-4 md:gap-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col items-center justify-center h-screen p-4 md:gap-4"
+      >
         <h1 className="text-xl font-bold md:text-2xl ">
           <span className="text-primary">"음악 취향 로드맵"</span>을 완성했어요!
         </h1>
@@ -55,7 +76,7 @@ export default function Recommendation() {
             로그인하기
           </Button>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -93,7 +114,7 @@ export default function Recommendation() {
               <div className="flex flex-col gap-1">
                 <h2 className="font-bold text-sm">{item.title}</h2>
                 {item.subTitle && (
-                  <p className="text-secondary text-xs">{item.subTitle}</p>
+                  <p className="text-[#333] text-xs">{item.subTitle}</p>
                 )}
               </div>
             </div>
