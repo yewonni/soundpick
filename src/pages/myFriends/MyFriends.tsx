@@ -26,23 +26,23 @@ export default function MyFriends() {
   const navigate = useNavigate();
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-center items-center relative">
+      <header className="p-4 bg-bg-sub flex justify-center items-center relative md:px-[20%]">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer absolute left-4"
+          className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg">나의 음악 친구</h1>
+        <h1 className="font-bold text-lg text-purple-900">나의 음악 친구</h1>
       </header>
-      <main className="w-full min-h-screen bg-white p-4">
-        <p className="font-bold text-primary py-1  border-b border-b-primary ">
+      <main className="w-full min-h-screen bg-[#f5f6ff] p-4 md:px-[20%]">
+        <p className="font-bold text-purple-600 py-1  border-b border-b-gray-300 ">
           총 4명
         </p>
         {mockData.map((data, index) => (
           <article
             key={index}
-            className="flex justify-between items-center py-3 mt-2"
+            className="flex justify-between items-center py-3 mt-2 md:hover:bg-gray-100 px-2"
           >
             <div className="flex gap-4 items-center">
               <img
@@ -50,7 +50,7 @@ export default function MyFriends() {
                 alt=""
                 className="w-[50px] h-[50px] rounded-[100px] cursor-pointer"
               />
-              <p className="font-bold text-sm cursor-pointer">
+              <p className="font-bold text-sm cursor-pointer hover:underline">
                 {data.username}
               </p>
             </div>
