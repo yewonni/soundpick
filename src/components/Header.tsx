@@ -12,7 +12,7 @@ export default function Header({ onClick }: HeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <header className="flex justify-between items-center px-4 py-2 h-[70px] md:px-[9%] md:py-[50px] md:justify-start md:gap-1">
+    <header className="flex justify-between items-center px-4 py-2 h-[70px] md:px-[10%] md:py-[50px] md:justify-start md:gap-7">
       <button className="md:hidden">
         <img
           src={hamburger}
@@ -26,7 +26,7 @@ export default function Header({ onClick }: HeaderProps) {
           src={logo}
           alt="Logo"
           onClick={() => navigate("/")}
-          className="md:w-[250px] md:h-[150px] cursor-pointer"
+          className="md:w-[180px] md:h-[150px] cursor-pointer"
         />
       </h1>
       <button className="md:hidden">
@@ -40,18 +40,18 @@ export default function Header({ onClick }: HeaderProps) {
       <div className="hidden md:block w-[320px]">
         <SearchBar placeholder="아티스트, 음악, 플레이리스트 검색하기" />
       </div>
-      <div className="hidden md:flex gap-6 text-lg text-[#333] ml-[38%]">
+      <div className="hidden md:flex gap-6 text-lg text-white ml-[38%]">
         <button
-          className="hover:text-primary active:text-purple-800 font-bold"
+          className="hover:text-purple-600 hover:underline active:text-[#333] font-bold"
           onClick={() => navigate("/login")}
         >
-          로그인
+          Log In
         </button>
         <button
-          className="hover:text-primary active:text-purple-800 font-bold"
+          className="hover:text-purple-600 hover:underline active:text-[#333] font-bold"
           onClick={() => navigate("/join")}
         >
-          회원가입
+          Sign Up
         </button>
       </div>
     </header>
