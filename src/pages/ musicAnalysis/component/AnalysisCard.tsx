@@ -38,7 +38,7 @@ function MusicAnalysis({ music }: { music: string[] }) {
   };
 
   return (
-    <div className="bg-white rounded-[15px] shadow-md w-full p-6 md:p-11 flex flex-col gap-2">
+    <div className=" border border-white rounded-[15px] shadow-md w-full p-6 md:p-11 flex flex-col gap-2">
       {music.slice(0, 6).map((genre, index) => (
         <SelectButton key={index}>{genre}</SelectButton>
       ))}
@@ -53,7 +53,7 @@ function MusicAnalysis({ music }: { music: string[] }) {
 
       {!isOpenMoreOptions && music.length > 6 && (
         <button
-          className="underline text-secondary text-sm hover:text-primary font-bold mt-2 flex justify-end"
+          className="underline text-text-base text-sm hover:text-primary font-bold mt-2 flex justify-end"
           onClick={handleShowMore}
         >
           더 보기
@@ -88,7 +88,7 @@ function ArtistAnalysis({ global, korea }: ArtistAnalysisProps) {
 
   return (
     <>
-      <div className="flex justify-between mb-4 ">
+      <div className="flex justify-between mb-4  ">
         <div className="flex gap-2 text-sm">
           <button
             onClick={() => handleArtistButton("korea")}
@@ -120,11 +120,10 @@ function ArtistAnalysis({ global, korea }: ArtistAnalysisProps) {
           }
         />
       </div>
-
-      <div className="bg-white rounded-[15px] shadow-md w-full p-6 md:p-8">
+      <div className="border border-text-base rounded-[15px] shadow-md w-full p-6 md:p-8">
         <div className="flex flex-wrap gap-6 justify-center">
           {artistData.map((artist, index) => (
-            <div key={index}>
+            <div key={index} className="">
               <MusicCard
                 imageSrc={artist.imageSrc}
                 title={artist.title}
