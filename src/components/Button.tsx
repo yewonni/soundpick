@@ -9,19 +9,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonVariants = {
-  primary: "bg-purple-400 hover:bg-purple-500 active:bg-purple-600 text-white",
+  primary: "bg-bg-sub hover:bg-secondary active:bg-purple-400 text-primary",
   default:
-    "border border-purple-200 bg-white text-purple-200 hover:bg-gray-100 active:bg-gray-300",
+    "border border-bg-sub bg-white text-secondary hover:bg-gray-100 active:bg-gray-300",
   outline:
-    "border border-purple-600 border-2 bg-white text-purple-600 hover:bg-gray-100 active:bg-gray-300",
-  disabled: "bg-purple-100 text-purple-200 cursor-not-allowed",
+    "border border-accent border-2 bg-white text-accent hover:bg-bg-sub active:bg-secondary",
+  disabled: "bg-purple-100 text-purple-400 cursor-not-allowed",
 } as const;
 
 const buttonSizes = {
   sm: "px-2 py-1 text-xs w-15",
   md: "px-2 py-2 text-sm w-20 md:w-[90px]",
   lg: "px-5 py-2 text-lg w-96",
-  full: "px-4 py-3 text-md w-full",
+  full: "px-4 py-2 text-md w-full md:py-3",
 } as const;
 
 export default function Button({
