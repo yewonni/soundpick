@@ -42,13 +42,13 @@ export default function Header({ onClick }: HeaderProps) {
       </div>
       <div className="hidden md:flex gap-6 text-lg text-white ml-[38%]">
         <button
-          className="hover:text-purple-600 hover:underline active:text-[#333] font-bold"
+          className="hover:text-text-hover hover:underline active:text-text-subtle font-bold"
           onClick={() => navigate("/login")}
         >
           Log In
         </button>
         <button
-          className="hover:text-purple-600 hover:underline active:text-[#333] font-bold"
+          className="hover:text-text-hover hover:underline active:text-text-subtle font-bold"
           onClick={() => navigate("/join")}
         >
           Sign Up
