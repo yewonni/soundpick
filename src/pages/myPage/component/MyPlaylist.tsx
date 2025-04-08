@@ -33,9 +33,7 @@ export default function MyPlaylist() {
           className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg text-purple-900">
-          에옹’s 플레이리스트
-        </h1>
+        <h1 className="font-bold text-lg ">에옹’s 플레이리스트</h1>
       </header>
       <main className="w-full min-h-screen  p-4 md:px-[20%]">
         {mockData.map((data, index) => (
@@ -65,7 +63,7 @@ export default function MyPlaylist() {
           <RegisterButton onClick={() => navigate("/register-playlist")}>
             새 플레이리스트 만들기
           </RegisterButton>
-          <Button default>삭제하기</Button>
+          <Button>삭제하기</Button>
         </div>
       </main>
     </>

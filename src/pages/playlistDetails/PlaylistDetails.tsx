@@ -91,7 +91,7 @@ export default function PlaylistDetails() {
                   </div>
                 </div>
 
-                <div className="hidden md:flex gap-4 items-center text-sm text-purple-700 font-semibold mt-8">
+                <div className="hidden md:flex gap-4 items-center text-sm font-semibold mt-8">
                   <div className="flex gap-1 items-center">
                     <img
                       src={likeBtn}
@@ -112,7 +112,7 @@ export default function PlaylistDetails() {
             </div>
           </article>
 
-          <div className="flex gap-4 items-center text-sm text-purple-700 font-semibold md:hidden">
+          <div className="flex gap-4 items-center text-sm  font-semibold md:hidden">
             <div className="flex gap-1 items-center">
               <img src={likeBtn} alt="좋아요" className="cursor-pointer" />
               <p>21,089</p>

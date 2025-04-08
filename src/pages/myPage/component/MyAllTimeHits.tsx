@@ -71,21 +71,19 @@ export default function MyAllTimeHits() {
           className="cursor-pointer md:absolute md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg text-purple-900">My All-Time Hits</h1>
+        <h1 className="font-bold text-lg ">My All-Time Hits</h1>
         <div className="md:hidden">
           <FinishButton />
         </div>
       </header>
       <main className="p-4 md:px-[20%]">
         <div className="md:flex md:justify-between md:items-center md:py-2">
-          <div className="flex flex-col text-sm md:text-base font-semibold text-gray-600 mb-4">
+          <div className="flex flex-col text-sm md:text-base font-semibold text-text-base mb-4">
             <p>
-              <span className="text-primary font-bold">에옹님</span>이
-              <span className="text-primary font-bold underline">
-                {" "}
-                가장 사랑하는 곡
+              <span className="text-text-subtle font-bold">
+                에옹님이 가장 사랑하는 곡
               </span>
-              들을 모아둔 공간이에요.
+              을 모아둔 공간이에요.
             </p>
             <p>
               언제든 자유롭게 업데이트하세요!
@@ -96,9 +94,7 @@ export default function MyAllTimeHits() {
             </p>
           </div>
           <div className="hidden md:block">
-            <Button outline size="md">
-              저장하기
-            </Button>
+            <Button size="md">저장하기</Button>
           </div>
         </div>
         <section>

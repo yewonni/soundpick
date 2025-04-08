@@ -31,7 +31,7 @@ export default function MyReview() {
           className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg text-purple-900">내가 남긴 한 마디</h1>
+        <h1 className="font-bold text-lg ">내가 남긴 한 마디</h1>
       </header>
       <main className="w-full min-h-screen bg-[#f5f6ff] p-4 md:px-[20%]">
         <p className="font-bold text-purple-600 py-1  border-b border-b-gray-300 ">

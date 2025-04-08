@@ -32,9 +32,7 @@ export default function MyPlaylistDetails() {
           className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg text-purple-900">
-          에옹’s 플레이리스트
-        </h1>
+        <h1 className="font-bold text-lg ">에옹’s 플레이리스트</h1>
       </header>
       <main className="w-full min-h-screen bg-[#f5f6ff] p-4  md:px-[20%] ">
         <section className="pb-5 pt-2 border-b border-b-purple-500">

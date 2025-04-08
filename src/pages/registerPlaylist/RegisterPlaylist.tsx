@@ -16,9 +16,7 @@ export default function RegisterPlaylist() {
           className="cursor-pointer md:absolute md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg text-purple-900">
-          새 플레이리스트 만들기
-        </h1>
+        <h1 className="font-bold text-lg ">새 플레이리스트 만들기</h1>
         <div className="md:hidden">
           <FinishButton />
         </div>

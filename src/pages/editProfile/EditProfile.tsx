@@ -42,10 +42,10 @@ export default function EditProfile() {
             name="nickName"
             type="text"
             placeholder="본인의 닉네임"
-            className="focus:outline-none w-full border-b border-b-gray-200 py-2"
+            className="focus:outline-none w-full border-b border-b-gray-200 p-2 rounded-md"
           />
         </div>
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center  text-sm  md:text-base">
           <label
             htmlFor="profileInfo"
             className="font-bold text-primary  w-[50px]  "
@@ -57,11 +57,11 @@ export default function EditProfile() {
             name="profileInfo"
             placeholder="본인을 소개해주세요"
             type="text"
-            className="focus:outline-none w-full border-b border-b-gray-200 py-2"
+            className="focus:outline-none w-full border-b border-b-gray-200 p-2 rounded-md"
           />
         </div>
         <div className="flex justify-end mt-4">
-          <Button outline>저장하기</Button>
+          <Button>저장하기</Button>
         </div>
       </main>
     </>
