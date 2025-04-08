@@ -23,12 +23,19 @@ import RegisterPlaylist from "./pages/registerPlaylist/RegisterPlaylist";
 import MyReview from "./pages/myReview/MyReview";
 import MyFriends from "./pages/myFriends/MyFriends";
 import EditProfile from "./pages/editProfile/EditProfile";
+import PopularArtistsPage from "./pages/popularArtists/PopularArtistsPage";
+import RecommendedPlaylistsPage from "./pages/recommendedPlaylists/RecommendedPlaylistsPage";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/popular-artists" element={<PopularArtistsPage />}></Route>
+        <Route
+          path="/recommended-playlists"
+          element={<RecommendedPlaylistsPage />}
+        ></Route>
         <Route path="/search" element={<Search />}></Route>
         <Route path="/search-result" element={<SearchResult />}></Route>
         <Route path="/playlist-details" element={<PlaylistDetails />}></Route>
