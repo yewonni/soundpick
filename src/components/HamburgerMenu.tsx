@@ -12,7 +12,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-screen w-[280px] bg-[#CACCE9] z-10 
+      className={`fixed top-0 left-0 h-screen w-[280px] bg-[#CACCE9] z-30 
           transform transition-transform duration-300 p-4 ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
@@ -31,11 +31,11 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
           로그인 해주세요
         </p>
         <div className="flex justify-between items-baseline">
-          <Button outline size="md" onClick={() => navigate("/login")}>
+          <Button outline size="sm" onClick={() => navigate("/login")}>
             로그인
           </Button>
           <button
-            className="text-sm text-primary font-bold underline"
+            className="text-sm text-[#333] font-semibold underline"
             onClick={() => navigate("/join")}
           >
             회원가입
