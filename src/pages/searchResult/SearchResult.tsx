@@ -61,7 +61,7 @@ export default function SearchResult() {
             />
           </h1>
         </header>
-        <div className="bg-[linear-gradient(180deg,_#3E3A6D,_#6F65A4)]">
+        <div className="bg-[linear-gradient(360deg,_#3E3A6D,_#756aaa)]">
           <div className="px-4 pt-4 pb-0 md:px-[10.2%] md:py-0  text-white">
             <div className="md:hidden">
               <SearchBar />
@@ -97,7 +97,10 @@ export default function SearchResult() {
                 <button className="ml-3 border border-text-subtle px-3 p-1 text-xs text-text-subtle font-semibold rounded-sm hover:bg-[#bfcBFF26] active:bg-[#bfcBFF4D] hover:border-[#BFCBFF] active:border-[#aab8f5] transition-colors duration-200">
                   듣기
                 </button>
-                <button className="border border-text px-3 p-1 text-xs text-text-subtle font-semibold rounded-sm hover:bg-[#bfcBFF26] active:bg-[#bfcBFF4D] hover:border-[#BFCBFF] active:border-[#aab8f5] transition-colors duration-200">
+                <button
+                  onClick={handlePlaylistModalOpen}
+                  className="border border-text-subtle px-3 p-1 text-xs text-text-subtle font-semibold rounded-sm hover:bg-[#bfcBFF26] active:bg-[#bfcBFF4D] hover:border-[#BFCBFF] active:border-[#aab8f5] transition-colors duration-200"
+                >
                   내 플리에 담기
                 </button>
               </div>
