@@ -5,6 +5,7 @@ import ViewButton from "./ViewButton";
 import MusicCard from "./MusicCard";
 import { MusicCardDataProps } from "../types/MusicCard";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface MainProps {
   data1: MusicCardDataProps[];
@@ -25,13 +26,23 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
 
   const displayItems = limitItems(data);
 
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    if (title === "인기 아티스트") {
+      navigate("/popular-artists");
+    } else {
+      navigate("/recommended-playlists");
+    }
+  };
+
   return (
     <section className="relative">
       <div className="flex justify-between items-center pr-4">
         <h2 className="font-bold text-lg py-2 md:text-2xl text-white">
           {title}
         </h2>
-        <ViewButton>전체보기</ViewButton>
+        <ViewButton onClick={handleViewAll}>전체보기</ViewButton>
       </div>
 
       <div className="overflow-visible md:hidden">
