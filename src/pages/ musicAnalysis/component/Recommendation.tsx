@@ -1,12 +1,8 @@
 import { useState } from "react";
 import confetti from "canvas-confetti";
-import { motion } from "framer-motion";
-
 import { useEffect } from "react";
-
 import sample from "../../../images/sample.png";
 import minus from "../../../images/minus-icon.svg";
-import RegisterButton from "../../../components/RegisterButton";
 import nextIcon from "../../../images/chevron-right.svg";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/Button";
@@ -61,28 +57,42 @@ export default function Recommendation() {
 
   if (isAnalysisComplete) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="flex flex-col items-center justify-center h-screen p-4 md:gap-4"
+      <div
+        className="flex flex-col items-center justify-center h-screen p-4 gap-4 "
+        style={{
+          backgroundImage:
+            "linear-gradient(360deg, #d1c3fc 0%, #a5b4fc 50%, #dbeafe 100%)",
+        }}
       >
-        <h1 className="text-xl font-bold md:text-2xl ">
-          <span className="text-primary">"음악 취향 로드맵"</span>을 완성했어요!
+        <h1 className="font-medium  text-text-base md:text-lg text-base flex items-center gap-1">
+          <span className="text-purple-600 font-bold text-xl  md:text-2xl">
+            "음악 취향 로드맵"{" "}
+          </span>
+          <span>이 완성됐어요!</span>
         </h1>
-        <p className="mt-2 md:text-lg">이제 나만의 사운드 트랙을 즐겨볼까요?</p>
-        <div className="w-full px-10 mt-8 md:w-[400px]">
-          <Button size="full" onClick={() => navigate("/login")}>
-            로그인하기
-          </Button>
-        </div>
-      </motion.div>
+        <p className="mt-2 md:text-lg text-text-base ">
+          이제 나만의 사운드 트랙을 즐겨볼까요?
+        </p>
+
+        <button
+          className="border border-text-base rounded-[20px] text-text-base font-semibold p-2 px-8 hover:font-bold hover:bg-purple-500 active:bg-purple-600"
+          onClick={() => navigate("/login")}
+        >
+          로그인하기
+        </button>
+      </div>
     );
   }
 
   return (
     <>
-      <header className="flex flex-col p-4 py-6 pt-9 text-[20px] md:px-[15%] md:text-2xl">
+      <header
+        className="flex flex-col p-4 py-6 pt-9 text-[20px] md:px-[15%] md:text-2xl"
+        style={{
+          backgroundImage:
+            "linear-gradient(360deg, #d1c3fc 0%, #a5b4fc 50%, #dbeafe 100%)",
+        }}
+      >
         {isArtistRecommendation ? (
           <h1>
             <span className="font-bold">에옹님, </span>
@@ -122,9 +132,7 @@ export default function Recommendation() {
           </article>
         ))}
         <div className="flex justify-between items-center mt-8">
-          <RegisterButton onClick={() => navigate("/search-artist")}>
-            원하는 {isArtistRecommendation ? "아티스트" : "음악"} 추가하기
-          </RegisterButton>
+          <Button onClick={() => navigate("/search-artist")}>추가하기</Button>
           <img
             src={nextIcon}
             alt="다음으로 이동하기"
