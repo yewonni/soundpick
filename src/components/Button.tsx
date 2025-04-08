@@ -13,7 +13,7 @@ const buttonVariants = {
   default:
     "border border-bg-sub bg-white text-secondary hover:bg-gray-100 active:bg-gray-300",
   outline:
-    "border border-accent border-2 bg-white text-accent hover:bg-bg-sub active:bg-secondary",
+    "border border-purple-900 border-2 bg-white text-purple-900 hover:bg-purple-400 active:bg-purple-500",
   disabled: "bg-purple-100 text-purple-400 cursor-not-allowed",
 } as const;
 
