@@ -6,6 +6,7 @@ import SearchBar from "../../../components/SearchBar";
 import sample from "../../../images/sample.png";
 import plus from "../../../images/plus-icon.svg";
 import check from "../../../images/check-on.svg";
+import Button from "../../../components/Button";
 
 const topArtistList: string[] = [
   "The Weekend",
@@ -51,21 +52,22 @@ export default function ArtistSearch() {
           <img
             src={backIcon}
             alt="이전으로 돌아가기"
-            className="cursor-pointer md:w-6  md:hidden"
+            className="cursor-pointer md:w-6  "
             onClick={handleBack}
           />
-          <p className="text-lg md:text-2xl font-bold">아티스트 선택</p>
+          <p className="text-lg md:text-2xl font-bold ">아티스트 선택</p>
         </div>
 
-        {/* 오른쪽: 진행 상황 버튼 */}
-        <div className="flex gap-2 items-center text-primary font-bold md:bg-white md:px-6 md:py-1 md:rounded-lg md:border-2 md:border-purple-700 md:cursor-pointer md:hover:bg-gray-200 md:active:bg-purple-400">
+        <div className="hidden md:block">
+          <Button outline>선택 완료</Button>
+        </div>
+        <div className="flex gap-2 items-center  font-bold md:hidden">
           <p className="text-[20px] md:text-[24px] ">1</p>
           <FinishButton onClick={handleBack} />
         </div>
       </header>
 
       <main className=" w-full min-h-screen md:flex md:px-[10%] md:py-6">
-        {/* 왼쪽 영역 */}
         <section className="w-full md:w-2/3 md:pr-11">
           <div className="p-4 md:p-0">
             <SearchBar placeholder="음악, 아티스트 검색하기" />
@@ -83,7 +85,9 @@ export default function ArtistSearch() {
                     alt=""
                     className="w-[50px] h-[50px] rounded-sm"
                   />
-                  <h2 className="font-bold text-sm md:text-base">{artist}</h2>
+                  <h2 className="font-bold text-sm md:text-base text-text-base">
+                    {artist}
+                  </h2>
                 </div>
                 <button onClick={() => toggleSelect(index)}>
                   <img src={selected[index] ? check : plus} alt="추가하기" />
