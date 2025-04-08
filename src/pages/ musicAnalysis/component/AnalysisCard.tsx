@@ -4,6 +4,7 @@ import SelectButton from "../../../components/SelecteButton";
 import MusicCard from "../../../components/MusicCard";
 import search from "../../../images/search.svg";
 import { MusicCardDataProps } from "../../../types/MusicCard";
+import loadingImg from "../../../images/loading-img.png";
 
 interface AnalysisCardProps {
   step: number;
@@ -141,7 +142,6 @@ function RecommendationCard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 컴포넌트가 마운트된 후 3초 후에 추천 페이지로 이동
     const timer = setTimeout(() => {
       navigate("/recommendation");
     }, 3000);
@@ -149,10 +149,14 @@ function RecommendationCard() {
     return () => clearTimeout(timer);
   }, [navigate]);
 
-  // 항상 로딩 UI 반환
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <p className="text-lg font-bold animate-pulse">
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <img
+        src={loadingImg}
+        alt="로딩 이미지"
+        className="w-[90px] h-[90px] md:w-40 md:h-40 md:pb-6 pb-3 animate-spin"
+      />
+      <p className="text-[20px] font-bold animate-pulse md:text-2xl text-[#E0D4FF]">
         에옹님의 취향 분석 중...
       </p>
     </div>
