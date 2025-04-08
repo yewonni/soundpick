@@ -5,7 +5,7 @@ import Main from "./components/Main";
 import Footer from "./components/Footer";
 import sampleImg from "./images/sample.png";
 import HamburgerMenu from "./components/HamburgerMenu";
-import BackgroundWrapper from "./components/BackgroundWrapper";
+// import BackgroundWrapper from "./components/BackgroundWrapper";
 
 const mainMockData1 = [
   { imageSrc: sampleImg, title: "G-DRAGON", subTitle: "" },
@@ -66,25 +66,25 @@ export default function Home() {
 
   return (
     <>
-      <BackgroundWrapper>
-        <div
-          className={` fixed z-10 inset-0 bg-black transition-opacity duration-300 md:hidden${
-            isMenuOpen ? "opacity-60 visible " : "opacity-0 invisible"
-          }`}
-          onClick={handleMenuClose}
-        ></div>
-        <div className="md:hidden">
-          {" "}
-          <HamburgerMenu isOpen={isMenuOpen} onClose={handleMenuClose} />
-        </div>
+      {/* <BackgroundWrapper> */}
+      <div
+        className={` fixed z-10 inset-0 bg-black transition-opacity duration-300 md:hidden${
+          isMenuOpen ? "opacity-60 visible " : "opacity-0 invisible"
+        }`}
+        onClick={handleMenuClose}
+      ></div>
+      <div className="md:hidden">
+        {" "}
+        <HamburgerMenu isOpen={isMenuOpen} onClose={handleMenuClose} />
+      </div>
 
-        <Header onClick={handleMenuOpen} />
+      <Header onClick={handleMenuOpen} />
 
-        <Browsing userStatus="guest" />
+      <Browsing userStatus="guest" />
 
-        <Main data1={mainMockData1} data2={mainMockData2} />
-        <Footer />
-      </BackgroundWrapper>
+      <Main data1={mainMockData1} data2={mainMockData2} />
+      <Footer />
+      {/* </BackgroundWrapper> */}
     </>
   );
 }
