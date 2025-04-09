@@ -47,7 +47,6 @@ export default function ArtistSearch() {
   return (
     <>
       <header className="bg-bg-sub px-4 py-5 md:px-[10%] md:py-6 flex justify-between items-center">
-        {/* 왼쪽: 뒤로가기 */}
         <div className="flex items-center gap-3 md:gap-8">
           <img
             src={backIcon}
@@ -97,7 +96,7 @@ export default function ArtistSearch() {
           </div>
         </section>
 
-        {/* 오른쪽 영역: 데스크탑 전용 */}
+        {/* 데스크탑 전용 */}
         <aside className="hidden md:block md:w-1/3  bg-white opacity-40 rounded-lg shadow-lg p-5 h-[500px]">
           <h3 className="text-lg font-semibold mb-3">선택한 아티스트</h3>
           <ul className="text-sm text-gray-700 space-y-1">

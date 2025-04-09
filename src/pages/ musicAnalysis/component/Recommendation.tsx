@@ -12,7 +12,6 @@ export default function Recommendation() {
   const [isArtistRecommendation, setIsArtistRecommendation] = useState(false);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
 
-  // isAnalysisComplete === true 일 때 confetti 실행
   useEffect(() => {
     if (isAnalysisComplete) {
       confetti({
@@ -23,11 +22,11 @@ export default function Recommendation() {
     }
   }, [isAnalysisComplete]);
 
-  type RecommendationItem = {
+  interface RecommendationItem {
     imageUrl: string;
     title: string;
     subTitle?: string;
-  };
+  }
 
   const musicRecommendation: RecommendationItem[] = [
     { imageUrl: sample, title: "Blinding Lights", subTitle: "The Weekend" },
