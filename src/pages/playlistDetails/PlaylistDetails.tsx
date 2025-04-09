@@ -4,35 +4,30 @@ import logo from "../../images/logo.svg";
 import prevIcon from "../../images/chevron-left.svg";
 import sampleImage from "../../images/sample.png";
 import Button from "../../components/Button";
-import likeBtn from "../../images/like-icon.svg";
-import reviewBtn from "../../images/review-icon.svg";
 import sample from "../../images/sample.png";
 import Header from "../../components/Header";
-// import Checkbox from "../../components/Checkbox";
-import sideMenu from "../../images/side-menu.svg";
+import useMediaQuery from "../../hooks/useMediaQuery";
 import PlaylistModal from "../searchResult/component/PlaylistModal";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
+import { MusicCardDataProps } from "../../types/MusicCard";
+import LikeAndComment from "./component/LikeAndComment";
+import Playlist from "./component/Playlist";
 
-type resultListItem = {
-  imageUrl: string;
-  title: string;
-  subTitle?: string;
-};
-
-const resultList: resultListItem[] = [
-  { imageUrl: sample, title: "Blinding Lights", subTitle: "The Weekend" },
-  { imageUrl: sample, title: "pov", subTitle: "Ariana Grande" },
-  { imageUrl: sample, title: "Bad Guy", subTitle: "Billie Eilish" },
-  { imageUrl: sample, title: "Perfect", subTitle: "Ed Sheeran" },
-  { imageUrl: sample, title: "22", subTitle: "Taylor Swift" },
+const resultList: MusicCardDataProps[] = [
+  { imageSrc: sample, title: "Blinding Lights", subTitle: "The Weekend" },
+  { imageSrc: sample, title: "pov", subTitle: "Ariana Grande" },
+  { imageSrc: sample, title: "Bad Guy", subTitle: "Billie Eilish" },
+  { imageSrc: sample, title: "Perfect", subTitle: "Ed Sheeran" },
+  { imageSrc: sample, title: "22", subTitle: "Taylor Swift" },
   {
-    imageUrl: sample,
+    imageSrc: sample,
     title: "I don’t think that I like her",
     subTitle: "Charlie Puth",
   },
 ];
 
 export default function PlaylistDetails() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
 
@@ -90,111 +85,17 @@ export default function PlaylistDetails() {
                     </Button>
                   </div>
                 </div>
-
-                <div className="hidden md:flex gap-4 items-center text-sm font-semibold mt-8">
-                  <div className="flex gap-1 items-center">
-                    <img
-                      src={likeBtn}
-                      alt="좋아요"
-                      className="cursor-pointer"
-                    />
-                    <p>21,089</p>
-                  </div>
-                  <div
-                    className="flex gap-1 items-center cursor-pointer"
-                    onClick={() => navigate("/review")}
-                  >
-                    <img src={reviewBtn} alt="댓글" />
-                    <p className="hover:underline">11,264</p>
-                  </div>
-                </div>
+                {!isMobile && <LikeAndComment isMobile={false} />}
               </div>
             </div>
           </article>
-
-          <div className="flex gap-4 items-center text-sm  font-semibold md:hidden">
-            <div className="flex gap-1 items-center">
-              <img src={likeBtn} alt="좋아요" className="cursor-pointer" />
-              <p>21,089</p>
-            </div>
-            <div
-              className="flex gap-1 items-center "
-              onClick={() => navigate("/review")}
-            >
-              <img src={reviewBtn} alt="댓글" className="cursor-pointer " />
-              <p className="cursor-pointer">11,264</p>
-            </div>
-          </div>
-          <section className="mt-2">
-            <h2 className="sr-only">플레이리스트 목록</h2>
-            {/* 데스크탑 전용 테이블 헤더 */}
-            <div className="hidden md:grid md:grid-cols-[40px_80px_1fr_1fr_40px] text-sm font-bold text-[#333] py-3 border-b border-gray-300 mb-4">
-              <div className="flex justify-center items-center"></div>
-              <div className="flex items-center justify-center"></div>
-              <div className="flex items-center px-2">곡</div>
-              <div className="flex items-center px-2">아티스트</div>
-              <div className="flex justify-center items-center">기타</div>
-            </div>
-
-            {/* 곡 리스트 */}
-            {resultList.map((item, index) => (
-              <article key={index} className="mb-4 cursor-pointer">
-                {/* 데스크탑 버전 */}
-                <div className="hidden md:grid md:grid-cols-[40px_80px_1fr_1fr_40px] md:items-center py-2">
-                  <div className="flex justify-center items-center">
-                    {/* <div className="bg-black">
-                      <Checkbox type="circle" />
-                    </div> */}
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-[60px] h-[60px] rounded-sm "
-                    />
-                  </div>
-                  <div className="flex items-center px-2 font-bold text-sm hover:underline">
-                    {item.title}
-                  </div>
-                  <div className="flex items-center px-2 text-sm">
-                    {item.subTitle}
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <img
-                      src={sideMenu}
-                      alt="메뉴열기"
-                      className="cursor-pointer"
-                      onClick={handlePlaylistModalOpen}
-                    />
-                  </div>
-                </div>
-
-                {/* 모바일 버전 */}
-                <div className="flex md:hidden justify-between items-center w-full  mt-3">
-                  <div className="flex items-center gap-5">
-                    {/* <Checkbox type="circle" /> */}
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-[50px] h-[50px] rounded-sm"
-                    />
-                    <div className="flex flex-col gap-1">
-                      <h2 className="font-bold text-sm">{item.title}</h2>
-                      {item.subTitle && (
-                        <p className=" text-xs">{item.subTitle}</p>
-                      )}
-                    </div>
-                  </div>
-                  <img
-                    src={sideMenu}
-                    alt="메뉴열기"
-                    className="cursor-pointer ml-2"
-                    onClick={handlePlaylistModalOpen}
-                  />
-                </div>
-              </article>
-            ))}
-          </section>
+          {isMobile && <LikeAndComment isMobile={true} />}
+          <Playlist
+            data={resultList}
+            isMobile={isMobile}
+            onClick={handlePlaylistModalOpen}
+            onClose={handlePlaylistModalClose}
+          />
         </main>
         {isPlaylistModalOpen && (
           <PlaylistModal onClose={handlePlaylistModalClose} />
