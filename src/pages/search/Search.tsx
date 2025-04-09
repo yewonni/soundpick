@@ -2,21 +2,16 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import SearchBar from "../../components/SearchBar";
 import sample from "../../images/sample.png";
+import { MusicCardDataProps } from "../../types/MusicCard";
 
-type topSearchListItem = {
-  imageUrl: string;
-  title: string;
-  subTitle?: string;
-};
-
-const topSearchList: topSearchListItem[] = [
-  { imageUrl: sample, title: "Blinding Lights", subTitle: "The Weekend" },
-  { imageUrl: sample, title: "pov", subTitle: "Ariana Grande" },
-  { imageUrl: sample, title: "Bad Guy", subTitle: "Billie Eilish" },
-  { imageUrl: sample, title: "Perfect", subTitle: "Ed Sheeran" },
-  { imageUrl: sample, title: "22", subTitle: "Taylor Swift" },
+const topSearchList: MusicCardDataProps[] = [
+  { imageSrc: sample, title: "Blinding Lights", subTitle: "The Weekend" },
+  { imageSrc: sample, title: "pov", subTitle: "Ariana Grande" },
+  { imageSrc: sample, title: "Bad Guy", subTitle: "Billie Eilish" },
+  { imageSrc: sample, title: "Perfect", subTitle: "Ed Sheeran" },
+  { imageSrc: sample, title: "22", subTitle: "Taylor Swift" },
   {
-    imageUrl: sample,
+    imageSrc: sample,
     title: "I don’t think that I like her",
     subTitle: "Charlie Puth",
   },
@@ -48,7 +43,7 @@ export default function Search() {
           >
             <div className="flex gap-4 items-center">
               <img
-                src={item.imageUrl}
+                src={item.imageSrc}
                 alt={item.title}
                 className="w-[60px] h-[60px] rounded-sm"
               />
