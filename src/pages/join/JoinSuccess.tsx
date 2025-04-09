@@ -4,14 +4,14 @@ import PreferenceCheckModal from "./component/PreferenceCheckModal";
 
 export default function JoinSuccess() {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPreferenceModalOpen, setIsPreferenceModalOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenPreferences = () => {
+    setIsPreferenceModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleClosePreferences = () => {
+    setIsPreferenceModalOpen(false);
   };
 
   return (
@@ -34,12 +34,15 @@ export default function JoinSuccess() {
           </div>
           <button
             className="underline text-sm text-gray-400 hover:text-gray-500 active:text-gray-700 mt-6 md:text-base"
-            onClick={handleOpenModal}
+            onClick={handleOpenPreferences}
           >
             지금 안 할래요.
           </button>
         </main>
-        <PreferenceCheckModal isOpen={isModalOpen} onClose={handleCloseModal} />
+        <PreferenceCheckModal
+          isOpen={isPreferenceModalOpen}
+          onClose={handleClosePreferences}
+        />
       </div>
     </>
   );
