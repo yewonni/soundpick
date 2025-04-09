@@ -34,13 +34,13 @@ export default function Checkbox({
       className={`inline-flex items-center justify-center cursor-pointer ${
         className || ""
       }`}
-      onClick={handleChange} // ✅ 클릭 이벤트 추가
+      onClick={handleChange}
     >
       <input
         type="checkbox"
         checked={isChecked}
         className="hidden"
-        readOnly // ✅ 불필요한 변경 방지
+        readOnly
         {...props}
       />
       {type === "default" ? (
