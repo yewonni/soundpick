@@ -29,5 +29,27 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+
+  plugins: [
+    function ({ addBase }) {
+      addBase({
+        "input:-webkit-autofill": {
+          appearance: "none",
+          "-webkit-box-shadow": "0 0 0 30px transparent inset !important",
+          "-webkit-text-fill-color": "#F3F5FF !important",
+          transition: "background-color 5000s ease-in-out 0s",
+          "background-color": "transparent !important",
+        },
+        "input:-webkit-autofill:hover": {
+          "background-color": "transparent !important",
+        },
+        "input:-webkit-autofill:focus": {
+          "background-color": "transparent !important",
+        },
+        "input:-webkit-autofill:active": {
+          "background-color": "transparent !important",
+        },
+      });
+    },
+  ],
 };
