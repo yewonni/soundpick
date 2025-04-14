@@ -4,6 +4,8 @@ import home from "../../images/home.svg";
 import nextIcon from "../../images/chevron-right.svg";
 import AnalysisCard from "./component/AnalysisCard";
 import sampleImg from "../../images/sample.png";
+import AnalysisExitModal from "./component/AnalysisExitModal";
+import BackgroundWrapper from "../../components/BackgroundWrapper";
 
 const musicMockData = [
   "Pop",
@@ -43,7 +45,16 @@ const koreaArtistMockData = [
 
 export default function MusicSurvey() {
   const location = useLocation();
+  const [isOpenExitModal, setIsExitModalOpen] = useState(false);
   const [step, setStep] = useState<number>(location.state?.currentStep || 1);
+
+  const handleExitModalOpen = () => {
+    setIsExitModalOpen(true);
+  };
+
+  const handleExitModalClose = () => {
+    setIsExitModalOpen(false);
+  };
 
   const handleNext = () => {
     setStep((prevStep) => prevStep + 1);
@@ -51,13 +62,7 @@ export default function MusicSurvey() {
 
   return (
     <>
-      <div
-        className="w-full min-h-screen"
-        style={{
-          backgroundImage:
-            "linear-gradient(360deg, #d1c3fc 0%, #a5b4fc 50%, #dbeafe 100%)",
-        }}
-      >
+      <BackgroundWrapper>
         {step < 3 && (
           <header className="flex flex-col px-4 pt-8 md:px-[30%]">
             <div className="relative flex items-center">
@@ -65,6 +70,7 @@ export default function MusicSurvey() {
                 src={home}
                 alt="홈으로 가기"
                 className="cursor-pointer md:w-8"
+                onClick={handleExitModalOpen}
               />
               <p className="absolute left-1/2 transform -translate-x-1/2 text-lg font-bold md:text-2xl">
                 <span className="text-purple-600 ">{step} </span>/ 2
@@ -106,7 +112,11 @@ export default function MusicSurvey() {
             </div>
           )}
         </main>
-      </div>
+      </BackgroundWrapper>
+      <AnalysisExitModal
+        isOpen={isOpenExitModal}
+        onClose={handleExitModalClose}
+      />
     </>
   );
 }
