@@ -42,7 +42,7 @@ const App: React.FC = () => {
         <Route path="/review" element={<Review />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/join" element={<Join />}></Route>
-        <Route path="/join/success" element={<JoinSuccess />}></Route>
+        <Route path="/join-success" element={<JoinSuccess />}></Route>
         <Route path="/music-analysis" element={<MusicAnalysis />}></Route>
         <Route path="/search-artist" element={<ArtistSearch />}></Route>
         <Route path="/recommendation" element={<Recommendation />}></Route>
