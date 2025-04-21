@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import closeIcon from "../images/close-btn.svg";
 import Button from "./Button";
+import { useAuth } from "../context/AuthContext";
 
 interface HamburgerMenuProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface HamburgerMenuProps {
 
 export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
   const navigate = useNavigate();
+  const { isLoggedIn, logout } = useAuth();
 
   return (
     <div
@@ -28,25 +30,50 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
       <section className="w-full flex flex-col border-b border-b-purple-500 pb-3">
         <h2 className="sr-only">사용자 섹션</h2>
         <p className="font-semibold text-white text-[20px] mb-3">
-          로그인 해주세요
+          {isLoggedIn ? "환영합니다!" : "로그인 해주세요"}
         </p>
         <div className="flex justify-between items-baseline">
-          <Button outline size="sm" onClick={() => navigate("/login")}>
-            로그인
-          </Button>
-          <button
-            className="text-sm text-[#333] font-semibold underline"
-            onClick={() => navigate("/join")}
-          >
-            회원가입
-          </button>
+          {isLoggedIn ? (
+            <Button outline size="sm" onClick={() => navigate("/mypage")}>
+              마이페이지
+            </Button>
+          ) : (
+            <Button outline size="sm" onClick={() => navigate("/login")}>
+              로그인
+            </Button>
+          )}
+          {isLoggedIn ? (
+            <button
+              className="text-sm text-[#333] font-semibold underline"
+              onClick={() => {
+                logout();
+                onClose?.();
+                navigate("/");
+              }}
+            >
+              로그아웃
+            </button>
+          ) : (
+            <button
+              className="text-sm text-[#333] font-semibold underline"
+              onClick={() => navigate("/join")}
+            >
+              회원가입
+            </button>
+          )}
         </div>
       </section>
       <section className="mt-4">
         <h2 className="sr-only">메뉴 옵션</h2>
         <nav>
           <ul className="flex flex-col gap-4 font-bold pl-1">
-            <li onClick={() => navigate("/")} className="cursor-pointer">
+            <li
+              onClick={() => {
+                onClose?.();
+                navigate("/");
+              }}
+              className="cursor-pointer"
+            >
               soundpick 홈
             </li>
             <li>인기 아티스트</li>
