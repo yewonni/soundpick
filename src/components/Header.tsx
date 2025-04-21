@@ -3,6 +3,7 @@ import logo from "../images/logo.svg";
 import hamburger from "../images/hamburger.svg";
 import search from "../images/search.svg";
 import SearchBar from "./SearchBar";
+import { useAuth } from "../context/AuthContext";
 
 interface HeaderProps {
   onClick?: () => void;
@@ -10,6 +11,7 @@ interface HeaderProps {
 
 export default function Header({ onClick }: HeaderProps) {
   const navigate = useNavigate();
+  const { isLoggedIn, logout } = useAuth();
 
   return (
     <header className="flex justify-between items-center px-4 py-2 h-[70px] md:px-[10%] md:py-[50px] md:justify-start md:gap-7">
@@ -41,18 +43,41 @@ export default function Header({ onClick }: HeaderProps) {
         <SearchBar placeholder="아티스트, 음악, 플레이리스트 검색하기" />
       </div>
       <div className="hidden md:flex gap-6 text-lg text-white ml-[38%]">
-        <button
-          className="hover:text-text-hover hover:underline active:text-text-subtle font-bold"
-          onClick={() => navigate("/login")}
-        >
-          Log In
-        </button>
-        <button
-          className="hover:text-text-hover hover:underline active:text-text-subtle font-bold"
-          onClick={() => navigate("/join")}
-        >
-          Sign Up
-        </button>
+        {isLoggedIn ? (
+          <>
+            <button
+              className="min-w-[90px] whitespace-nowrap hover:text-text-hover hover:underline active:text-text-subtle font-bold"
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+            >
+              Log Out
+            </button>
+
+            <button
+              className="min-w-[90px] whitespace-nowrap hover:text-text-hover hover:underline active:text-text-subtle font-bold"
+              onClick={() => navigate("/mypage")}
+            >
+              My Page
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="min-w-[90px] whitespace-nowrap hover:text-text-hover hover:underline active:text-text-subtle font-bold"
+              onClick={() => navigate("/login")}
+            >
+              Log In
+            </button>
+            <button
+              className="min-w-[90px] whitespace-nowrap hover:text-text-hover hover:underline active:text-text-subtle font-bold"
+              onClick={() => navigate("/join")}
+            >
+              Sign Up
+            </button>
+          </>
+        )}
       </div>
     </header>
   );
