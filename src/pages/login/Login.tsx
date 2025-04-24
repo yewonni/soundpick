@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import Checkbox from "../../components/Checkbox";
 import Button from "../../components/Button";
 import { useAuth } from "../../context/AuthContext";
+import { loginSchema } from "../../utils/validations/loginSchema";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,16 +12,42 @@ export default function Login() {
   const [isSaveIdChecked, setIsSaveIdChecked] = useState(false);
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const savedId = localStorage.getItem("savedUserId");
+    if (savedId) {
+      setUserId(savedId);
+      setIsSaveIdChecked(true);
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const result = loginSchema.safeParse({ userId, password });
+
+    if (!result.success) {
+      const message = result.error.errors[0].message;
+      setErrorMessage(message);
+      return;
+    }
+
+    setErrorMessage("");
+
     try {
       await login(userId, password);
+
+      if (isSaveIdChecked) {
+        localStorage.setItem("savedUserId", userId);
+      } else {
+        localStorage.removeItem("savedUserId");
+      }
+
       navigate("/");
     } catch (error) {
       console.error("로그인 실패", error);
-      alert("로그인에 실패했습니다. 다시 시도해 주세요.");
+      setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
   };
 
@@ -66,9 +93,11 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="border-b border-b-text-base placeholder-text-base w-full py-2 focus:outline-none bg-transparent focus:bg-transparent"
               />
-              {/* <p className="text-xs text-primary md:text-sm">
-              아이디 또는 비밀번호가 일치하지 않습니다.
-            </p> */}
+              {errorMessage && (
+                <p className="text-xs text-text-subtle md:text-sm">
+                  {errorMessage}
+                </p>
+              )}
             </div>
             <div className="flex gap-1 justify-end items-center mb-1">
               <Checkbox
