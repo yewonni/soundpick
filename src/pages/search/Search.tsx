@@ -22,7 +22,7 @@ export default function Search() {
 
   return (
     <>
-      <header className="flex justify-center items-center px-4 py-2 h-[70px]  bg-bg-sub">
+      <header className="flex justify-center items-center px-4 py-2 h-[70px]  ">
         <h1>
           <img
             src={logo}

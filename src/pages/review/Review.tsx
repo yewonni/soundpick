@@ -23,7 +23,7 @@ export default function Review() {
         <Header />
       </div>
 
-      <header className="flex justify-center items-center px-4 py-2 h-[70px] bg-bg-sub relative md:hidden">
+      <header className="flex justify-center items-center px-4 py-2 h-[70px] relative md:hidden">
         <img
           src={prevIcon}
           alt="이전으로 가기"

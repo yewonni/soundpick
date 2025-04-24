@@ -46,7 +46,7 @@ export default function SearchResult() {
       <div className="hidden md:block">
         <Header />
       </div>
-      <header className="flex justify-center items-center px-4 py-2 h-[70px] bg-bg-sub md:hidden">
+      <header className="flex justify-center items-center px-4 py-2 h-[70px] md:hidden">
         <h1>
           <img
             src={logo}
