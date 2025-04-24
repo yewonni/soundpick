@@ -5,7 +5,6 @@ export async function encryptWithRSAFromServer(
   plainText: string
 ): Promise<{ encrypted: string | null; rsaSeq: string | null }> {
   try {
-    console.log(process.env);
     const response = await fetchPublicKey();
 
     if (!response || !response.data) {
