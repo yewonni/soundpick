@@ -10,7 +10,7 @@ import { JoinFormDataType } from "../../types/JoinFormData";
 import { JoinRequestType } from "../../types/JoinFormData";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { joinSchema } from "../../utils/validation";
+import { joinSchema } from "../../utils/validations/joinSchema";
 import DomainSelect from "./component/DomainSelect";
 import { encryptWithRSAFromServer } from "../../utils/crypto";
 
