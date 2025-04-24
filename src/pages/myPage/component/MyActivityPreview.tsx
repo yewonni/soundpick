@@ -15,8 +15,8 @@ export default function MyActivityPreview({ isMobile }: MyActivityPreviewData) {
           <h2 className="font-bold mb-3">나의 활동</h2>
           <ul className="w-full text-sm font-semibold text-[#333]">
             <li className="flex items-center gap-3 w-full border-b border-b-gray-200 p-3 pl-0 cursor-pointer hover:bg-gray-100">
-              <img src={mapIcon} alt="음악 취향 로드맵" />
-              음악 취향 로드맵
+              <img src={mapIcon} alt="음악 취향 분석하기" />
+              음악 취향 분석하기
             </li>
             <li
               onClick={() => navigate("/my-review")}
@@ -40,8 +40,8 @@ export default function MyActivityPreview({ isMobile }: MyActivityPreviewData) {
           <h2 className="font-bold mb-3">나의 활동</h2>
           <ul className="w-full text-sm font-semibold text-[#333]">
             <li className="flex items-center gap-3 w-full border-b border-b-gray-200 p-3 pl-0 cursor-pointer hover:bg-gray-100">
-              <img src={mapIcon} alt="음악 취향 로드맵" />
-              음악 취향 로드맵
+              <img src={mapIcon} alt="음악 취향 분석하기" />
+              음악 취향 분석하기
             </li>
             <li
               onClick={() => navigate("/my-review")}
