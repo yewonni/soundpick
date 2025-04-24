@@ -16,12 +16,14 @@ export default function MyPlaylistPreview({
   isMobile,
 }: MyPlaylistPreviewData) {
   const navigate = useNavigate();
+  const nickname = localStorage.getItem("nickname");
+
   return (
     <>
       {!isMobile && (
         <section className="bg-white shadow-lg p-6 h-full rounded-lg">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="font-bold">에옹's 플레이리스트</h2>
+            <h2 className="font-bold">{nickname}'s 플레이리스트</h2>
             <ViewButton onClick={() => navigate("/my-playlist")}>
               전체보기
             </ViewButton>
@@ -53,7 +55,7 @@ export default function MyPlaylistPreview({
       {isMobile && (
         <section className="bg-white shadow-lg p-6 pr-0 w-full md:hidden">
           <div className="flex justify-between items-center mb-4 pr-6">
-            <h2 className="font-bold">에옹's 플레이리스트</h2>
+            <h2 className="font-bold">{nickname}'s 플레이리스트</h2>
             <ViewButton onClick={() => navigate("/my-playlist")}>
               전체보기
             </ViewButton>

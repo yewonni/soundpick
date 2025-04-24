@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import closeIcon from "../images/close-btn.svg";
 import Button from "./Button";
 import { useAuth } from "../context/AuthContext";
+// import { useState } from "react";
 
 interface HamburgerMenuProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ interface HamburgerMenuProps {
 export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+
+  const nickname = localStorage.getItem("nickname");
 
   return (
     <div
@@ -30,7 +33,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
       <section className="w-full flex flex-col border-b border-b-purple-500 pb-3">
         <h2 className="sr-only">사용자 섹션</h2>
         <p className="font-semibold text-white text-[20px] mb-3">
-          {isLoggedIn ? "환영합니다!" : "로그인 해주세요"}
+          {isLoggedIn ? `${nickname}님, 환영합니다!` : "로그인 해주세요"}
         </p>
         <div className="flex justify-between items-baseline">
           {isLoggedIn ? (

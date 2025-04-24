@@ -8,6 +8,8 @@ interface ProfileHeaderProps {
 }
 export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
   const navigate = useNavigate();
+  const nickname = localStorage.getItem("nickname");
+
   return (
     <>
       <header className="shadow-lg p-4 relative md:px-[10%]">
@@ -48,7 +50,7 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
             className="rounded-full border-4 border-white w-[100px] h-[100px] absolute left-[60px] transform -translate-x-1/2 -translate-y-1/4 top-4 z-10 md:static md:w-[120px] md:h-[120px] md:transform-none md:ml-0"
           />
           <div className="hidden md:flex md:flex-col md:items-start md:gap-2 md:ml-6">
-            <h1 className="font-bold text-2xl">에옹</h1>
+            <h1 className="font-bold text-2xl">{nickname}</h1>
             <p className="text-[#333] text-base">
               음악을 좋아하는 평범한 20대 입니다.
             </p>
@@ -67,7 +69,7 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
       <div className="relative bg-white p-6 pb-10 rounded-t-2xl shadow-lg z-0 before:absolute before:top-[-30px] before:left-0 before:w-full before:h-[50px] before:bg-white md:hidden">
         <div className="flex justify-between items-center mt-3">
           <div className="text-center w-full flex flex-col items-start gap-2 pl-4">
-            <h1 className="font-bold text-xl">에옹</h1>
+            <h1 className="font-bold text-xl">{nickname}</h1>
             <p className="text-[#333] text-sm">
               음악을 좋아하는 평범한 20대 입니다.
             </p>

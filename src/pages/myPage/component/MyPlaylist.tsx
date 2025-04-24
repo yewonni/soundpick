@@ -5,9 +5,12 @@ import sample from "../../../images/sample.png";
 import Checkbox from "../../../components/Checkbox";
 import RegisterButton from "../../../components/RegisterButton";
 import Button from "../../../components/Button";
+
 export default function MyPlaylist() {
   const navigate = useNavigate();
   const [isCircleChecked, setIsCircleChecked] = useState(false);
+
+  const nickname = localStorage.getItem("nickname");
 
   const mockData = [
     {
@@ -33,7 +36,7 @@ export default function MyPlaylist() {
           className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg ">에옹’s 플레이리스트</h1>
+        <h1 className="font-bold text-lg ">{nickname}’s 플레이리스트</h1>
       </header>
       <main className="w-full min-h-screen  p-4 md:px-[20%]">
         {mockData.map((data, index) => (
