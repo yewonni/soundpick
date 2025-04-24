@@ -68,7 +68,7 @@ export default function Home() {
     <>
       {/* <BackgroundWrapper> */}
       <div
-        className={` fixed z-10 inset-0 bg-black transition-opacity duration-300 md:hidden${
+        className={` fixed z-10 inset-0 bg-black transition-opacity duration-300 md:hidden ${
           isMenuOpen ? "opacity-60 visible " : "opacity-0 invisible"
         }`}
         onClick={handleMenuClose}
