@@ -4,6 +4,9 @@ import hamburger from "../images/hamburger.svg";
 import search from "../images/search.svg";
 import SearchBar from "./SearchBar";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
+import { getLastFm } from "../api/admin/lastfm";
+import Button from "./Button";
 
 interface HeaderProps {
   onClick?: () => void;
@@ -12,6 +15,26 @@ interface HeaderProps {
 export default function Header({ onClick }: HeaderProps) {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    setUserId(storedUserId);
+  }, []);
+
+  const handleLastFm = async () => {
+    try {
+      const response = await getLastFm();
+
+      const popupUrl = response.data.data;
+      const popupOptions = "width=600,height=400,scrollbars=yes,resizable=yes";
+
+      window.open(popupUrl, "_blank", popupOptions);
+    } catch (error) {
+      console.error("Last FM 요청 실패", error);
+    }
+  };
 
   return (
     <header className="flex justify-between items-center px-4 py-2 h-[70px] md:px-[10%] md:py-[50px] md:justify-start md:gap-7">
@@ -43,6 +66,9 @@ export default function Header({ onClick }: HeaderProps) {
         <SearchBar placeholder="아티스트, 음악, 플레이리스트 검색하기" />
       </div>
       <div className="hidden md:flex gap-6 text-lg text-white ml-[38%]">
+        {isLoggedIn && userId === "admin" && (
+          <Button onClick={handleLastFm}>last fm</Button>
+        )}
         {isLoggedIn ? (
           <>
             <button
