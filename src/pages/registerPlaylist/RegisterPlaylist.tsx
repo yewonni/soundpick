@@ -50,7 +50,7 @@ export default function RegisterPlaylist() {
           <RegisterButton onClick={() => navigate("/search-artist")}>
             곡 추가하기
           </RegisterButton>
-          <Button outline>등록하기</Button>
+          <Button primary>등록하기</Button>
         </div>
       </main>
     </>
