@@ -30,6 +30,7 @@ yarn-error.log*
 # Package managers
 yarn.lock
 package-lock.json
+package.json
 pnpm-lock.yaml
 
 manifest.json
