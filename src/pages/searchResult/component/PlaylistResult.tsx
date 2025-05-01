@@ -27,7 +27,7 @@ export default function PlaylistResult({
               />
               <div className="p-4">
                 <h2 className="font-bold text-lg truncate">{item.title}</h2>
-                <p className="text-secondary text-sm mt-1">{item.subTitle}</p>
+                <p className="text-primary text-sm mt-1">{item.subTitle}</p>
               </div>
             </div>
           ))}
@@ -52,7 +52,7 @@ export default function PlaylistResult({
                   {item.title}
                 </h2>
                 {item.subTitle && (
-                  <p className="text-secondary text-sm">{item.subTitle}</p>
+                  <p className="text-gray-100 text-sm">{item.subTitle}</p>
                 )}
               </div>
             </div>

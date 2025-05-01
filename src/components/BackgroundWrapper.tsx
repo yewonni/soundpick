@@ -10,8 +10,7 @@ export default function BackgroundWrapper({ children }: Props) {
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage:
-            "linear-gradient(360deg, #d1c3fc 0%, #a5b4fc 50%, #dbeafe 100%)",
+          background: "linear-gradient(180deg, #f9e1d6 0%, #bcb1e6 100%)",
         }}
       ></div>
 

@@ -9,11 +9,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonVariants = {
-  primary: "bg-bg-sub hover:bg-secondary active:bg-purple-400 text-primary",
+  primary: "bg-secondary hover:bg-accent active:bg-bg-sub text-white",
   default:
-    "border border-bg-sub bg-white text-secondary hover:bg-gray-100 active:bg-gray-300",
+    "border border-bg-sub bg-white text-secondary hover:bg-gray-100 active:bg-gray-200",
   outline:
-    "border border-purple-900 border-2 bg-white text-purple-900 hover:bg-purple-400 active:bg-purple-500",
+    "border border-purple-600 border-2 bg-white text-purple-600 hover:bg-purple-100 active:bg-purple-400",
   disabled: "bg-purple-100 text-purple-400 cursor-not-allowed",
 } as const;
 

@@ -80,7 +80,7 @@ export default function MyAllTimeHits() {
         <div className="md:flex md:justify-between md:items-center md:py-2">
           <div className="flex flex-col text-sm md:text-base font-semibold text-text-base mb-4">
             <p>
-              <span className="text-text-subtle font-bold">
+              <span className="text-primary font-bold">
                 에옹님이 가장 사랑하는 곡
               </span>
               을 모아둔 공간이에요.
@@ -99,13 +99,13 @@ export default function MyAllTimeHits() {
         </div>
         <section>
           <h2 className="sr-only">나의 All time hits 목록</h2>
-          <div className="bg-white w-full rounded-lg shadow-lg p-4 pb-6 md:px-[50px] md:py-6">
+          <div className="bg-bg-peach w-full rounded-lg shadow-lg p-4 pb-6 md:px-[50px] md:py-6">
             {mockData.map((song, index) => (
               <article
                 key={index}
-                className="border-b border-b-gray-200 flex items-center gap-5 py-3 relative md:hover:bg-gray-100 cursor-pointer"
+                className="border-b border-b-accent flex items-center gap-5 py-3 relative md:hover:bg-gray-100 cursor-pointer"
               >
-                <p className="text-secondary pl-3">{index + 1}</p>
+                <p className="text-accent pl-3">{index + 1}</p>
                 <div className="flex gap-3 items-center">
                   <img
                     src={song.imageUrl}

@@ -54,7 +54,7 @@ export default function SongResult({
               <div className="flex items-center px-2 font-bold text-sm hover:underline text-text-base">
                 {item.title}
               </div>
-              <div className="flex items-center px-2 text-secondary text-sm">
+              <div className="flex items-center px-2 text-gray-100 text-sm">
                 {item.subTitle}
               </div>
               <div className="flex justify-center items-center">
@@ -82,7 +82,7 @@ export default function SongResult({
                     {item.title}
                   </h2>
                   {item.subTitle && (
-                    <p className="text-secondary text-xs">{item.subTitle}</p>
+                    <p className="text-gray-100 text-xs">{item.subTitle}</p>
                   )}
                 </div>
               </div>

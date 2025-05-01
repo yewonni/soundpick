@@ -61,13 +61,13 @@ export default function DomainSelect({ value, onChange }: DomainSelectProps) {
       {/* 옵션 리스트 */}
       {isOpen && (
         <div
-          className="absolute z-10 w-full mt-1 bg-purple-400 border border-text-base rounded-lg shadow-lg"
+          className="absolute z-10 w-full mt-1 bg-primary border border-text-base rounded-lg shadow-lg"
           style={{ top: "100%" }}
         >
           {domains.map((domain) => (
             <div
               key={domain}
-              className="cursor-pointer p-3 text-sm text-text-base hover:bg-purple-500 hover:rounded-lg"
+              className="cursor-pointer p-3 text-sm text-text-base hover:bg-accent hover:rounded-lg"
               onClick={() => handleSelect(domain)}
             >
               {domain}

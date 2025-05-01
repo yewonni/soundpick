@@ -19,7 +19,7 @@ export default function EditProfile() {
           <FinishButton onClick={() => navigate(-1)} />
         </div>
       </header>
-      <main className="w-full min-h-screen bg-[#f5f6ff] p-4 md:px-[20%]">
+      <main className="w-full min-h-screen bg-bg-peach p-4 md:px-[20%]">
         <div className="flex justify-center flex-col items-center mt-4">
           <img
             src={sample}
@@ -42,7 +42,7 @@ export default function EditProfile() {
             name="nickName"
             type="text"
             placeholder="본인의 닉네임"
-            className="focus:outline-none w-full border-b border-b-gray-200 p-2 rounded-md"
+            className="focus:outline-none w-full border-b border-b-gray-200 p-2 rounded-md bg-white/60 "
           />
         </div>
         <div className="flex gap-3 items-center  text-sm  md:text-base">
@@ -57,7 +57,7 @@ export default function EditProfile() {
             name="profileInfo"
             placeholder="본인을 소개해주세요"
             type="text"
-            className="focus:outline-none w-full border-b border-b-gray-200 p-2 rounded-md"
+            className="focus:outline-none w-full border-b border-b-gray-200 p-2 rounded-md bg-white/60"
           />
         </div>
         <div className="flex justify-end mt-4">

@@ -17,7 +17,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-screen w-[280px] bg-[#CACCE9] z-30 
+      className={`fixed top-0 left-0 h-screen w-[280px] bg-[#a8a29e] z-30 
           transform transition-transform duration-300 p-4 ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
@@ -30,9 +30,9 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
           onClick={onClose}
         />
       </button>
-      <section className="w-full flex flex-col border-b border-b-purple-500 pb-3">
+      <section className="w-full flex flex-col border-b border-b-text-base pb-3">
         <h2 className="sr-only">사용자 섹션</h2>
-        <p className="font-semibold text-white text-[20px] mb-3">
+        <p className="font-semibold text-bg-peach text-[20px] mb-3">
           {isLoggedIn ? `${nickname}님, 환영합니다!` : "로그인 해주세요"}
         </p>
         <div className="flex justify-between items-baseline">
@@ -41,7 +41,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
               마이페이지
             </Button>
           ) : (
-            <Button outline size="sm" onClick={() => navigate("/login")}>
+            <Button primary size="sm" onClick={() => navigate("/login")}>
               로그인
             </Button>
           )}
@@ -58,7 +58,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
             </button>
           ) : (
             <button
-              className="text-sm text-[#333] font-semibold underline"
+              className="text-xs text-secondary font-semibold underline"
               onClick={() => navigate("/join")}
             >
               회원가입
@@ -69,7 +69,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
       <section className="mt-4">
         <h2 className="sr-only">메뉴 옵션</h2>
         <nav>
-          <ul className="flex flex-col gap-4 font-bold pl-1">
+          <ul className="flex flex-col gap-4 font-bold pl-1 text-text-base">
             <li
               onClick={() => {
                 onClose?.();

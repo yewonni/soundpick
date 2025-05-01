@@ -18,7 +18,7 @@ export default function Playlist({
       <section className="mt-2">
         <h2 className="sr-only">플레이리스트 목록</h2>
         {!isMobile && (
-          <div className="hidden md:grid md:grid-cols-[40px_80px_1fr_1fr_40px] text-sm font-bold text-[#333] py-3 border-b border-gray-300 mb-4">
+          <div className="hidden md:grid md:grid-cols-[40px_80px_1fr_1fr_40px] text-sm font-bold text-text-subtle py-3 border-b border-text-subtle mb-4">
             <div className="flex justify-center items-center"></div>
             <div className="flex items-center justify-center"></div>
             <div className="flex items-center px-2">곡</div>
@@ -40,10 +40,10 @@ export default function Playlist({
                     className="w-[60px] h-[60px] rounded-sm "
                   />
                 </div>
-                <div className="flex items-center px-2 font-bold text-sm hover:underline">
+                <div className="flex items-center px-2 font-bold text-text-base text-sm hover:underline">
                   {item.title}
                 </div>
-                <div className="flex items-center px-2 text-sm">
+                <div className="flex items-center text-gray-100 px-2 text-sm">
                   {item.subTitle}
                 </div>
                 <div className="flex justify-center items-center">
@@ -66,9 +66,11 @@ export default function Playlist({
                     className="w-[50px] h-[50px] rounded-sm"
                   />
                   <div className="flex flex-col gap-1">
-                    <h2 className="font-bold text-sm">{item.title}</h2>
+                    <h2 className="font-bold text-sm text-text-base">
+                      {item.title}
+                    </h2>
                     {item.subTitle && (
-                      <p className=" text-xs">{item.subTitle}</p>
+                      <p className=" text-xs text-gray-100">{item.subTitle}</p>
                     )}
                   </div>
                 </div>

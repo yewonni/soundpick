@@ -8,7 +8,7 @@ const FinishButton: React.FC<FinishButtonProps> = ({
 }) => {
   return (
     <button
-      className={` font-bold text-lg md:text-[22px] ${className}`}
+      className={` font-bold text-lg md:text-[22px] text-purple-100 ${className}`}
       {...props}
     >
       완료

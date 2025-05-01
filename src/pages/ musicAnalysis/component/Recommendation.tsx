@@ -64,8 +64,8 @@ export default function Recommendation() {
         }}
       >
         <h1 className="font-medium  text-text-base md:text-lg text-base flex items-center gap-1">
-          <span className="text-purple-600 font-bold text-xl  md:text-2xl">
-            "음악 취향 로드맵"{" "}
+          <span className="text-text-subtle font-bold text-xl  md:text-2xl">
+            "음악 취향 분석"{" "}
           </span>
           <span>이 완성됐어요!</span>
         </h1>
@@ -95,14 +95,14 @@ export default function Recommendation() {
         {isArtistRecommendation ? (
           <h1>
             <span className="font-bold">에옹님, </span>
-            <span className="font-bold text-primary">아티스트 추천</span>이
+            <span className="font-bold text-text-subtle">아티스트 추천</span>이
             <br />
             마음에 드시나요?
           </h1>
         ) : (
           <h1>
             <span className="font-bold">에옹님</span>에게{" "}
-            <span className="font-bold text-primary">추천된 음악, </span>
+            <span className="font-bold text-text-hover">추천된 음악, </span>
           </h1>
         )}
         {!isArtistRecommendation && <p>취향에 맞는지 확인해보세요!</p>}

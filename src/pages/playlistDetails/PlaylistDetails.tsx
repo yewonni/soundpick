@@ -8,7 +8,6 @@ import sample from "../../images/sample.png";
 import Header from "../../components/Header";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import PlaylistModal from "../searchResult/component/PlaylistModal";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
 import { MusicCardDataProps } from "../../types/MusicCard";
 import LikeAndComment from "./component/LikeAndComment";
 import Playlist from "./component/Playlist";
@@ -41,66 +40,62 @@ export default function PlaylistDetails() {
 
   return (
     <>
-      <BackgroundWrapper>
-        <div className="hidden md:block">
-          <Header />
-        </div>
-        <header className="flex justify-center items-center px-4 py-2 h-[70px] bg-bg-sub relative md:hidden">
+      <div className="hidden md:block">
+        <Header />
+      </div>
+      <header className="flex justify-center items-center px-4 py-2 h-[70px] bg-bg-sub relative md:hidden">
+        <img
+          src={prevIcon}
+          alt="이전으로 가기"
+          className="absolute left-4 cursor-pointer"
+          onClick={() => navigate(-1)}
+        />
+        <h1>
           <img
-            src={prevIcon}
-            alt="이전으로 가기"
-            className="absolute left-4 cursor-pointer"
-            onClick={() => navigate(-1)}
+            src={logo}
+            alt="로고"
+            className="cursor-pointer"
+            onClick={() => navigate("/")}
           />
-          <h1>
+        </h1>
+      </header>
+      <main className="p-4  min-h-screen md:px-[10%] md:pt-10 ">
+        <article className="mb-4 pb-5 border-b border-gray-300 md:border-b-0 md:pb-0">
+          <div className="flex gap-4 md:gap-6 items-start">
             <img
-              src={logo}
-              alt="로고"
-              className="cursor-pointer"
-              onClick={() => navigate("/")}
+              src={sampleImage}
+              alt="플리 이미지"
+              className="w-[100px] h-[100px] rounded-sm md:w-[180px] md:h-[180px]"
             />
-          </h1>
-        </header>
-        <main className="p-4 bg-[#f5f6ff] min-h-screen md:px-[10%] md:pt-10 ">
-          <article className="mb-4 pb-5 border-b border-gray-300 md:border-b-0 md:pb-0">
-            <div className="flex gap-4 md:gap-6 items-start">
-              <img
-                src={sampleImage}
-                alt="플리 이미지"
-                className="w-[100px] h-[100px] rounded-sm md:w-[180px] md:h-[180px]"
-              />
-              <div className="flex flex-col gap-2 w-full">
-                <h2 className="font-bold text-lg md:text-2xl">플리명</h2>
-                <p className="text-sm md:text-base text-[#333]">
-                  플리 상세 정보
-                </p>
+            <div className="flex flex-col gap-2 w-full">
+              <h2 className="font-bold text-lg md:text-2xl">플리명</h2>
+              <p className="text-sm md:text-base text-[#333]">플리 상세 정보</p>
 
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-primary font-semibold text-sm md:text-lg cursor-pointer hover:underline">
-                    작성자
-                  </p>
-                  <div className="md:hidden">
-                    <Button outline size="sm">
-                      Follow
-                    </Button>
-                  </div>
+              <div className="flex justify-between items-center mt-2">
+                <p className="text-primary font-semibold text-sm md:text-lg cursor-pointer hover:underline">
+                  작성자
+                </p>
+                <div className="md:hidden">
+                  <Button outline size="sm">
+                    Follow
+                  </Button>
                 </div>
-                {!isMobile && <LikeAndComment isMobile={false} />}
               </div>
+              {!isMobile && <LikeAndComment isMobile={false} />}
             </div>
-          </article>
-          {isMobile && <LikeAndComment isMobile={true} />}
-          <Playlist
-            data={resultList}
-            isMobile={isMobile}
-            onClick={handlePlaylistModalOpen}
-            onClose={handlePlaylistModalClose}
-          />
-        </main>
-        {isPlaylistModalOpen && (
-          <PlaylistModal onClose={handlePlaylistModalClose} />
-        )}
-      </BackgroundWrapper>
+          </div>
+        </article>
+        {isMobile && <LikeAndComment isMobile={true} />}
+        <Playlist
+          data={resultList}
+          isMobile={isMobile}
+          onClick={handlePlaylistModalOpen}
+          onClose={handlePlaylistModalClose}
+        />
+      </main>
+      {isPlaylistModalOpen && (
+        <PlaylistModal onClose={handlePlaylistModalClose} />
+      )}
     </>
   );
 }

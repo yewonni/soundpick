@@ -12,7 +12,7 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
 
   return (
     <>
-      <header className="shadow-lg p-4 relative md:px-[10%]">
+      <header className="shadow-lg p-4 relative md:px-[10%] bg-bg-secondary">
         {/* Desktop/Mobile Nav */}
         <div className="hidden md:flex md:justify-between md:items-center">
           <div
@@ -27,7 +27,7 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
           <div className="flex gap-4">
             <button
               onClick={() => navigate("/edit-profile")}
-              className="border border-violet-500 text-xs p-1 px-2 text-violet-600 font-semibold rounded-2xl bg-white hover:bg-violet-100 active:bg-violet-200 transition-colors duration-150"
+              className="border border-purple-600 text-xs p-1 px-2 text-purple-600 font-semibold rounded-2xl bg-white hover:bg-violet-100 active:bg-violet-200 transition-colors duration-150"
             >
               프로필수정
             </button>
@@ -58,7 +58,7 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
           <div className="absolute right-0 top-[55px] z-20 md:hidden">
             <button
               onClick={() => navigate("/edit-profile")}
-              className="border border-violet-500 text-[10px] p-1 px-2 text-violet-600 font-semibold rounded-2xl bg-white hover:bg-violet-100 active:bg-violet-200 transition-colors duration-150"
+              className="border border-purple-600 text-[10px] p-1 px-2 text-purple-600 font-semibold rounded-2xl bg-white hover:bg-violet-100 active:bg-violet-200 transition-colors duration-150"
             >
               프로필수정
             </button>

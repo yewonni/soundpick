@@ -35,8 +35,8 @@ export default function MyFriends() {
         />
         <h1 className="font-bold text-lg ">나의 음악 친구</h1>
       </header>
-      <main className="w-full min-h-screen bg-[#f5f6ff] p-4 md:px-[20%]">
-        <p className="font-bold text-purple-600 py-1  border-b border-b-gray-300 ">
+      <main className="w-full min-h-screen bg-bg-peach p-4 md:px-[20%]">
+        <p className="font-bold text-primary py-1 border-b border-b-bg-secondary ">
           총 4명
         </p>
         {mockData.map((data, index) => (

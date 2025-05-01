@@ -33,12 +33,12 @@ export default function MyReview() {
         />
         <h1 className="font-bold text-lg ">내가 남긴 한 마디</h1>
       </header>
-      <main className="w-full min-h-screen bg-[#f5f6ff] p-4 md:px-[20%]">
-        <p className="font-bold text-purple-600 py-1  border-b border-b-gray-300 ">
+      <main className="w-full min-h-screen bg-bg-peach p-4 md:px-[20%]">
+        <p className="font-bold text-primary py-1  border-b border-b-bg-secondary ">
           총 2개
         </p>
         {mockData.map((data, index) => (
-          <section key={index} className="py-5 border-b border-b-gray-200">
+          <section key={index} className="py-5 ">
             <h2 className="sr-only">리뷰 상세 내용</h2>
             <article className="flex gap-3">
               <img
@@ -67,7 +67,7 @@ export default function MyReview() {
                   삭제하기
                 </Button>
               </div>
-              <div className="bg-gray-200 w-full p-4 rounded-md mt-3 text-[#333] text-sm">
+              <div className="bg-text-base w-full p-4 rounded-md mt-3 text-[#333] text-sm">
                 {data.comment}
               </div>
             </article>

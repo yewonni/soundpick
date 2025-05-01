@@ -156,7 +156,7 @@ function RecommendationCard() {
         alt="로딩 이미지"
         className="w-[90px] h-[90px] md:w-40 md:h-40 md:pb-6 pb-3 animate-spin"
       />
-      <p className="text-[20px] font-bold animate-pulse md:text-2xl text-[#E0D4FF]">
+      <p className="text-[20px] font-bold animate-pulse md:text-2xl text-text-subtle">
         에옹님의 취향 분석 중...
       </p>
     </div>

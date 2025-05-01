@@ -9,22 +9,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#6f78f6",
-        secondary: "#b1b6f8",
-        accent: "#3c4ddd",
+        primary: "#d57b6f",
+        secondary: "#f0d1d1",
+        accent: "#e7b0b0",
         text: {
-          base: "#F3F5FF",
-          subtle: "#BFCBFF",
-          hover: "#d2e9ff",
+          base: "#f8faff",
+          subtle: "#d6e4ff",
+          hover: "#e3f0ff",
         },
         bg: {
-          sub: "#dbe4ff",
+          sub: "#d78e8e",
+          secondary: "#f3b8a6",
+          peach: "#f1e0d6",
         },
         purple: {
-          100: "#e5e6fb",
-          400: "#b1b6f8",
-          500: "#8887f2",
-          600: "#5740c2",
+          100: "#f9e4f0",
+          400: "#e4a3d3",
+          500: "#d187c2",
+          600: "#b96aae",
         },
       },
     },

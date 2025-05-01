@@ -72,16 +72,16 @@ export default function MusicSurvey() {
                 className="cursor-pointer md:w-8"
                 onClick={handleExitModalOpen}
               />
-              <p className="absolute left-1/2 transform -translate-x-1/2 text-lg font-bold md:text-2xl">
-                <span className="text-purple-600 ">{step} </span>/ 2
+              <p className="absolute left-1/2 transform -translate-x-1/2 text-lg font-bold md:text-2xl text-white">
+                <span>{step} </span>/ 2
               </p>
             </div>
-            <h1 className="font-bold text-lg mt-8 md:text-2xl md:mb-1 text-[#333]">
+            <h1 className="font-bold text-lg mt-8 md:text-2xl md:mb-1 text-primary">
               {step === 1
                 ? "어떤 장르의 음악을 좋아하세요?"
                 : "가장 좋아하는 아티스트는 누구인가요?"}
             </h1>
-            <p className="text-[#333] text-sm font-medium md:text-base">
+            <p className="text-primary text-sm font-medium md:text-base">
               {step === 1 ? "(최대 3곡 선택)" : "(최대 5명 선택)"}
             </p>
           </header>
@@ -101,7 +101,7 @@ export default function MusicSurvey() {
                 <p className="text-[#333]">
                   {step === 1 ? "선택된 음악 : " : "선택된 아티스트 : "}
                 </p>
-                <p className="text-purple-600">2 {step === 1 ? "곡" : "명"}</p>
+                <p className="">2 {step === 1 ? "곡" : "명"}</p>
               </div>
               <button
                 className="flex items-center cursor-pointer"

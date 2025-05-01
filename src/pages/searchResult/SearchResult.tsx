@@ -56,7 +56,10 @@ export default function SearchResult() {
           />
         </h1>
       </header>
-      <div className="bg-[linear-gradient(360deg,_#3E3A6D,_#756aaa)]">
+      <div
+        className="bg-[linear-gradient(360deg,_#f9d8d0,_#9e6c85)]
+"
+      >
         <div className="px-4 pt-4 pb-0 md:px-[10%] md:py-0  text-white">
           <div className="md:hidden">
             <SearchBar />

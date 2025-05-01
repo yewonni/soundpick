@@ -21,6 +21,7 @@ const mockPlaylist = [
 
 export default function MyPlaylistDetails() {
   const navigate = useNavigate();
+  const nickname = localStorage.getItem("nickname");
   //   const [playlist, setPlaylist] = useState(mockPlaylist);
 
   return (
@@ -32,10 +33,10 @@ export default function MyPlaylistDetails() {
           className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg ">에옹’s 플레이리스트</h1>
+        <h1 className="font-bold text-lg ">{nickname}’s 플레이리스트</h1>
       </header>
-      <main className="w-full min-h-screen bg-[#f5f6ff] p-4  md:px-[20%] ">
-        <section className="pb-5 pt-2 border-b border-b-purple-500">
+      <main className="w-full min-h-screen p-4  md:px-[20%] ">
+        <section className="pb-5 pt-2 border-b border-b-purple-200">
           <div className="flex gap-4 md:gap-5">
             <img
               src={sample}
@@ -71,10 +72,10 @@ export default function MyPlaylistDetails() {
                   className="w-[40px] h-[40px] rounded-sm"
                 />
                 <div>
-                  <h3 className="text-sm font-bold truncate max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis">
+                  <h3 className="text-sm font-bold text-text-base truncate max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis">
                     {song.title}
                   </h3>
-                  <p className="text-xs text-[#333] truncate max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis">
+                  <p className="text-xs text-gray-100 truncate max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis">
                     {song.artist}
                   </p>
                 </div>

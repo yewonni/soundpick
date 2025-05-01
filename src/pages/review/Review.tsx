@@ -39,13 +39,7 @@ export default function Review() {
           />
         </h1>
       </header>
-      <div
-        className="w-full min-h-screen"
-        style={{
-          backgroundImage:
-            "linear-gradient(360deg, #d1c3fc 0%, #a5b4fc 50%, #dbeafe 100%)",
-        }}
-      >
+      <div className="w-full min-h-screen bg-bg-peach">
         <main className="p-4 md:px-[10.5%]">
           <section>
             <h2 className="sr-only">댓글 남기기</h2>

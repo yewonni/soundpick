@@ -30,15 +30,9 @@ export default function MyPage() {
   const handleMenuClose = () => setIsMobileMenuOpen(false);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        backgroundImage:
-          "linear-gradient(360deg, #d1c3fc 0%, #a5b4fc 50%, #dbeafe 100%)",
-      }}
-    >
+    <div className="min-h-screen">
       <ProfileHeader onClick={handleMenuOpen} />
-      <main className="w-full min-h-screen bg-[#f4f1ff] pt-6 md:pt-10 pb-11 flex flex-col gap-6 items-center md:px-[10%] md:grid md:grid-cols-12 md:gap-6">
+      <main className="w-full min-h-screen bg-bg-peach pt-6 md:pt-10 pb-11 flex flex-col gap-6 items-center md:px-[10%] md:grid md:grid-cols-12 md:gap-6">
         <div className="md:col-span-4 md:grid md:grid-rows-2 md:gap-6 md:content-start w-full flex flex-col gap-6 items-center">
           <MyAllTimeHitsPreview data={myAllTimeHits} isMobile={isMobile} />
           <MyActivityPreview isMobile={false} />

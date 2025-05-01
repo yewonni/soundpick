@@ -7,11 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-image: linear-gradient(
     360deg,
-    #6f60a5 0%,
-    #5a5ca2 35%,
-    #4a5a9e 60%,
-    #3f4a7c 85%,
-    #2e3455 100%
+    #e8b58d 0%,
+    #e29b7c 30%,
+    #d7a09f 60%,
+    #d2b2c1 85%,
+    #e1c9d1 100%
   );
 
   background-size: cover;
