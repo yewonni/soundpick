@@ -27,7 +27,7 @@ import PopularArtistsPage from "./pages/popularArtists/PopularArtistsPage";
 import RecommendedPlaylistsPage from "./pages/recommendedPlaylists/RecommendedPlaylistsPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { injectSetAccessToken } from "./api/axiosInstance";
-import PrivateRoute from "./components/PrivateRouter";
+// import PrivateRoute from "./components/PrivateRouter";
 import axiosInstance, { RefreshResponse } from "./api/axiosInstance";
 
 const App: React.FC = () => {
@@ -53,113 +53,113 @@ const App: React.FC = () => {
           <Route
             path="/review"
             element={
-              <PrivateRoute>
-                <Review />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <Review />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/music-analysis"
             element={
-              <PrivateRoute>
-                <MusicAnalysis />
-              </PrivateRoute>
+              //<PrivateRoute>
+              <MusicAnalysis />
+              //</PrivateRoute>
             }
           />
           <Route
             path="/search-artist"
             element={
-              <PrivateRoute>
-                <ArtistSearch />
-              </PrivateRoute>
+              //<PrivateRoute>
+              <ArtistSearch />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/recommendation"
             element={
-              <PrivateRoute>
-                <Recommendation />
-              </PrivateRoute>
+              //<PrivateRoute>
+              <Recommendation />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/mypage"
             element={
-              <PrivateRoute>
-                <MyPage />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <MyPage />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/my-hits"
             element={
-              <PrivateRoute>
-                <MyAllTimeHits />
-              </PrivateRoute>
+              //<PrivateRoute>
+              <MyAllTimeHits />
+              //</PrivateRoute>
             }
           />
           <Route
             path="/my-playlist"
             element={
-              <PrivateRoute>
-                <MyPlaylist />
-              </PrivateRoute>
+              //<PrivateRoute>
+              <MyPlaylist />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/my-playlist-details"
             element={
-              <PrivateRoute>
-                <MyPlaylistDetails />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <MyPlaylistDetails />
+              //</PrivateRoute>
             }
           />
           <Route
             path="/register-playlist"
             element={
-              <PrivateRoute>
-                <RegisterPlaylist />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <RegisterPlaylist />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/liked-playlist"
             element={
-              <PrivateRoute>
-                <LikedPlaylists />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <LikedPlaylists />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/liked-playlist-details"
             element={
-              <PrivateRoute>
-                <LikedPlaylistDetails />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <LikedPlaylistDetails />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/my-review"
             element={
-              <PrivateRoute>
-                <MyReview />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <MyReview />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/my-friends"
             element={
-              <PrivateRoute>
-                <MyFriends />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <MyFriends />
+              // </PrivateRoute>
             }
           />
           <Route
             path="/edit-profile"
             element={
-              <PrivateRoute>
-                <EditProfile />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <EditProfile />
+              // </PrivateRoute>
             }
           />
           <Route path="/*" element={<ErrorPage />} />
