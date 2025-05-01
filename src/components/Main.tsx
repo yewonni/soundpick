@@ -17,7 +17,7 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
 
   // 데스크탑에서 보여줄 아이템 수 제한
   const limitItems = (items: any[]) => {
-    if (title === "인기 아티스트") {
+    if (title === "인기 아티스트 🌈") {
       return items.slice(0, 5); // 트렌딩 아티스트는 5개만 (1개 피처드 + 4개 작은 카드)
     } else {
       return items.slice(0, 6); // 플레이리스트는 6개만 보여줌
@@ -29,7 +29,7 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
   const navigate = useNavigate();
 
   const handleViewAll = () => {
-    if (title === "인기 아티스트") {
+    if (title === "인기 아티스트 🌈") {
       navigate("/popular-artists");
     } else {
       navigate("/recommended-playlists");
@@ -70,7 +70,7 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
         </Swiper>
       </div>
       <div className="hidden md:block">
-        {title === "인기 아티스트" && (
+        {title === "인기 아티스트 🌈" && (
           <div className="grid grid-cols-12 gap-4 mb-8">
             <div
               className="col-span-4"
@@ -107,7 +107,7 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
           </div>
         )}
 
-        {title === "추천 플레이리스트" && (
+        {title === "추천 플레이리스트 🌷" && (
           <div className="grid md:grid-cols-3 gap-6">
             {displayItems.map((mainData, index) => (
               <div
@@ -141,8 +141,8 @@ export default function Main({ data1, data2 }: MainProps) {
 
   return (
     <main className="pl-4 pr-4 md:px-[10%] flex flex-col gap-11">
-      <SwiperSection title="인기 아티스트" data={data1} />
-      <SwiperSection title="추천 플레이리스트" data={data2} />
+      <SwiperSection title="인기 아티스트 🌈" data={data1} />
+      <SwiperSection title="추천 플레이리스트 🌷" data={data2} />
     </main>
   );
 }
