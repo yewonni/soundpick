@@ -19,9 +19,9 @@ const banners: Record<
   }
 > = {
   guest: {
-    title: "음악의 세계로 초대합니다",
+    title: "새로운 음악의 시작,",
     subtitle:
-      "지금 인기 아티스트와 플레이리스트를 둘러보고 나만의 음악 공간을 만들어보세요.",
+      "인기 아티스트와 플레이리스트를 둘러보고 나만의 음악 공간을 만들어보세요.",
     button: "지금 체험하기",
     bg: guestImg,
   },
@@ -55,7 +55,7 @@ export default function Browsing({ userStatus = "guest" }: BannerProps) {
 
   return (
     <section
-      className=" h-64 md:h-[380px] bg-cover bg-center text-white flex items-center px-6 md:px-[11%] shadow-md mb-10 pt-[70px]"
+      className=" h-64 md:h-[430px] bg-cover bg-center text-white flex items-center px-6 md:px-[11%] shadow-md mb-10 pt-[70px]"
       style={{ backgroundImage: `url(${bg})` }}
     >
       <h2 className="sr-only">둘러보기 배너</h2>
