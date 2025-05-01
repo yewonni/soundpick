@@ -37,7 +37,7 @@ export default function Header({ onClick }: HeaderProps) {
   };
 
   return (
-    <header className="flex justify-between items-center px-4 py-2 h-[70px] md:px-[10%] md:py-[50px] md:justify-start md:gap-7">
+    <header className="flex justify-between items-center px-4 py-8 h-[70px] md:px-[10%] md:py-[50px] md:justify-start md:gap-7">
       <button className="md:hidden">
         <img
           src={hamburger}
