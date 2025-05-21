@@ -1,31 +1,32 @@
-import React, { useState, InputHTMLAttributes } from "react";
-
-interface SearchBarProps extends InputHTMLAttributes<HTMLInputElement> {
+interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholderText?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit?: () => void;
 }
 
 export default function SearchBar({
   placeholderText,
+  value,
+  onChange,
+  onSubmit,
   ...rest
 }: SearchBarProps) {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && onSubmit) {
+      onSubmit();
+    }
   };
 
   return (
     <div className="relative w-full max-w-md">
       <input
         type="text"
-        className="w-full p-2 pl-0  text-sm  
-    border-b-2 bg-transparent border-b-white 
-    text-white
-    placeholder:text-gray-100
-    focus:outline-none "
+        className="w-full min-w-[300px] p-2 pl-0 text-sm border-b-2 bg-transparent border-b-white text-white placeholder:text-gray-100 focus:outline-none"
         placeholder={placeholderText}
-        value={searchQuery}
-        onChange={handleSearchChange}
+        value={value}
+        onChange={onChange}
+        onKeyDown={handleKeyPress}
         {...rest}
       />
 
