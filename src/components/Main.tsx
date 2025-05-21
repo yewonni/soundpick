@@ -4,23 +4,49 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import ViewButton from "./ViewButton";
 import MusicCard from "./MusicCard";
 import { MusicCardDataProps } from "../types/MusicCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getArtists } from "../api/analysis/artists";
+import { SECTION_TITLES } from "../constants/constants";
 
 interface MainProps {
-  data1: MusicCardDataProps[];
   data2: MusicCardDataProps[];
 }
 
-const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
+const SwiperSection = ({
+  title,
+  data = [],
+}: {
+  title: string;
+  data?: any[];
+}) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [artists, setArtists] = useState<any[]>([]);
+  const [error, setError] = useState("");
 
-  // 데스크탑에서 보여줄 아이템 수 제한
+  const fetchArtists = async (subject: "korea") => {
+    try {
+      const res = await getArtists(subject, 0, 10);
+      const artistData = res.data.data.content.map((artist) => ({
+        imageSrc: artist.imageList[0]?.url ?? "",
+        title: artist.name,
+      }));
+      setArtists(artistData);
+    } catch (error) {
+      console.error(`${subject} 아티스트 불러오기 실패`, error);
+      setError("아티스트 정보를 불러오는 데 실패했습니다.");
+    }
+  };
+
+  useEffect(() => {
+    fetchArtists("korea");
+  }, []);
+
   const limitItems = (items: any[]) => {
-    if (title === "인기 아티스트 🌈") {
-      return items.slice(0, 5); // 트렌딩 아티스트는 5개만 (1개 피처드 + 4개 작은 카드)
+    if (title === SECTION_TITLES.POPULAR_ARTISTS) {
+      return artists.slice(0, 5);
     } else {
-      return items.slice(0, 6); // 플레이리스트는 6개만 보여줌
+      return items.slice(0, 6);
     }
   };
 
@@ -29,7 +55,7 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
   const navigate = useNavigate();
 
   const handleViewAll = () => {
-    if (title === "인기 아티스트 🌈") {
+    if (title === SECTION_TITLES.POPULAR_ARTISTS) {
       navigate("/popular-artists");
     } else {
       navigate("/recommended-playlists");
@@ -52,39 +78,54 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
           loop={false}
           className="w-full"
         >
-          {data.map((mainData, index) => (
-            <SwiperSlide
-              key={`mobile-${title}-${mainData.title}-${index}`}
-              className={`!w-[123px] ${
-                index === data.length - 1 ? "mr-4" : ""
-              }`}
-            >
-              <MusicCard
-                imageSrc={mainData.imageSrc}
-                title={mainData.title}
-                subTitle={mainData.subTitle}
-                isPlaylist={title === "추천 플레이리스트"}
-              />
-            </SwiperSlide>
-          ))}
+          {(title === SECTION_TITLES.POPULAR_ARTISTS ? artists : data).map(
+            (mainData, index) => {
+              const listLength =
+                title === SECTION_TITLES.POPULAR_ARTISTS
+                  ? artists.length
+                  : data.length;
+
+              return (
+                <SwiperSlide
+                  key={`mobile-${title}-${mainData.title}-${index}`}
+                  className={`!w-[123px] ${
+                    index === listLength - 1 ? "mr-4" : ""
+                  }`}
+                >
+                  <MusicCard
+                    imageSrc={mainData.imageSrc}
+                    title={mainData.title}
+                    subTitle={mainData.subTitle}
+                    isPlaylist={title === SECTION_TITLES.RECOMMENDED_PLAYLISTS}
+                  />
+                </SwiperSlide>
+              );
+            }
+          )}
         </Swiper>
       </div>
+
       <div className="hidden md:block">
-        {title === "인기 아티스트 🌈" && (
+        {title === SECTION_TITLES.POPULAR_ARTISTS && (
           <div className="grid grid-cols-12 gap-4 mb-8">
             <div
               className="col-span-4"
               onMouseEnter={() => setHoveredIndex(0)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <MusicCard
-                imageSrc={displayItems[0].imageSrc}
-                title={displayItems[0].title}
-                subTitle={displayItems[0].subTitle}
-                isPlaylist={false}
-                isFeatured={true}
-                isHovered={hoveredIndex === 0}
-              />
+              {displayItems.length > 0 && (
+                <MusicCard
+                  key={0}
+                  imageSrc={displayItems[0].imageSrc}
+                  title={displayItems[0].title}
+                  subTitle={displayItems[0].subTitle}
+                  isPlaylist={false}
+                  isFeatured={true}
+                  isHovered={hoveredIndex === 0}
+                />
+              )}
+
+              {error && <p className="text-gray-100 pt-3 ">{error}</p>}
             </div>
 
             <div className="col-span-8 grid grid-cols-4 gap-4">
@@ -107,7 +148,7 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
           </div>
         )}
 
-        {title === "추천 플레이리스트 🌷" && (
+        {title === SECTION_TITLES.RECOMMENDED_PLAYLISTS && (
           <div className="grid md:grid-cols-3 gap-6">
             {displayItems.map((mainData, index) => (
               <div
@@ -134,15 +175,18 @@ const SwiperSection = ({ title, data }: { title: string; data: any[] }) => {
   );
 };
 
-export default function Main({ data1, data2 }: MainProps) {
-  if (!data1 || !data2 || data1.length === 0 || data2.length === 0) {
+export default function Main({ data2 }: MainProps) {
+  if (!data2 || data2.length === 0) {
     return <main className="pl-4">데이터가 없습니다.</main>;
   }
 
   return (
-    <main className="pl-4 pr-4 md:px-[10%] flex flex-col gap-11">
-      <SwiperSection title="인기 아티스트 🌈" data={data1} />
-      <SwiperSection title="추천 플레이리스트 🌷" data={data2} />
+    <main className="pl-4  md:px-[10%] flex flex-col gap-11">
+      <SwiperSection title={SECTION_TITLES.POPULAR_ARTISTS} />
+      <SwiperSection
+        title={SECTION_TITLES.RECOMMENDED_PLAYLISTS}
+        data={data2}
+      />
     </main>
   );
 }

@@ -1,23 +1,35 @@
 import Header from "../../components/Header";
-import sampleImg from "../../images/sample.png";
+import { useState, useEffect } from "react";
+import { getArtists } from "../../api/analysis/artists";
+import { SECTION_TITLES } from "../../constants/constants";
 export default function PopularArtistsPage() {
-  const artists = [
-    { imageSrc: sampleImg, title: "G-DRAGON", subTitle: "" },
-    { imageSrc: sampleImg, title: "NewJeans", subTitle: "" },
-    { imageSrc: sampleImg, title: "BIGBANG", subTitle: "" },
-    { imageSrc: sampleImg, title: "DAY6(데이식스)", subTitle: "" },
-    { imageSrc: sampleImg, title: "아이유", subTitle: "" },
-    { imageSrc: sampleImg, title: "BIGBANG", subTitle: "" },
-    { imageSrc: sampleImg, title: "DAY6(데이식스)", subTitle: "" },
-    { imageSrc: sampleImg, title: "아이유", subTitle: "" },
-  ];
+  const [artists, setArtists] = useState<any[]>([]);
+  const [error, setError] = useState("");
+
+  const fetchArtists = async (subject: "korea") => {
+    try {
+      const res = await getArtists(subject, 0, 10);
+      const artistData = res.data.data.content.map((artist) => ({
+        imageSrc: artist.imageList[0]?.url ?? "",
+        title: artist.name,
+      }));
+      setArtists(artistData);
+    } catch (error) {
+      console.error(`${subject} 아티스트 불러오기 실패`, error);
+      setError("아티스트 정보를 불러오는 데 실패했습니다.");
+    }
+  };
+
+  useEffect(() => {
+    fetchArtists("korea");
+  }, []);
 
   return (
     <>
       <Header />
       <main className="px-[10%] p-8">
         <h2 className="text-text-base md:text-2xl text-lg font-bold">
-          인기 아티스트
+          {SECTION_TITLES.POPULAR_ARTISTS}
         </h2>
         <div className="flex flex-wrap gap-8 mt-6 justify-center md:justify-start">
           {artists.map((artist, index) => (
@@ -42,6 +54,7 @@ export default function PopularArtistsPage() {
               </h3>
             </div>
           ))}
+          {error && <p className="text-gray-100 pt-3 ">{error}</p>}
         </div>
       </main>
     </>
