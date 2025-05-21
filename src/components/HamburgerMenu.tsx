@@ -79,8 +79,24 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
             >
               soundpick 홈
             </li>
-            <li>인기 아티스트</li>
-            <li>추천 플레이리스트</li>
+            <li
+              onClick={() => {
+                onClose?.();
+                navigate("/popular-artists");
+              }}
+              className="cursor-pointer"
+            >
+              인기 아티스트
+            </li>
+            <li
+              onClick={() => {
+                onClose?.();
+                navigate("/recommended-playlists");
+              }}
+              className="cursor-pointer"
+            >
+              추천 플레이리스트
+            </li>
           </ul>
         </nav>
       </section>
