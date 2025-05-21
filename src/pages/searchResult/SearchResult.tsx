@@ -1,33 +1,43 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import SearchBar from "../../components/SearchBar";
-import sample from "../../images/sample.png";
 import PlaylistModal from "./component/PlaylistModal";
 import Header from "../../components/Header";
 import { MusicCardDataProps } from "../../types/MusicCard";
 import SongResult from "./component/SongResult";
 import PlaylistResult from "./component/PlaylistResult";
+import NoSearchResult from "./component/NoSearchResult";
 import useMediaQuery from "../../hooks/useMediaQuery";
-
-const resultList: MusicCardDataProps[] = [
-  { imageSrc: sample, title: "Blinding Lights", subTitle: "The Weekend" },
-  { imageSrc: sample, title: "pov", subTitle: "Ariana Grande" },
-  { imageSrc: sample, title: "Bad Guy", subTitle: "Billie Eilish" },
-  { imageSrc: sample, title: "Perfect", subTitle: "Ed Sheeran" },
-  { imageSrc: sample, title: "22", subTitle: "Taylor Swift" },
-  {
-    imageSrc: sample,
-    title: "I don't think that I like her",
-    subTitle: "Charlie Puth",
-  },
-];
+import { trackSearch, playlistSearch } from "../../api/search/mainSearch";
+import { useLoading } from "../../context/LoadingContext";
+import { useSearchInput } from "../../context/SearchContext";
+import catImg from "../../images/music-cat-full.png";
 
 export default function SearchResult() {
+  const { inputValue, setInputValue } = useSearchInput();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
+  const { loading } = useLoading();
+  const [isSearched, setIsSearched] = useState(false);
+
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
   const [isResultType, setIsResultType] = useState<"song" | "playlist">("song");
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("q") ?? "";
+  const [trackResult, setTrackResult] = useState<MusicCardDataProps[]>([]);
+  const [playlistResult, setPlaylistResult] = useState<MusicCardDataProps[]>(
+    []
+  );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (!inputValue.trim()) return;
+    navigate(`/search-result?q=${encodeURIComponent(inputValue)}`);
+  };
 
   const handleResultType = (resultType: "song" | "playlist") => {
     setIsResultType(resultType);
@@ -40,6 +50,49 @@ export default function SearchResult() {
   const handlePlaylistModalClose = () => {
     setIsPlaylistModalOpen(false);
   };
+
+  useEffect(() => {
+    if (!keyword) return;
+
+    // 기존 결과를 초기화
+    setTrackResult([]);
+    setPlaylistResult([]);
+
+    const fetchData = async () => {
+      try {
+        setIsSearched(false);
+        const [trackRes, playlistRes] = await Promise.all([
+          trackSearch(0, 10, keyword),
+          playlistSearch(0, 10, keyword),
+        ]);
+
+        const tracks = trackRes.data.data.content.map((item) => ({
+          imageSrc: item.imageList[0]?.url ?? catImg,
+          title: item.name,
+          subTitle: item.trackArtistNameList ?? "알 수 없음",
+        }));
+
+        const playlists = playlistRes.data.data.content.map((item) => ({
+          imageSrc: item.imageList[0]?.url ?? catImg,
+          title: item.name,
+          subTitle: "",
+        }));
+
+        setTrackResult(tracks);
+        setPlaylistResult(playlists);
+      } catch (error) {
+        console.error("검색 에러:", error);
+      } finally {
+        setIsSearched(true); // 무조건 마지막에 호출 (로딩 끝난 후 데이터를 불러오기 전 짧은 순간동안 검색결과 없음이 표시되는 플리커 현상 방지)
+      }
+    };
+
+    fetchData();
+  }, [keyword]);
+
+  useEffect(() => {
+    setInputValue(keyword);
+  }, [keyword, setInputValue]); // 모바일 ↔ 데스크탑 전환 시에도 검색어가 유지 (동기화)
 
   return (
     <>
@@ -62,7 +115,12 @@ export default function SearchResult() {
       >
         <div className="px-4 pt-4 pb-0 md:px-[10%] md:py-0  text-white">
           <div className="md:hidden">
-            <SearchBar />
+            <SearchBar
+              value={inputValue}
+              onChange={handleInputChange}
+              onSubmit={handleSearchSubmit}
+              placeholder="아티스트, 음악, 플레이리스트"
+            />
           </div>
           <div className="flex items-center gap-4 text-sm md:text-base text-secondary font-semibold pl-2 mt-4 md:mt-0 md:pt-5">
             <p
@@ -89,14 +147,27 @@ export default function SearchResult() {
         </div>
         <main className="w-full min-h-screen p-4 pt-5 md:px-[10.7%] ">
           {isResultType === "song" && (
-            <SongResult
-              onClick={handlePlaylistModalOpen}
-              data={resultList}
-              isMobile={isMobile}
-            />
+            <>
+              {!loading && trackResult.length === 0 && isSearched ? (
+                <NoSearchResult />
+              ) : (
+                <SongResult
+                  onClick={handlePlaylistModalOpen}
+                  data={trackResult}
+                  isMobile={isMobile}
+                />
+              )}
+            </>
           )}
+
           {isResultType === "playlist" && (
-            <PlaylistResult data={resultList} isMobile={isMobile} />
+            <>
+              {!loading && playlistResult.length === 0 && isSearched ? (
+                <NoSearchResult />
+              ) : (
+                <PlaylistResult data={playlistResult} isMobile={isMobile} />
+              )}
+            </>
           )}
         </main>
       </div>
