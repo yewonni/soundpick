@@ -61,6 +61,7 @@ const mockData = [
 
 export default function MyAllTimeHits() {
   const navigate = useNavigate();
+  const nickname = localStorage.getItem("nickname");
 
   return (
     <>
@@ -81,7 +82,7 @@ export default function MyAllTimeHits() {
           <div className="flex flex-col text-sm md:text-base font-semibold text-text-base mb-4">
             <p>
               <span className="text-primary font-bold">
-                에옹님이 가장 사랑하는 곡
+                {nickname}님이 가장 사랑하는 곡
               </span>
               을 모아둔 공간이에요.
             </p>
