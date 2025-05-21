@@ -1,19 +1,17 @@
-import { useState } from "react";
-
 interface SelectButtonProps {
   children: React.ReactNode;
+  onClick: () => void;
+  selected?: boolean;
 }
 
-export default function SelectButton({ children }: SelectButtonProps) {
-  const [selected, setSelected] = useState(false);
-
-  const handleClick = () => {
-    setSelected(!selected);
-  };
-
+export default function SelectButton({
+  children,
+  onClick,
+  selected = false,
+}: SelectButtonProps) {
   return (
     <button
-      onClick={handleClick}
+      onClick={onClick}
       className={`w-full flex justify-center border border-primary p-2 md:p-3 text-md font-bold rounded-[12px] transition-colors duration-200 ${
         selected
           ? "bg-white/40 text-primary"
