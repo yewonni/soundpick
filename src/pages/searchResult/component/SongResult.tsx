@@ -1,6 +1,7 @@
 import sideMenu from "../../../images/side-menu.svg";
 import Checkbox from "../../../components/Checkbox";
 import { MusicCardDataProps } from "../../../types/MusicCard";
+import catImg from "../../../images/music-cat-full.png";
 
 interface SongResultProps {
   data: MusicCardDataProps[];
@@ -46,15 +47,15 @@ export default function SongResult({
               </div>
               <div className="flex items-center justify-center">
                 <img
-                  src={item.imageSrc}
+                  src={item.imageSrc || catImg}
                   alt={item.title}
                   className="w-[60px] h-[60px] rounded-sm"
                 />
               </div>
-              <div className="flex items-center px-2 font-bold text-sm hover:underline text-text-base">
+              <div className="flex items-center px-2 font-bold text-sm hover:underline text-[#333]">
                 {item.title}
               </div>
-              <div className="flex items-center px-2 text-gray-100 text-sm">
+              <div className="flex items-center px-2 text-[#333] text-sm">
                 {item.subTitle}
               </div>
               <div className="flex justify-center items-center">

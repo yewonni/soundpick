@@ -1,5 +1,6 @@
 import { MusicCardDataProps } from "../../../types/MusicCard";
 import { useNavigate } from "react-router-dom";
+import catImg from "../../../images/music-cat-full.png";
 
 interface PlaylistResultProps {
   data: MusicCardDataProps[];
@@ -43,7 +44,7 @@ export default function PlaylistResult({
           >
             <div className="flex gap-4 items-start">
               <img
-                src={item.imageSrc}
+                src={item.imageSrc || catImg}
                 alt={item.title}
                 className="w-[100px] h-[100px] rounded-sm"
               />
