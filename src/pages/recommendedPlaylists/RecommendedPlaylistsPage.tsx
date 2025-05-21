@@ -1,5 +1,6 @@
 import Header from "../../components/Header";
 import sampleImg from "../../images/sample.png";
+import { SECTION_TITLES } from "../../constants/constants";
 
 export default function RecommendedPlaylistsPage() {
   const playlists = [
@@ -30,7 +31,7 @@ export default function RecommendedPlaylistsPage() {
       <Header />
       <main className="px-[10%] py-8">
         <h2 className="text-text-base md:text-2xl text-lg font-bold">
-          추천 플레이리스트
+          {SECTION_TITLES.RECOMMENDED_PLAYLISTS}
         </h2>
         <div className="flex flex-wrap gap-6 mt-6 justify-center md:justify-start">
           {playlists.map((playlist, index) => (
