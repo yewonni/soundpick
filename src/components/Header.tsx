@@ -4,9 +4,7 @@ import hamburger from "../images/hamburger.svg";
 import search from "../images/search.svg";
 import SearchBar from "./SearchBar";
 import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
-import { getLastFm } from "../api/admin/lastfm";
-import Button from "./Button";
+import { useSearchInput } from "../context/SearchContext";
 
 interface HeaderProps {
   onClick?: () => void;
@@ -15,25 +13,15 @@ interface HeaderProps {
 export default function Header({ onClick }: HeaderProps) {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+  const { inputValue, setInputValue } = useSearchInput();
 
-  const [userId, setUserId] = useState<string | null>(null);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
 
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    setUserId(storedUserId);
-  }, []);
-
-  const handleLastFm = async () => {
-    try {
-      const response = await getLastFm();
-
-      const popupUrl = response.data.data;
-      const popupOptions = "width=600,height=400,scrollbars=yes,resizable=yes";
-
-      window.open(popupUrl, "_blank", popupOptions);
-    } catch (error) {
-      console.error("Last FM 요청 실패", error);
-    }
+  const handleSearch = () => {
+    if (!inputValue.trim()) return;
+    navigate(`/search-result?q=${encodeURIComponent(inputValue)}`);
   };
 
   return (
@@ -63,12 +51,14 @@ export default function Header({ onClick }: HeaderProps) {
         />
       </button>
       <div className="hidden md:block w-[320px]">
-        <SearchBar placeholder="아티스트, 음악, 플레이리스트 검색하기" />
+        <SearchBar
+          onSubmit={handleSearch}
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="아티스트, 음악, 플레이리스트 검색하기"
+        />
       </div>
-      <div className="hidden md:flex gap-6 text-lg text-white ml-[38%]">
-        {isLoggedIn && userId === "admin" && (
-          <Button onClick={handleLastFm}>last fm</Button>
-        )}
+      <div className="hidden md:flex gap-6 text-lg text-white ml-auto justify-end">
         {isLoggedIn ? (
           <>
             <button
