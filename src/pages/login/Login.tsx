@@ -36,7 +36,7 @@ export default function Login() {
     setErrorMessage("");
 
     try {
-      await login(userId, password);
+      const spotifyRequired = await login(userId, password);
 
       if (isSaveIdChecked) {
         localStorage.setItem("savedUserId", userId);
@@ -44,10 +44,15 @@ export default function Login() {
         localStorage.removeItem("savedUserId");
       }
 
-      navigate("/");
+      navigate("/", { state: { spotifyLoginRequired: spotifyRequired } });
     } catch (error) {
       console.error("로그인 실패", error);
-      setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
+
+      if (error instanceof Error && (error as any).response?.data?.message) {
+        setErrorMessage((error as any).response.data.message);
+      } else {
+        setErrorMessage("로그인 중 알 수 없는 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -110,6 +115,9 @@ export default function Login() {
             <Button default size="full">
               로그인
             </Button>
+            <p className="text-[#333] text-xs font-bold md:text-sm">
+              ※ 본 서비스는 Spotify 계정 연동이 필수입니다.
+            </p>
           </form>
           <div className="flex gap-2 items-center justify-center mt-3 md:mt-4 text-xs md:text-sm text-text-base">
             <p
