@@ -1,53 +1,66 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import home from "../../images/home.svg";
 import nextIcon from "../../images/chevron-right.svg";
 import AnalysisCard from "./component/AnalysisCard";
-import sampleImg from "../../images/sample.png";
 import AnalysisExitModal from "./component/AnalysisExitModal";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 
-const musicMockData = [
-  "Pop",
-  "Rock",
-  "Hip-Hop/Rap",
-  "K-Pop",
-  "Jazz",
-  "Indie",
-  "Dance",
-  "Reggae",
-  "R&B/Soul",
-  "Punk",
-  "Classical",
-];
-
-const globalArtistMockData = [
-  { imageSrc: sampleImg, title: "The Weekend", subTitle: "" },
-  { imageSrc: sampleImg, title: "Ariana Grande", subTitle: "" },
-  { imageSrc: sampleImg, title: "Billie Eilish", subTitle: "" },
-  { imageSrc: sampleImg, title: "Ed Sheeran", subTitle: "" },
-  { imageSrc: sampleImg, title: "Taylor Swift", subTitle: "" },
-  { imageSrc: sampleImg, title: "Charlie Puth", subTitle: "" },
-  { imageSrc: sampleImg, title: "Drake", subTitle: "" },
-  { imageSrc: sampleImg, title: "Kendrick Lamar", subTitle: "" },
-];
-
-const koreaArtistMockData = [
-  { imageSrc: sampleImg, title: "아이유", subTitle: "" },
-  { imageSrc: sampleImg, title: "박재범", subTitle: "" },
-  { imageSrc: sampleImg, title: "지코", subTitle: "" },
-  { imageSrc: sampleImg, title: "크러쉬", subTitle: "" },
-  { imageSrc: sampleImg, title: "성시경", subTitle: "" },
-  { imageSrc: sampleImg, title: "혁오", subTitle: "" },
-  { imageSrc: sampleImg, title: "검정치마", subTitle: "" },
-  { imageSrc: sampleImg, title: "빅뱅", subTitle: "" },
-];
-
 export default function MusicSurvey() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [selectedGenre, setSelectedGenre] = useState<string[]>([]);
+  const [selectedArtist, setSelectedArtist] = useState<string[]>([]);
   const [isOpenExitModal, setIsExitModalOpen] = useState(false);
   const [step, setStep] = useState<number>(location.state?.currentStep || 1);
 
+  //선택된 장르, 아티스트 정보 받아오기
+  useEffect(() => {
+    if (
+      location.state?.selectedArtist &&
+      location.state.selectedArtist.length > 0
+    ) {
+      setSelectedArtist(location.state.selectedArtist);
+    }
+    if (
+      location.state?.selectedGenre &&
+      location.state.selectedGenre.length > 0
+    ) {
+      setSelectedGenre(location.state.selectedGenre);
+    }
+  }, [location.state]);
+
+  // 장르 or 아티스트 선택하기
+  const toggleGenre = (genreName: string) => {
+    const isAlreadySelectedGenre = selectedGenre.includes(genreName);
+
+    if (isAlreadySelectedGenre) {
+      setSelectedGenre((prev) => prev.filter((g) => g !== genreName));
+      return;
+    }
+    if (step === 1 && selectedGenre.length >= 3) {
+      alert("장르는 최대 3개까지만 선택할 수 있습니다.");
+      return;
+    }
+    setSelectedGenre((prev) => [...prev, genreName]);
+  };
+
+  const toggleArtist = (artistName: string) => {
+    const isAlreadySelectedArtist = selectedArtist.includes(artistName);
+
+    if (isAlreadySelectedArtist) {
+      setSelectedArtist((prev) => prev.filter((g) => g !== artistName));
+      return;
+    }
+    if (step === 2 && selectedArtist.length >= 5) {
+      alert("아티스트는 최대 5개까지만 선택할 수 있습니다.");
+      return;
+    }
+
+    setSelectedArtist((prev) => [...prev, artistName]);
+  };
+
+  // 홈으로 이동 모달
   const handleExitModalOpen = () => {
     setIsExitModalOpen(true);
   };
@@ -56,8 +69,22 @@ export default function MusicSurvey() {
     setIsExitModalOpen(false);
   };
 
-  const handleNext = () => {
-    setStep((prevStep) => prevStep + 1);
+  // 다음 단계로 이동
+  // MusicSurvey 컴포넌트 내부
+  const handleNext = async () => {
+    if (step === 1) {
+      if (selectedGenre.length === 0) {
+        alert("장르는 최소 1개 이상 선택해야 합니다.");
+        return;
+      }
+      setStep(2);
+    } else if (step === 2) {
+      if (selectedArtist.length === 0) {
+        alert("아티스트는 최소 1명 이상 선택해야 합니다.");
+        return;
+      }
+      setStep(3);
+    }
   };
 
   return (
@@ -90,18 +117,24 @@ export default function MusicSurvey() {
         <main className="px-4 mt-5 md:mt-8 md:px-[30%] ">
           <AnalysisCard
             step={step}
-            music={musicMockData}
-            global={globalArtistMockData}
-            korea={koreaArtistMockData}
+            onToggleGenre={toggleGenre}
+            onToggleArtist={toggleArtist}
+            selectedGenre={selectedGenre}
+            selectedArtist={selectedArtist}
+            navigate={navigate}
+            selectedGenreToPersist={selectedGenre}
           />
-
           {step < 3 && (
             <div className="flex justify-between items-center mt-5 px-2 pb-11">
               <div className="flex items-center text-md md:text-lg font-bold gap-1">
                 <p className="text-[#333]">
                   {step === 1 ? "선택된 음악 : " : "선택된 아티스트 : "}
                 </p>
-                <p className="">2 {step === 1 ? "곡" : "명"}</p>
+                <p className="">
+                  {step === 1
+                    ? `${selectedGenre.length}곡`
+                    : `${selectedArtist.length}명`}
+                </p>
               </div>
               <button
                 className="flex items-center cursor-pointer"
