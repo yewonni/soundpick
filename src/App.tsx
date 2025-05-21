@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./Home";
@@ -27,154 +28,91 @@ import PopularArtistsPage from "./pages/popularArtists/PopularArtistsPage";
 import RecommendedPlaylistsPage from "./pages/recommendedPlaylists/RecommendedPlaylistsPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { injectSetAccessToken } from "./api/axiosInstance";
+import { SearchProvider } from "./context/SearchContext";
+import { AnalysisResultProvider } from "./context/AnalysisResultContext";
 // import PrivateRoute from "./components/PrivateRouter";
-import axiosInstance, { RefreshResponse } from "./api/axiosInstance";
+import axiosInstance, {
+  RefreshResponse,
+  injectSetLoading,
+} from "./api/axiosInstance";
+import Loader from "./components/Loader";
+import { LoadingProvider, useLoading } from "./context/LoadingContext";
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppInitializer />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/popular-artists" element={<PopularArtistsPage />} />
-          <Route
-            path="/recommended-playlists"
-            element={<RecommendedPlaylistsPage />}
-          />
-          <Route path="/search" element={<Search />} />
-          <Route path="/search-result" element={<SearchResult />} />
-          <Route path="/playlist-details" element={<PlaylistDetails />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/join" element={<Join />} />
-          <Route path="/join-success" element={<JoinSuccess />} />
-
-          {/* PrivateRoute로 보호된 라우트들 */}
-          <Route
-            path="/review"
-            element={
-              // <PrivateRoute>
-              <Review />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/music-analysis"
-            element={
-              //<PrivateRoute>
-              <MusicAnalysis />
-              //</PrivateRoute>
-            }
-          />
-          <Route
-            path="/search-artist"
-            element={
-              //<PrivateRoute>
-              <ArtistSearch />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/recommendation"
-            element={
-              //<PrivateRoute>
-              <Recommendation />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/mypage"
-            element={
-              // <PrivateRoute>
-              <MyPage />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-hits"
-            element={
-              //<PrivateRoute>
-              <MyAllTimeHits />
-              //</PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-playlist"
-            element={
-              //<PrivateRoute>
-              <MyPlaylist />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-playlist-details"
-            element={
-              // <PrivateRoute>
-              <MyPlaylistDetails />
-              //</PrivateRoute>
-            }
-          />
-          <Route
-            path="/register-playlist"
-            element={
-              // <PrivateRoute>
-              <RegisterPlaylist />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/liked-playlist"
-            element={
-              // <PrivateRoute>
-              <LikedPlaylists />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/liked-playlist-details"
-            element={
-              // <PrivateRoute>
-              <LikedPlaylistDetails />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-review"
-            element={
-              // <PrivateRoute>
-              <MyReview />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-friends"
-            element={
-              // <PrivateRoute>
-              <MyFriends />
-              // </PrivateRoute>
-            }
-          />
-          <Route
-            path="/edit-profile"
-            element={
-              // <PrivateRoute>
-              <EditProfile />
-              // </PrivateRoute>
-            }
-          />
-          <Route path="/*" element={<ErrorPage />} />
-        </Routes>
-      </BrowserRouter>
+      <LoadingProvider>
+        <SearchProvider>
+          <AnalysisResultProvider>
+            <BrowserRouter>
+              <AppInitializer />
+              <AppContent />
+            </BrowserRouter>
+          </AnalysisResultProvider>
+        </SearchProvider>
+      </LoadingProvider>
     </AuthProvider>
   );
 };
 
+function AppContent() {
+  const { loading } = useLoading();
+
+  return (
+    <>
+      {loading && <Loader />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/popular-artists" element={<PopularArtistsPage />} />
+        <Route
+          path="/recommended-playlists"
+          element={<RecommendedPlaylistsPage />}
+        />
+        <Route path="/search" element={<Search />} />
+        <Route path="/search-result" element={<SearchResult />} />
+        <Route path="/playlist-details" element={<PlaylistDetails />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/join" element={<Join />} />
+        <Route path="/join-success" element={<JoinSuccess />} />
+        {/* PrivateRoute로 보호된 라우트들 */}
+        <Route path="/review" element={<Review />} />
+        <Route path="/music-analysis" element={<MusicAnalysis />} />
+        <Route path="/search-artist" element={<ArtistSearch />} />
+        <Route path="/recommendation" element={<Recommendation />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/my-hits" element={<MyAllTimeHits />} />
+        <Route path="/my-playlist" element={<MyPlaylist />} />
+        <Route path="/my-playlist-details" element={<MyPlaylistDetails />} />
+        <Route path="/register-playlist" element={<RegisterPlaylist />} />
+        <Route path="/liked-playlist" element={<LikedPlaylists />} />
+        <Route
+          path="/liked-playlist-details"
+          element={<LikedPlaylistDetails />}
+        />
+        <Route path="/my-review" element={<MyReview />} />
+        <Route path="/my-friends" element={<MyFriends />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/*" element={<ErrorPage />} />
+      </Routes>
+    </>
+  );
+}
+
 function AppInitializer() {
-  const { setAccessToken, setIsLoggedIn } = useAuth();
+  const {
+    setAccessToken,
+    setIsLoggedIn,
+    setPreferenceAnalyzed,
+    preferenceAnalyzed,
+  } = useAuth();
+  const { setLoading } = useLoading(); // useLoading 훅 사용
 
   useEffect(() => {
     // axiosInstance에 setAccessToken 함수 주입
     injectSetAccessToken(setAccessToken);
+
+    // axiosInstance에 setLoading 함수 주입
+    injectSetLoading(setLoading);
 
     // 페이지 로드 시 자동으로 토큰 갱신 시도
     async function verifyTokenOnLoad() {
@@ -186,7 +124,8 @@ function AppInitializer() {
           { withCredentials: true }
         );
 
-        const newAccessToken = res.data.refreshToken;
+        const newAccessToken = res.data.data.accessToken;
+        const updatedPreference = res.data.meta.preferenceAnalyzed;
 
         // 새 토큰으로 헤더 업데이트
         axiosInstance.defaults.headers.common[
@@ -196,14 +135,28 @@ function AppInitializer() {
         // AuthContext 상태 업데이트
         setAccessToken(newAccessToken);
         setIsLoggedIn(true);
+        setPreferenceAnalyzed(updatedPreference);
       } catch (error) {
         console.error("자동 로그인 실패:", error);
-        // 실패 시 별도 처리 없음 - 사용자는 로그인 페이지로 이동해야 함
+        // 현재 위치가 로그인 페이지가 아닐 때만 리다이렉트
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }
     }
 
-    verifyTokenOnLoad();
-  }, [setAccessToken, setIsLoggedIn]);
+    // 로그인 페이지나 회원가입 페이지에서는 실행 안 함
+    const skipPaths = ["/login", "/join"];
+    if (!skipPaths.includes(window.location.pathname)) {
+      verifyTokenOnLoad();
+    }
+  }, [
+    setAccessToken,
+    setIsLoggedIn,
+    setLoading,
+    setPreferenceAnalyzed,
+    preferenceAnalyzed,
+  ]);
 
   return null;
 }
