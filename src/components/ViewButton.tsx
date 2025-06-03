@@ -11,7 +11,7 @@ const ViewButton: React.FC<ViewButtonProps> = ({
 }) => {
   return (
     <button
-      className={`text-gray-200 ${className} cursor-pointer text-sm hover:underline`}
+      className={`text-gray-300 ${className} cursor-pointer text-sm hover:underline font-semibold`}
       {...props}
     >
       {children}
