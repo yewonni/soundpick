@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import closeIcon from "../images/close-btn.svg";
 import Button from "./Button";
 import { useAuth } from "../context/AuthContext";
-// import { useState } from "react";
 
 interface HamburgerMenuProps {
   isOpen: boolean;
@@ -11,9 +10,7 @@ interface HamburgerMenuProps {
 
 export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth();
-
-  const nickname = localStorage.getItem("nickname");
+  const { isLoggedIn, logout, userNickname, preferenceAnalyzed } = useAuth();
 
   return (
     <div
@@ -33,7 +30,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
       <section className="w-full flex flex-col border-b border-b-text-base pb-3">
         <h2 className="sr-only">사용자 섹션</h2>
         <p className="font-semibold text-bg-peach text-[20px] mb-3">
-          {isLoggedIn ? `${nickname}님, 환영합니다!` : "로그인 해주세요"}
+          {isLoggedIn ? `${userNickname}님, 환영합니다!` : "로그인 해주세요"}
         </p>
         <div className="flex justify-between items-baseline">
           {isLoggedIn ? (
@@ -82,20 +79,32 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
             <li
               onClick={() => {
                 onClose?.();
-                navigate("/popular-artists");
+                if (isLoggedIn && preferenceAnalyzed) {
+                  navigate("/recommended-tracks");
+                } else {
+                  navigate("/popular-artists");
+                }
               }}
               className="cursor-pointer"
             >
-              인기 아티스트
+              {isLoggedIn && preferenceAnalyzed
+                ? "취향 저격 음악"
+                : "인기 아티스트"}
             </li>
             <li
               onClick={() => {
                 onClose?.();
-                navigate("/recommended-playlists");
+                if (isLoggedIn && preferenceAnalyzed) {
+                  navigate("/recommended-playlists");
+                } else {
+                  navigate("/popular-playlists");
+                }
               }}
               className="cursor-pointer"
             >
-              추천 플레이리스트
+              {isLoggedIn && preferenceAnalyzed
+                ? "맞춤 플리"
+                : "추천 플레이리스트"}
             </li>
           </ul>
         </nav>
