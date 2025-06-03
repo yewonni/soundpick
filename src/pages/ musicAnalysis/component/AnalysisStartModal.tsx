@@ -20,7 +20,7 @@ export default function AnalysisStartModal({
           <Button default onClick={onClose}>
             아니오
           </Button>
-          <Button onClick={() => navigate("music-analysis")}>예</Button>
+          <Button onClick={() => navigate("/music-analysis")}>예</Button>
         </div>
       </div>
     </Modal>
