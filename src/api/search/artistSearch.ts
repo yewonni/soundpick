@@ -5,6 +5,8 @@ interface ArtistsResponse {
   data: {
     content: [
       {
+        seq: string;
+        spotifyArtistId: string;
         name: string;
         imageList: {
           url: string;
