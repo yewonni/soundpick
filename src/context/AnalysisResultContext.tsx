@@ -4,8 +4,10 @@ export interface AnalysisResultType {
   data: {
     artistList: [
       {
+        spotifyArtistId: string;
+        recommendArtistSeq: string;
         name: string;
-        images: [
+        imageList: [
           {
             url: string;
           }
@@ -14,18 +16,17 @@ export interface AnalysisResultType {
     ];
     trackList: [
       {
+        spotifyTrackId: string;
+        recommendTrackSeq: string;
         name: string;
-        album: {
-          name: string;
-          images: [
-            {
-              url: string;
-            }
-          ];
-        };
-        artists: [
+        trackArtists: [
           {
             name: string;
+          }
+        ];
+        imageList: [
+          {
+            url: string;
           }
         ];
       }
