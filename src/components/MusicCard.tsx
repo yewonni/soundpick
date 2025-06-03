@@ -4,8 +4,10 @@ interface MusicCardProps extends MusicCardDataProps {
   isPlaylist?: boolean;
   isFeatured?: boolean;
   isHovered?: boolean;
-  onToggleArtist?: (artistName: string) => void;
   selected?: boolean;
+  seq?: string;
+  spotifyArtistId?: string;
+  onClick?: () => void;
 }
 
 export default function MusicCard({
@@ -15,13 +17,15 @@ export default function MusicCard({
   isPlaylist = false,
   isFeatured = false,
   isHovered = false,
-  onToggleArtist,
   selected = false,
+  seq,
+  spotifyArtistId,
+  onClick,
 }: MusicCardProps) {
   return (
     <div
       className={`flex flex-col gap-1 group cursor-pointer`}
-      onClick={() => onToggleArtist?.(title)} // 클릭 시 toggleArtist 호출
+      onClick={onClick}
     >
       <div className="relative overflow-hidden">
         <img
@@ -31,7 +35,7 @@ export default function MusicCard({
             isFeatured ? "md:h-72" : "md:h-48"
           } object-cover mb-1 md:rounded-lg rounded-md transition-all duration-300 ease-in-out ${
             isHovered ? "md:brightness-90 md:shadow-lg" : ""
-          } `}
+          }`}
         />
         {selected && (
           <div className="absolute top-1 right-1 bg-purple-300 text-white text-xs font-semibold px-2 py-1 rounded">
