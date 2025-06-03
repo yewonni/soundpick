@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import SearchBar from "../../components/SearchBar";
-import PlaylistModal from "./component/PlaylistModal";
 import Header from "../../components/Header";
 import { MusicCardDataProps } from "../../types/MusicCard";
 import SongResult from "./component/SongResult";
@@ -13,6 +12,7 @@ import { trackSearch, playlistSearch } from "../../api/search/mainSearch";
 import { useLoading } from "../../context/LoadingContext";
 import { useSearchInput } from "../../context/SearchContext";
 import catImg from "../../images/music-cat-full.png";
+import { DataCardProps } from "./component/SongResult";
 
 export default function SearchResult() {
   const { inputValue, setInputValue } = useSearchInput();
@@ -20,16 +20,15 @@ export default function SearchResult() {
   const navigate = useNavigate();
   const { loading } = useLoading();
   const [isSearched, setIsSearched] = useState(false);
-
-  const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
   const [isResultType, setIsResultType] = useState<"song" | "playlist">("song");
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("q") ?? "";
-  const [trackResult, setTrackResult] = useState<MusicCardDataProps[]>([]);
+  const [trackResult, setTrackResult] = useState<DataCardProps[]>([]);
   const [playlistResult, setPlaylistResult] = useState<MusicCardDataProps[]>(
     []
   );
 
+  // 검색 관련 함수들
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -43,18 +42,9 @@ export default function SearchResult() {
     setIsResultType(resultType);
   };
 
-  const handlePlaylistModalOpen = () => {
-    setIsPlaylistModalOpen(true);
-  };
-
-  const handlePlaylistModalClose = () => {
-    setIsPlaylistModalOpen(false);
-  };
-
   useEffect(() => {
     if (!keyword) return;
 
-    // 기존 결과를 초기화
     setTrackResult([]);
     setPlaylistResult([]);
 
@@ -70,12 +60,15 @@ export default function SearchResult() {
           imageSrc: item.imageList[0]?.url ?? catImg,
           title: item.name,
           subTitle: item.trackArtistNameList ?? "알 수 없음",
+          seq: item.spotifyTrackSeq,
+          spotifyTrackId: item.spotifyTrackId,
         }));
 
         const playlists = playlistRes.data.data.content.map((item) => ({
           imageSrc: item.imageList[0]?.url ?? catImg,
           title: item.name,
           subTitle: "",
+          seq: item.seq,
         }));
 
         setTrackResult(tracks);
@@ -92,7 +85,7 @@ export default function SearchResult() {
 
   useEffect(() => {
     setInputValue(keyword);
-  }, [keyword, setInputValue]); // 모바일 ↔ 데스크탑 전환 시에도 검색어가 유지 (동기화)
+  }, [keyword, setInputValue]);
 
   return (
     <>
@@ -151,11 +144,7 @@ export default function SearchResult() {
               {!loading && trackResult.length === 0 && isSearched ? (
                 <NoSearchResult />
               ) : (
-                <SongResult
-                  onClick={handlePlaylistModalOpen}
-                  data={trackResult}
-                  isMobile={isMobile}
-                />
+                <SongResult data={trackResult} isMobile={isMobile} />
               )}
             </>
           )}
@@ -171,9 +160,6 @@ export default function SearchResult() {
           )}
         </main>
       </div>
-      {isPlaylistModalOpen && (
-        <PlaylistModal onClose={handlePlaylistModalClose} />
-      )}
     </>
   );
 }
