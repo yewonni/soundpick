@@ -3,64 +3,138 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ViewButton from "./ViewButton";
 import MusicCard from "./MusicCard";
-import { MusicCardDataProps } from "../types/MusicCard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArtists } from "../api/analysis/artists";
-import { SECTION_TITLES } from "../constants/constants";
-
-interface MainProps {
-  data2: MusicCardDataProps[];
-}
+import { getPopularPlayList } from "../api/main/getPopularList";
+import {
+  getTrackRecommendations,
+  getPlaylistRecommendations,
+} from "../api/analysis/recommendation";
+import {
+  RECOMMENDED_SECTION_TITLES,
+  SECTION_TITLES,
+} from "../constants/constants";
+import { useAuth } from "../context/AuthContext";
+import catImg from "../images/music-cat-full.png";
+import LoginModal from "./LoginModal";
 
 const SwiperSection = ({
   title,
-  data = [],
+  openLoginModal,
 }: {
   title: string;
-  data?: any[];
+  openLoginModal: () => void;
 }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [artists, setArtists] = useState<any[]>([]);
-  const [error, setError] = useState("");
-
-  const fetchArtists = async (subject: "korea") => {
-    try {
-      const res = await getArtists(subject, 0, 10);
-      const artistData = res.data.data.content.map((artist) => ({
-        imageSrc: artist.imageList[0]?.url ?? "",
-        title: artist.name,
-      }));
-      setArtists(artistData);
-    } catch (error) {
-      console.error(`${subject} 아티스트 불러오기 실패`, error);
-      setError("아티스트 정보를 불러오는 데 실패했습니다.");
-    }
-  };
-
-  useEffect(() => {
-    fetchArtists("korea");
-  }, []);
-
-  const limitItems = (items: any[]) => {
-    if (title === SECTION_TITLES.POPULAR_ARTISTS) {
-      return artists.slice(0, 5);
-    } else {
-      return items.slice(0, 6);
-    }
-  };
-
-  const displayItems = limitItems(data);
-
+  const { preferenceAnalyzed, isLoggedIn, userNickname } = useAuth();
   const navigate = useNavigate();
 
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [dataList, setDataList] = useState<any[]>([]);
+  const [error, setError] = useState("");
+
+  const TASTE_MATCHING_MUSIC_TITLE = `${userNickname}${RECOMMENDED_SECTION_TITLES.TASTE_MATCHING_MUSIC}`;
+  const CUSTOM_PLAYLISTS_FOR_YOU_TITLE = `${userNickname}${RECOMMENDED_SECTION_TITLES.CUSTOM_PLAYLISTS_FOR_YOU}`;
+
+  const isArtistSection =
+    title === SECTION_TITLES.POPULAR_ARTISTS ||
+    title === TASTE_MATCHING_MUSIC_TITLE;
+  const isPlaylistSection =
+    title === SECTION_TITLES.RECOMMENDED_PLAYLISTS ||
+    title === CUSTOM_PLAYLISTS_FOR_YOU_TITLE;
+
+  const fetchData = useCallback(async () => {
+    try {
+      setError("");
+      let res;
+
+      if (isArtistSection) {
+        if (isLoggedIn && preferenceAnalyzed) {
+          // 취향 저격 음악
+          res = await getTrackRecommendations();
+          const data = res.data.data.content.map((item: any) => ({
+            imageSrc: item.imageList[0]?.url ?? "",
+            title: item.name,
+            seq: item.spotifyTrackSeq,
+          }));
+          setDataList(data);
+        } else {
+          // 인기 아티스트
+          res = await getArtists("korea", 0, 10);
+          const data = res.data.data.content.map((artist: any) => ({
+            imageSrc: artist.imageList[0]?.url ?? "",
+            title: artist.name,
+            seq: artist.seq,
+          }));
+          setDataList(data);
+        }
+      } else if (isPlaylistSection) {
+        if (preferenceAnalyzed && isLoggedIn) {
+          // 맞춤 플레이리스트
+          res = await getPlaylistRecommendations();
+          const data = res.data.data.content.map((playlist: any) => ({
+            imageSrc: playlist.imageList[0]?.url ?? "",
+            title: playlist.name,
+            seq: playlist.spotifyPlaylistSeq,
+          }));
+          setDataList(data);
+        } else {
+          // 추천 플레이리스트
+          res = await getPopularPlayList(0, 10);
+          const data = res.data.data.content.map((playlist: any) => ({
+            imageSrc: playlist.imageList[0]?.url ?? "",
+            title: playlist.name,
+            seq: playlist.spotifyPlaylistSeq,
+          }));
+          setDataList(data);
+        }
+      }
+    } catch (error) {
+      console.error("데이터 불러오기 실패", error);
+      setError("정보를 불러오는 데 실패했습니다.");
+    }
+  }, [isLoggedIn, preferenceAnalyzed, isArtistSection, isPlaylistSection]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // 카드 클릭 핸들러
+  const handleCardClick = (item: any) => {
+    if (isArtistSection) {
+      return;
+    } else if (isPlaylistSection) {
+      if (!isLoggedIn && title === SECTION_TITLES.RECOMMENDED_PLAYLISTS) {
+        openLoginModal();
+      } else {
+        navigate(`/playlist-details/${item.seq}`);
+      }
+    }
+  };
+
+  // 전체보기 핸들러
   const handleViewAll = () => {
     if (title === SECTION_TITLES.POPULAR_ARTISTS) {
       navigate("/popular-artists");
-    } else {
+    } else if (title === CUSTOM_PLAYLISTS_FOR_YOU_TITLE) {
       navigate("/recommended-playlists");
+    } else if (title === TASTE_MATCHING_MUSIC_TITLE) {
+      navigate("/recommended-tracks");
+    } else {
+      navigate("/popular-playlists");
     }
   };
+
+  // 표시할 아이템 개수 제한
+  const getDisplayItems = () => {
+    if (isArtistSection) {
+      return dataList.slice(0, 5);
+    } else {
+      return dataList.slice(0, 6);
+    }
+  };
+
+  const displayItems = getDisplayItems();
 
   return (
     <section className="relative">
@@ -71,6 +145,7 @@ const SwiperSection = ({
         <ViewButton onClick={handleViewAll}>전체보기</ViewButton>
       </div>
 
+      {/* 모바일 스와이퍼 */}
       <div className="overflow-visible md:hidden">
         <Swiper
           spaceBetween={12}
@@ -78,67 +153,57 @@ const SwiperSection = ({
           loop={false}
           className="w-full"
         >
-          {(title === SECTION_TITLES.POPULAR_ARTISTS ? artists : data).map(
-            (mainData, index) => {
-              const listLength =
-                title === SECTION_TITLES.POPULAR_ARTISTS
-                  ? artists.length
-                  : data.length;
-
-              return (
-                <SwiperSlide
-                  key={`mobile-${title}-${mainData.title}-${index}`}
-                  className={`!w-[123px] ${
-                    index === listLength - 1 ? "mr-4" : ""
-                  }`}
-                >
-                  <MusicCard
-                    imageSrc={mainData.imageSrc}
-                    title={mainData.title}
-                    subTitle={mainData.subTitle}
-                    isPlaylist={title === SECTION_TITLES.RECOMMENDED_PLAYLISTS}
-                  />
-                </SwiperSlide>
-              );
-            }
-          )}
+          {dataList.map((item, index) => (
+            <SwiperSlide
+              key={`mobile-${title}-${item.title}-${index}`}
+              className={`!w-[123px] ${
+                index === dataList.length - 1 ? "mr-4" : ""
+              }`}
+            >
+              <MusicCard
+                onClick={() => handleCardClick(item)}
+                imageSrc={item.imageSrc || catImg}
+                title={item.title}
+                subTitle={item.subTitle}
+                isPlaylist={isPlaylistSection}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
 
+      {/* 데스크탑 그리드 */}
       <div className="hidden md:block">
-        {title === SECTION_TITLES.POPULAR_ARTISTS && (
+        {isArtistSection && displayItems.length > 0 && (
           <div className="grid grid-cols-12 gap-4 mb-8">
             <div
               className="col-span-4"
               onMouseEnter={() => setHoveredIndex(0)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              {displayItems.length > 0 && (
-                <MusicCard
-                  key={0}
-                  imageSrc={displayItems[0].imageSrc}
-                  title={displayItems[0].title}
-                  subTitle={displayItems[0].subTitle}
-                  isPlaylist={false}
-                  isFeatured={true}
-                  isHovered={hoveredIndex === 0}
-                />
-              )}
-
-              {error && <p className="text-gray-100 pt-3 ">{error}</p>}
+              <MusicCard
+                onClick={() => handleCardClick(displayItems[0])}
+                imageSrc={displayItems[0].imageSrc || catImg}
+                title={displayItems[0].title}
+                subTitle={displayItems[0].subTitle}
+                isPlaylist={false}
+                isFeatured={true}
+                isHovered={hoveredIndex === 0}
+              />
             </div>
 
             <div className="col-span-8 grid grid-cols-4 gap-4">
-              {displayItems.slice(1, 5).map((mainData, index) => (
+              {displayItems.slice(1, 5).map((item, index) => (
                 <div
-                  key={`desktop-${title}-${mainData.title}-${index + 1}`}
+                  key={`desktop-${title}-${item.title}-${index + 1}`}
                   onMouseEnter={() => setHoveredIndex(index + 1)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <MusicCard
-                    imageSrc={mainData.imageSrc}
-                    title={mainData.title}
-                    subTitle={mainData.subTitle}
+                    onClick={() => handleCardClick(item)}
+                    imageSrc={item.imageSrc || catImg}
+                    title={item.title}
+                    subTitle={item.subTitle}
                     isPlaylist={false}
                     isHovered={hoveredIndex === index + 1}
                   />
@@ -148,11 +213,12 @@ const SwiperSection = ({
           </div>
         )}
 
-        {title === SECTION_TITLES.RECOMMENDED_PLAYLISTS && (
+        {/* 플레이리스트 섹션 레이아웃 */}
+        {isPlaylistSection && (
           <div className="grid md:grid-cols-3 gap-6">
-            {displayItems.map((mainData, index) => (
+            {displayItems.map((item, index) => (
               <div
-                key={`desktop-${title}-${mainData.title}-${index}`}
+                key={`desktop-${title}-${item.title}-${index}`}
                 className={`transition-all duration-300 ease-in-out ${
                   hoveredIndex === index ? "scale-105 z-10" : ""
                 }`}
@@ -160,9 +226,10 @@ const SwiperSection = ({
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <MusicCard
-                  imageSrc={mainData.imageSrc}
-                  title={mainData.title}
-                  subTitle={mainData.subTitle}
+                  onClick={() => handleCardClick(item)}
+                  imageSrc={item.imageSrc || catImg}
+                  title={item.title}
+                  subTitle={item.subTitle}
                   isPlaylist={true}
                   isHovered={hoveredIndex === index}
                 />
@@ -171,22 +238,43 @@ const SwiperSection = ({
           </div>
         )}
       </div>
+
+      {error && <p className="text-gray-100 pt-3">{error}</p>}
     </section>
   );
 };
 
-export default function Main({ data2 }: MainProps) {
-  if (!data2 || data2.length === 0) {
-    return <main className="pl-4">데이터가 없습니다.</main>;
-  }
+export default function Main() {
+  const { preferenceAnalyzed, isLoggedIn, userNickname } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const openLoginModal = () => setIsLoginModalOpen(true);
+  const closeLoginModal = () => setIsLoginModalOpen(false);
+
+  const TASTE_MATCHING_MUSIC_TITLE = `${userNickname}${RECOMMENDED_SECTION_TITLES.TASTE_MATCHING_MUSIC}`;
+  const CUSTOM_PLAYLISTS_FOR_YOU_TITLE = `${userNickname}${RECOMMENDED_SECTION_TITLES.CUSTOM_PLAYLISTS_FOR_YOU}`;
 
   return (
-    <main className="pl-4  md:px-[10%] flex flex-col gap-11">
-      <SwiperSection title={SECTION_TITLES.POPULAR_ARTISTS} />
-      <SwiperSection
-        title={SECTION_TITLES.RECOMMENDED_PLAYLISTS}
-        data={data2}
-      />
-    </main>
+    <>
+      <main className="pl-4 md:px-[10%] flex flex-col gap-11">
+        <SwiperSection
+          title={
+            preferenceAnalyzed && isLoggedIn
+              ? TASTE_MATCHING_MUSIC_TITLE
+              : SECTION_TITLES.POPULAR_ARTISTS
+          }
+          openLoginModal={openLoginModal}
+        />
+        <SwiperSection
+          title={
+            preferenceAnalyzed && isLoggedIn
+              ? CUSTOM_PLAYLISTS_FOR_YOU_TITLE
+              : SECTION_TITLES.RECOMMENDED_PLAYLISTS
+          }
+          openLoginModal={openLoginModal}
+        />
+      </main>
+      <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
+    </>
   );
 }
