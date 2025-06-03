@@ -5,23 +5,18 @@ import nextIcon from "../../images/chevron-right.svg";
 import AnalysisCard from "./component/AnalysisCard";
 import AnalysisExitModal from "./component/AnalysisExitModal";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
+import { useArtistAnalysis } from "../../context/ArtistAnalysisContext";
 
 export default function MusicSurvey() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { selectedArtists } = useArtistAnalysis();
   const [selectedGenre, setSelectedGenre] = useState<string[]>([]);
-  const [selectedArtist, setSelectedArtist] = useState<string[]>([]);
   const [isOpenExitModal, setIsExitModalOpen] = useState(false);
   const [step, setStep] = useState<number>(location.state?.currentStep || 1);
 
-  //선택된 장르, 아티스트 정보 받아오기
+  //선택된 장르, 정보 받아오기
   useEffect(() => {
-    if (
-      location.state?.selectedArtist &&
-      location.state.selectedArtist.length > 0
-    ) {
-      setSelectedArtist(location.state.selectedArtist);
-    }
     if (
       location.state?.selectedGenre &&
       location.state.selectedGenre.length > 0
@@ -30,7 +25,7 @@ export default function MusicSurvey() {
     }
   }, [location.state]);
 
-  // 장르 or 아티스트 선택하기
+  // 장르 선택하기
   const toggleGenre = (genreName: string) => {
     const isAlreadySelectedGenre = selectedGenre.includes(genreName);
 
@@ -45,21 +40,6 @@ export default function MusicSurvey() {
     setSelectedGenre((prev) => [...prev, genreName]);
   };
 
-  const toggleArtist = (artistName: string) => {
-    const isAlreadySelectedArtist = selectedArtist.includes(artistName);
-
-    if (isAlreadySelectedArtist) {
-      setSelectedArtist((prev) => prev.filter((g) => g !== artistName));
-      return;
-    }
-    if (step === 2 && selectedArtist.length >= 5) {
-      alert("아티스트는 최대 5개까지만 선택할 수 있습니다.");
-      return;
-    }
-
-    setSelectedArtist((prev) => [...prev, artistName]);
-  };
-
   // 홈으로 이동 모달
   const handleExitModalOpen = () => {
     setIsExitModalOpen(true);
@@ -70,7 +50,6 @@ export default function MusicSurvey() {
   };
 
   // 다음 단계로 이동
-  // MusicSurvey 컴포넌트 내부
   const handleNext = async () => {
     if (step === 1) {
       if (selectedGenre.length === 0) {
@@ -79,7 +58,7 @@ export default function MusicSurvey() {
       }
       setStep(2);
     } else if (step === 2) {
-      if (selectedArtist.length === 0) {
+      if (selectedArtists.length === 0) {
         alert("아티스트는 최소 1명 이상 선택해야 합니다.");
         return;
       }
@@ -109,7 +88,7 @@ export default function MusicSurvey() {
                 : "가장 좋아하는 아티스트는 누구인가요?"}
             </h1>
             <p className="text-primary text-sm font-medium md:text-base">
-              {step === 1 ? "(최대 3곡 선택)" : "(최대 5명 선택)"}
+              {step === 1 ? "(최대 3개 선택)" : "(최대 5명 선택)"}
             </p>
           </header>
         )}
@@ -118,9 +97,7 @@ export default function MusicSurvey() {
           <AnalysisCard
             step={step}
             onToggleGenre={toggleGenre}
-            onToggleArtist={toggleArtist}
             selectedGenre={selectedGenre}
-            selectedArtist={selectedArtist}
             navigate={navigate}
             selectedGenreToPersist={selectedGenre}
           />
@@ -128,12 +105,12 @@ export default function MusicSurvey() {
             <div className="flex justify-between items-center mt-5 px-2 pb-11">
               <div className="flex items-center text-md md:text-lg font-bold gap-1">
                 <p className="text-[#333]">
-                  {step === 1 ? "선택된 음악 : " : "선택된 아티스트 : "}
+                  {step === 1 ? "선택된 장르 : " : "선택된 아티스트 : "}
                 </p>
                 <p className="">
                   {step === 1
                     ? `${selectedGenre.length}곡`
-                    : `${selectedArtist.length}명`}
+                    : `${selectedArtists.length}명`}
                 </p>
               </div>
               <button
