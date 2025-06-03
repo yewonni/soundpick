@@ -1,30 +1,59 @@
+import { useState, useEffect } from "react";
 import sideMenu from "../../../images/side-menu.svg";
 import Checkbox from "../../../components/Checkbox";
-import { MusicCardDataProps } from "../../../types/MusicCard";
 import catImg from "../../../images/music-cat-full.png";
+import PlaylistModal from "./PlaylistModal";
+
+export interface DataCardProps {
+  imageSrc: string;
+  title: string;
+  subTitle: string;
+  seq?: string;
+  spotifyTrackId: string;
+}
 
 interface SongResultProps {
-  data: MusicCardDataProps[];
-  onClick: () => void;
+  data: DataCardProps[];
   isMobile: boolean;
 }
-export default function SongResult({
-  data,
-  onClick,
-  isMobile,
-}: SongResultProps) {
+
+export default function SongResult({ data, isMobile }: SongResultProps) {
+  const [myTracks, setMyTracks] = useState<string[]>([]);
+  const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+
+  const handlePlaylistModalOpen = () => {
+    if (myTracks.length === 0) {
+      alert("선택된 트랙이 없습니다.");
+      return;
+    }
+    setIsPlaylistModalOpen(true);
+  };
+
+  const handlePlaylistModalClose = () => {
+    setIsPlaylistModalOpen(false);
+  };
+
+  const handleCheckboxChange = (trackId: string, checked: boolean) => {
+    if (checked) {
+      setMyTracks((prev) =>
+        prev.includes(trackId) ? prev : [...prev, trackId]
+      );
+    } else {
+      setMyTracks((prev) => prev.filter((id) => id !== trackId));
+    }
+  };
+
   return (
     <>
-      <div className="flex gap-2  w-full border-b-2 border-b-gray-300 pl-3  pb-3 ">
-        <Checkbox type="circle" />
+      <div className="flex gap-2 w-full border-b-2 border-b-gray-300 pb-3">
         <button className="ml-3 border border-text-subtle px-3 p-1 text-xs text-text-subtle font-semibold rounded-sm hover:bg-[#bfcBFF26] active:bg-[#bfcBFF4D] hover:border-[#BFCBFF] active:border-[#aab8f5] transition-colors duration-200">
           듣기
         </button>
         <button
-          onClick={onClick}
+          onClick={handlePlaylistModalOpen}
           className="border border-text-subtle px-3 p-1 text-xs text-text-subtle font-semibold rounded-sm hover:bg-[#bfcBFF26] active:bg-[#bfcBFF4D] hover:border-[#BFCBFF] active:border-[#aab8f5] transition-colors duration-200"
         >
-          내 플리에 담기
+          내 플리에 담기 ({myTracks.length})
         </button>
       </div>
 
@@ -39,11 +68,20 @@ export default function SongResult({
       )}
 
       {data.map((item, index) => (
-        <article key={index} className="mb-4 cursor-pointer">
+        <article
+          key={item.spotifyTrackId || index}
+          className="mb-4 cursor-pointer"
+        >
           {!isMobile && (
             <div className="hidden md:grid md:grid-cols-[40px_80px_1fr_1fr_40px] md:items-center py-2">
               <div className="flex justify-center items-center">
-                <Checkbox type="circle" />
+                <Checkbox
+                  type="circle"
+                  checked={myTracks.includes(item.spotifyTrackId)}
+                  onChange={(isChecked) => {
+                    handleCheckboxChange(item.spotifyTrackId, isChecked);
+                  }}
+                />
               </div>
               <div className="flex items-center justify-center">
                 <img
@@ -63,7 +101,7 @@ export default function SongResult({
                   src={sideMenu}
                   alt="메뉴열기"
                   className="cursor-pointer"
-                  onClick={onClick}
+                  onClick={handlePlaylistModalOpen}
                 />
               </div>
             </div>
@@ -72,9 +110,18 @@ export default function SongResult({
           {isMobile && (
             <div className="flex md:hidden justify-between items-center w-full px-3 mt-3">
               <div className="flex items-center gap-5">
-                <Checkbox type="circle" />
+                <Checkbox
+                  type="circle"
+                  checked={myTracks.includes(item.spotifyTrackId)}
+                  onChange={(isChecked) => {
+                    console.log(
+                      `모바일 체크박스 클릭 - 트랙ID: ${item.spotifyTrackId}, 체크상태: ${isChecked}`
+                    );
+                    handleCheckboxChange(item.spotifyTrackId, isChecked);
+                  }}
+                />
                 <img
-                  src={item.imageSrc}
+                  src={item.imageSrc || catImg}
                   alt={item.title}
                   className="w-[50px] h-[50px] rounded-sm"
                 />
@@ -91,12 +138,18 @@ export default function SongResult({
                 src={sideMenu}
                 alt="메뉴열기"
                 className="cursor-pointer ml-2"
-                onClick={onClick}
+                onClick={handlePlaylistModalOpen}
               />
             </div>
           )}
         </article>
       ))}
+      {isPlaylistModalOpen && (
+        <PlaylistModal
+          onClose={handlePlaylistModalClose}
+          selectedTrack={myTracks}
+        />
+      )}
     </>
   );
 }
