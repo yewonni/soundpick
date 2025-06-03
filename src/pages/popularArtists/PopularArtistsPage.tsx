@@ -2,13 +2,20 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { getArtists } from "../../api/analysis/artists";
 import { SECTION_TITLES } from "../../constants/constants";
+import HamburgerMenu from "../../components/HamburgerMenu";
+import catImg from "../../images/music-cat-full.png";
 export default function PopularArtistsPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [artists, setArtists] = useState<any[]>([]);
   const [error, setError] = useState("");
 
+  const handleMenuOpen = () => setIsMenuOpen(true);
+  const handleMenuClose = () => setIsMenuOpen(false);
+
   const fetchArtists = async (subject: "korea") => {
     try {
-      const res = await getArtists(subject, 0, 10);
+      setError("");
+      const res = await getArtists(subject, 0, 12);
       const artistData = res.data.data.content.map((artist) => ({
         imageSrc: artist.imageList[0]?.url ?? "",
         title: artist.name,
@@ -26,9 +33,20 @@ export default function PopularArtistsPage() {
 
   return (
     <>
-      <Header />
-      <main className="px-[10%] p-8">
-        <h2 className="text-text-base md:text-2xl text-lg font-bold">
+      <div
+        className={` fixed z-10 inset-0 bg-black transition-opacity duration-300 md:hidden ${
+          isMenuOpen ? "opacity-60 visible " : "opacity-0 invisible"
+        }`}
+        onClick={handleMenuClose}
+      ></div>
+      <div className="md:hidden">
+        {" "}
+        <HamburgerMenu isOpen={isMenuOpen} onClose={handleMenuClose} />
+      </div>
+
+      <Header onClick={handleMenuOpen} />
+      <main className="md:px-[10%] px-4 p-8">
+        <h2 className="text-text-base md:text-2xl text-lg font-bold pl-1">
           {SECTION_TITLES.POPULAR_ARTISTS}
         </h2>
         <div className="flex flex-wrap gap-8 mt-6 justify-center md:justify-start">
@@ -37,23 +55,19 @@ export default function PopularArtistsPage() {
               key={index}
               className="w-[120px] md:w-[150px] flex-shrink-0 group relative cursor-pointer"
             >
-              <div className="relative">
+              <div className="relative transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg rounded-full overflow-hidden">
                 <img
-                  src={artist.imageSrc}
+                  src={artist.imageSrc || catImg}
                   alt={artist.title}
-                  className="w-[120px] h-[120px] md:w-[150px]  md:h-[150px] rounded-full object-cover"
+                  className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] rounded-full object-cover"
                 />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40 rounded-full">
-                  <button className="bg-white p-2 rounded-full text-black text-sm">
-                    ▶
-                  </button>
-                </div>
               </div>
-              <h3 className="mt-3 text-sm md:text-base text-text-base font-semibold text-center group-hover:text-text-hover group-active:text-text-subtle">
-                {artist.title}
+              <h3 className="mt-3 text-sm md:text-base text-text-base font-semibold text-center transition-colors group-hover:text-text-hover">
+                {artist.title || "알 수 없음"}
               </h3>
             </div>
           ))}
+
           {error && <p className="text-gray-100 pt-3 ">{error}</p>}
         </div>
       </main>
