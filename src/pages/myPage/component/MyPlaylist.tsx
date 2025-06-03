@@ -1,31 +1,43 @@
 import prevIcon from "../../../images/chevron-left.svg";
+import sample from "../../../images/music-cat-full.png";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import sample from "../../../images/sample.png";
+import { useEffect, useState } from "react";
 import Checkbox from "../../../components/Checkbox";
 import RegisterButton from "../../../components/RegisterButton";
 import Button from "../../../components/Button";
+import { useAuth } from "../../../context/AuthContext";
+import { getMyPlaylist } from "../../../api/myPage/myPlaylist";
+
+interface MyPlaylistType {
+  name: string;
+  spotifyPlaylistSeq: string;
+  description: string;
+  imageList: [
+    {
+      url: string;
+    }
+  ];
+}
 
 export default function MyPlaylist() {
   const navigate = useNavigate();
   const [isCircleChecked, setIsCircleChecked] = useState(false);
+  const [myPlaylists, setMyPlaylists] = useState<MyPlaylistType[]>([]);
+  const { userNickname } = useAuth();
 
-  const nickname = localStorage.getItem("nickname");
+  useEffect(() => {
+    const fetchMyPlaylists = async () => {
+      try {
+        const response = await getMyPlaylist();
 
-  const mockData = [
-    {
-      imageUrl: sample,
-      title: "드라이브 필수 곡",
-    },
-    {
-      imageUrl: sample,
-      title: "운동할 때 듣는 노동요",
-    },
-    {
-      imageUrl: sample,
-      title: "코딩하면서 들으면 시간 순삭 플리",
-    },
-  ];
+        setMyPlaylists(response.data.data.content);
+      } catch (error) {
+        console.error(error, "나의 플리 가져오기 오류 발생");
+      }
+    };
+
+    fetchMyPlaylists();
+  }, []);
 
   return (
     <>
@@ -36,10 +48,10 @@ export default function MyPlaylist() {
           className="cursor-pointer absolute left-4 md:left-[20%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="font-bold text-lg ">{nickname}’s 플레이리스트</h1>
+        <h1 className="font-bold text-lg ">{userNickname}’s 플레이리스트</h1>
       </header>
       <main className="w-full min-h-screen  p-4 md:px-[20%]">
-        {mockData.map((data, index) => (
+        {myPlaylists?.map((data, index) => (
           <article
             key={index}
             className="py-3 border-b border-b-gray-200 cursor-pointer flex gap-4 items-center"
@@ -50,15 +62,20 @@ export default function MyPlaylist() {
               onChange={setIsCircleChecked}
             />
             <img
-              src={data.imageUrl}
-              alt={data.title}
-              className="w-[60px] h-[60px] rounded-sm md:w-[120px] md:h-[120px]"
+              src={data.imageList[0]?.url ? data.imageList[0]?.url : sample}
+              alt={data.name}
+              className="w-[60px] h-[60px] rounded-sm md:w-[120px] md:h-[120px] "
+              onClick={() =>
+                navigate(`/my-playlist-details/${data.spotifyPlaylistSeq}`)
+              }
             />
             <h2
-              className="font-bold  md:hover:underline text-white"
-              onClick={() => navigate("/my-playlist-details")}
+              className="font-bold md:hover:underline text-white truncate overflow-hidden whitespace-nowrap max-w-[200px] md:max-w-none hover:underline"
+              onClick={() =>
+                navigate(`/my-playlist-details/${data.spotifyPlaylistSeq}`)
+              }
             >
-              {data.title}
+              {data.name}
             </h2>
           </article>
         ))}
