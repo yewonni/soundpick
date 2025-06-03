@@ -5,8 +5,12 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { AxiosHeaders } from "axios";
 import axiosInstance, {
   injectAccessTokenGetter,
+  injectIsLoggedInGetter,
+  injectIsInitializingGetter,
+  injectHasInitializedGetter,
   injectSetPreferenceAnalyzed,
 } from "../api/axiosInstance";
 import { encryptWithRSAFromServer } from "../utils/crypto";
@@ -32,11 +36,17 @@ interface AuthContextType {
   setAccessToken: (token: string | null) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (status: boolean) => void;
+  userNickname: string | null;
+  setUserNickname: (status: string | null) => void;
   login: (userId: string, password: string) => Promise<boolean>;
   logout: () => void;
   spotifyLoginRequired: boolean;
   preferenceAnalyzed: boolean;
   setPreferenceAnalyzed: (status: boolean) => void;
+  isInitializing: boolean;
+  setIsInitializing: (status: boolean) => void;
+  hasInitialized: boolean;
+  setHasInitialized: (status: boolean) => void;
 }
 
 interface AuthProviderProps {
@@ -46,20 +56,23 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [userNickname, setUserNickname] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [spotifyLoginRequired, setSpotifyLoginRequired] =
     useState<boolean>(false);
   const [preferenceAnalyzed, setPreferenceAnalyzed] = useState<boolean>(false);
+  const [isInitializing, setIsInitializing] = useState<boolean>(false);
+  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
 
-  // accessToken이 바뀔 때마다 axios에 주입
+  // axios instance에 상태 getter 함수들 주입
   useEffect(() => {
     injectAccessTokenGetter(() => accessToken);
-  }, [accessToken]);
-
-  useEffect(() => {
+    injectIsLoggedInGetter(() => isLoggedIn);
+    injectIsInitializingGetter(() => isInitializing);
+    injectHasInitializedGetter(() => hasInitialized);
     injectSetPreferenceAnalyzed(setPreferenceAnalyzed);
-  }, [setPreferenceAnalyzed]);
+  }, [accessToken, isLoggedIn, isInitializing, hasInitialized]);
 
   const login = async (userId: string, password: string): Promise<boolean> => {
     const { encrypted, rsaSeq } = await encryptWithRSAFromServer(password);
@@ -91,6 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       setAccessToken(token);
       setIsLoggedIn(true);
+      setUserNickname(nickname);
       setSpotifyLoginRequired(needSpotify);
       setPreferenceAnalyzed(needAnalyzed);
 
@@ -106,7 +120,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return needSpotify;
     } catch (error) {
       console.error("로그인 실패", error);
-      alert("로그인 실패");
+
       throw error;
     }
   };
@@ -117,6 +131,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       setAccessToken(null);
       setIsLoggedIn(false);
+      setUserNickname(null);
       delete axiosInstance.defaults.headers.common["Authorization"];
       localStorage.removeItem("userId");
       localStorage.removeItem("nickname");
@@ -132,11 +147,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setAccessToken,
         isLoggedIn,
         setIsLoggedIn,
+        userNickname,
+        setUserNickname,
         login,
         logout,
         spotifyLoginRequired,
         preferenceAnalyzed,
         setPreferenceAnalyzed,
+        isInitializing,
+        setIsInitializing,
+        hasInitialized,
+        setHasInitialized,
       }}
     >
       {children}
