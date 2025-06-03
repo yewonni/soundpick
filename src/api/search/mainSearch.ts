@@ -5,6 +5,7 @@ interface SearchResponse {
   data: {
     content: [
       {
+        seq: string;
         name: string;
         imageList: {
           url: string;
@@ -19,6 +20,8 @@ interface TrackResponse {
   data: {
     content: [
       {
+        spotifyTrackId: string;
+        spotifyTrackSeq: string;
         name: string;
         imageList: {
           url: string;
