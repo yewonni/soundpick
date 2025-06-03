@@ -18,7 +18,7 @@ export default function PlaylistResult({
           {data.map((item, index) => (
             <div
               key={index}
-              onClick={() => navigate("/playlist-details")}
+              onClick={() => navigate(`/playlist-details/${item.seq}`)}
               className="cursor-pointer flex flex-col bg-white shadow-sm hover:shadow-md transition-transform duration-300 transform hover:scale-105 rounded-lg overflow-hidden"
             >
               <img
@@ -40,7 +40,7 @@ export default function PlaylistResult({
           <article
             key={index}
             className="mb-4 cursor-pointer md:hidden px-2"
-            onClick={() => navigate("/playlist-details")}
+            onClick={() => navigate(`/playlist-details/${item.seq}`)}
           >
             <div className="flex gap-4 items-start">
               <img
