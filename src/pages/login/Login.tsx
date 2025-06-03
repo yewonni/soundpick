@@ -26,13 +26,10 @@ export default function Login() {
     e.preventDefault();
 
     const result = loginSchema.safeParse({ userId, password });
-
     if (!result.success) {
-      const message = result.error.errors[0].message;
-      setErrorMessage(message);
+      setErrorMessage(result.error.errors[0].message);
       return;
     }
-
     setErrorMessage("");
 
     try {
@@ -47,7 +44,6 @@ export default function Login() {
       navigate("/", { state: { spotifyLoginRequired: spotifyRequired } });
     } catch (error) {
       console.error("로그인 실패", error);
-
       if (error instanceof Error && (error as any).response?.data?.message) {
         setErrorMessage((error as any).response.data.message);
       } else {
@@ -116,7 +112,7 @@ export default function Login() {
               로그인
             </Button>
             <p className="text-[#333] text-xs font-bold md:text-sm">
-              ※ 본 서비스는 Spotify 계정 연동이 필수입니다.
+              ※ 본 서비스는 Spotify 정보를 바탕으로 구성됩니다.
             </p>
           </form>
           <div className="flex gap-2 items-center justify-center mt-3 md:mt-4 text-xs md:text-sm text-text-base">
