@@ -1,6 +1,7 @@
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
 
 interface AnalysisExitModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ export default function AnalysisExitModal({
   onClose,
 }: AnalysisExitModalProps) {
   const navigate = useNavigate();
+  const { resetArtists } = useArtistAnalysis();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -21,7 +23,13 @@ export default function AnalysisExitModal({
         </p>
         <p>홈으로 이동하여 분석을 종료하시겠습니까?</p>
         <div className="flex gap-2 mt-3">
-          <Button default onClick={() => navigate("/")}>
+          <Button
+            default
+            onClick={() => {
+              resetArtists();
+              navigate("/");
+            }}
+          >
             이동하기
           </Button>
           <Button onClick={onClose}>계속 분석</Button>
