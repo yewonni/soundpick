@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import SelectButton from "../../../components/SelectButton";
-import MusicCard from "../../../components/MusicCard";
 import search from "../../../images/search.svg";
 import loadingImg from "../../../images/loading-img.png";
 import { getGenre } from "../../../api/analysis/genre";
@@ -9,13 +9,12 @@ import { getArtists } from "../../../api/analysis/artists";
 import { useAuth } from "../../../context/AuthContext";
 import { myPreference } from "../../../api/analysis/myPreference";
 import { useAnalysisResult } from "../../../context/AnalysisResultContext";
+import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
 
 interface AnalysisCardProps {
   step: number;
   onToggleGenre: (genreName: string) => void;
-  onToggleArtist: (artistName: string) => void;
   selectedGenre: string[];
-  selectedArtist: string[];
   navigate?: any;
   selectedGenreToPersist?: string[];
 }
@@ -23,9 +22,7 @@ interface AnalysisCardProps {
 export default function AnalysisCard({
   step,
   onToggleGenre,
-  onToggleArtist,
   selectedGenre,
-  selectedArtist,
   navigate,
   selectedGenreToPersist = [],
 }: AnalysisCardProps) {
@@ -39,19 +36,12 @@ export default function AnalysisCard({
   } else if (step === 2) {
     return (
       <ArtistAnalysis
-        toggleArtist={onToggleArtist}
-        selectedArtist={selectedArtist}
         navigate={navigate}
         selectedGenreToPersist={selectedGenreToPersist}
       />
     );
   } else if (step === 3) {
-    return (
-      <RecommendationCard
-        selectedGenre={selectedGenre}
-        selectedArtist={selectedArtist}
-      />
-    );
+    return <RecommendationCard selectedGenre={selectedGenre} />;
   }
   return null;
 }
@@ -77,7 +67,7 @@ function MusicAnalysis({ toggleGenre, selectedGenre }: MusicAnalysisProps) {
         setGenre(genreList);
       })
       .catch((error) => {
-        console.error("장르 가져오기 실패", error);
+        alert("서버에서 오류가 발생했습니다.");
       });
   }, [isLoggedIn]);
 
@@ -124,24 +114,26 @@ function MusicAnalysis({ toggleGenre, selectedGenre }: MusicAnalysisProps) {
   );
 }
 
-//아티스트 선택하기
+///아티스트 선택하기
 interface ArtistData {
   imageSrc: string;
   title: string;
   subTitle?: string;
+  seq?: string;
+  spotifyArtistId?: string;
 }
 interface ArtistAnalysisProps {
-  toggleArtist: (artistName: string) => void;
-  selectedArtist: string[];
   navigate?: any;
   selectedGenreToPersist?: string[];
 }
+
 function ArtistAnalysis({
-  toggleArtist,
-  selectedArtist,
   navigate,
   selectedGenreToPersist,
 }: ArtistAnalysisProps) {
+  const location = useLocation();
+  const isInitializedRef = useRef(false);
+  const { selectedArtists, toggleArtist, resetArtists } = useArtistAnalysis();
   const [korea, setKorea] = useState<ArtistData[]>([]);
   const [global, setGlobal] = useState<ArtistData[]>([]);
   const defaultNavigate = useNavigate();
@@ -160,13 +152,25 @@ function ArtistAnalysis({
       const data = res.data.data.content.map((artist) => ({
         imageSrc: artist.imageList[0]?.url ?? "",
         title: artist.name,
+        spotifyArtistId: artist.spotifyArtistId,
+        seq: artist.seq,
       }));
       if (subject === "korea") setKorea(data);
       else setGlobal(data);
     } catch (error) {
-      console.error(`${subject} 아티스트 불러오기 실패`, error);
+      alert("서버에서 오류가 발생했습니다.");
     }
   };
+
+  useEffect(() => {
+    if (!isInitializedRef.current) {
+      if (!location.state?.isFromSearch) {
+        // 첫 진입일 경우에만 초기화
+        resetArtists();
+      }
+      isInitializedRef.current = true;
+    }
+  }, [location.state]);
 
   useEffect(() => {
     fetchArtists("korea");
@@ -180,15 +184,44 @@ function ArtistAnalysis({
     navFunc("/search-artist", {
       state: {
         fromStep2: true,
-        selectedArtist: selectedArtist,
         selectedGenre: selectedGenreToPersist,
       },
     });
   };
 
+  const toggleSelect = (artist: ArtistData) => {
+    const isCurrentlySelected = selectedArtists.some(
+      (a) => a.seq === artist.seq
+    );
+
+    // 선택 해제인 경우
+    if (isCurrentlySelected) {
+      toggleArtist(artist);
+      return;
+    }
+
+    // 다른 방법으로 이미 선택된 아티스트인지 체크
+    const isSelectedElsewhere = selectedArtists.some(
+      (a) =>
+        a.spotifyArtistId === artist.spotifyArtistId && a.seq !== artist.seq
+    );
+
+    if (isSelectedElsewhere) {
+      alert("검색 시 이미 선택하신 아티스트입니다.");
+      return;
+    }
+
+    if (selectedArtists.length >= 5) {
+      alert("아티스트는 최대 5명까지만 선택할 수 있어요!");
+      return;
+    }
+
+    toggleArtist(artist);
+  };
+
   return (
     <>
-      <div className="flex justify-between mb-4  ">
+      <div className="flex justify-between mb-4">
         <div className="flex gap-2 text-sm">
           <button
             onClick={() => handleArtistButton("korea")}
@@ -222,18 +255,41 @@ function ArtistAnalysis({
         * {selectedButton === "korea" ? "한국" : "해외"} 기준, 인기 아티스트
       </p>
       <div className="border border-text-base rounded-[15px] shadow-md w-full p-6 md:p-8 md:px-[60px]">
-        <div className="flex flex-wrap gap-6 justify-between ">
-          {artistData.map((artist, index) => (
-            <div key={index} className="w-[123px] md:w-auto">
-              <MusicCard
-                imageSrc={artist.imageSrc}
-                title={artist.title}
-                subTitle=""
-                onToggleArtist={toggleArtist}
-                selected={selectedArtist.includes(artist.title)}
-              />
-            </div>
-          ))}
+        <div className="flex flex-wrap gap-6 justify-between">
+          {artistData.map((artist, index) => {
+            const isSelected = selectedArtists.some(
+              (a) => a.seq === artist.seq
+            );
+
+            return (
+              <div
+                key={index}
+                className={`w-[123px] md:w-auto flex flex-col gap-1 group cursor-pointer ${
+                  isSelected
+                    ? "ring-2 ring-purple-600 ring-offset-2 rounded-lg"
+                    : ""
+                }`}
+                onClick={() => toggleSelect(artist)}
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={artist.imageSrc}
+                    alt={artist.title}
+                    className="w-[123px] h-[123px] md:w-full md:h-48 object-cover mb-1 md:rounded-lg rounded-md transition-all duration-300 ease-in-out"
+                  />
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">
+                      ✓
+                    </div>
+                  )}
+                </div>
+
+                <h4 className=" pl-1 text-lg md:text-base font-bold text-white text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer transition-colors duration-300 truncate">
+                  {artist.title}
+                </h4>
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
@@ -241,27 +297,20 @@ function ArtistAnalysis({
 }
 
 //취향분석 로딩화면
-interface RecommendationCardProps {
-  selectedGenre: string[];
-  selectedArtist: string[];
-}
-
-function RecommendationCard({
-  selectedGenre,
-  selectedArtist,
-}: RecommendationCardProps) {
+function RecommendationCard({ selectedGenre }: { selectedGenre: string[] }) {
   const navigate = useNavigate();
   const { setRecommendationData } = useAnalysisResult();
-  const nickname = localStorage.getItem("nickname");
+  const { userNickname } = useAuth();
+  const { selectedArtists } = useArtistAnalysis();
 
   useEffect(() => {
     const fetchPreference = async () => {
       try {
         const response = await myPreference({
           genreList: selectedGenre,
-          artistList: selectedArtist,
+          artistList: selectedArtists.map((artist) => artist.title),
         });
-        setRecommendationData(response.data); // 응답 데이터 저장
+        setRecommendationData(response.data);
         navigate("/recommendation");
       } catch (error) {
         console.error("취향 분석 실패", error);
@@ -269,7 +318,7 @@ function RecommendationCard({
     };
 
     fetchPreference();
-  }, [navigate, selectedGenre, selectedArtist, setRecommendationData]);
+  }, [navigate, selectedGenre, selectedArtists, setRecommendationData]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -279,7 +328,7 @@ function RecommendationCard({
         className="w-[90px] h-[90px] md:w-40 md:h-40 md:pb-6 pb-3 animate-spin"
       />
       <p className="text-[20px] font-semibold animate-pulse md:text-2xl text-primary">
-        {nickname}님의 취향 분석 중...
+        {userNickname}님의 취향 분석 중...
       </p>
     </div>
   );
