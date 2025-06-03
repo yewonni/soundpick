@@ -31,7 +31,7 @@ export default function Search() {
           onSubmit={handleSearch}
           value={inputValue}
           onChange={handleInputChange}
-          placeholder="아티스트, 음악, 플레이리스트"
+          placeholder="음악, 플레이리스트명으로 검색하기"
         />
       </div>
       <main className="min-h-[300px] flex justify-center items-center">
