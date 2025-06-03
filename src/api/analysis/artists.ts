@@ -4,6 +4,8 @@ interface ArtistsResponse {
   message: string;
   data: {
     content: {
+      spotifyArtistId: string;
+      seq: string;
       subject: string;
       name: string;
       imageList: {
