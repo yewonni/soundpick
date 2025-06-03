@@ -5,7 +5,7 @@ export const joinSchema = z
     nickname: z
       .string()
       .min(2, { message: "닉네임은 2자 이상이어야 합니다." })
-      .max(12, { message: "닉네임은 12자 이하이어야 합니다." }),
+      .max(7, { message: "닉네임은 7자 이하이어야 합니다." }),
     userId: z
       .string()
       .min(4, { message: "아이디는 4자 이상이어야 합니다." })
