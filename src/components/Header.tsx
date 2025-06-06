@@ -36,6 +36,14 @@ export default function Header({ onClick }: HeaderProps) {
     setIsOpenLoginModal(false);
   };
 
+  const handleMobileSearchClick = () => {
+    if (!isLoggedIn) {
+      setIsOpenLoginModal(true);
+      return;
+    }
+    navigate("/search");
+  };
+
   return (
     <>
       <header className="flex justify-between items-center px-4 py-8 h-[70px] md:px-[10%] md:py-[50px] md:justify-start md:gap-7">
@@ -60,7 +68,7 @@ export default function Header({ onClick }: HeaderProps) {
             src={search}
             alt="검색하기"
             className="cursor-pointer"
-            onClick={() => navigate("/search")}
+            onClick={handleMobileSearchClick}
           />
         </button>
         <div className="hidden md:block w-[320px]">
