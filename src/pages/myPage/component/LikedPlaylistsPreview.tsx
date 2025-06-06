@@ -107,7 +107,7 @@ export default function LikedPlaylistsPreview({
           </div>
 
           {!loading && playlists.length === 0 ? (
-            <p className="text-[#666] text-sm text-center mt-12">
+            <p className="text-[#666] text-sm text-center mt-12 pr-6 ">
               마음에 드는 플레이리스트 검색 후 <br className="md:hidden" />{" "}
               좋아요를 눌러보세요!
             </p>

@@ -106,7 +106,7 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
             )}
           </div>
           {!loading && myPlaylists.length === 0 ? (
-            <div className="flex flex-col gap-2 justify-center items-center mt-16">
+            <div className="flex flex-col gap-2 justify-center items-center pr-6 mt-12">
               <p className="text-sm text-[#666] ">
                 나만의 플레이리스트 만들어볼까요?
               </p>
