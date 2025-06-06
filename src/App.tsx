@@ -1,3 +1,5 @@
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -39,7 +41,7 @@ import { AnalysisResultProvider } from "./context/AnalysisResultContext";
 import { TrackSelectionProvider } from "./context/TrackSelectionContext";
 import { ArtistSelectionProvider } from "./context/ArtistSelectionContext";
 import { ArtistAnalysisProvider } from "./context/ArtistAnalysisContext";
-// import PrivateRoute from "./components/PrivateRouter";
+import PrivateRoute from "./components/PrivateRouter";
 import axiosInstance, {
   RefreshResponse,
   injectSetLoading,
@@ -74,11 +76,15 @@ const App: React.FC = () => {
 
 function AppContent() {
   const { loading } = useLoading();
+  const { hasInitialized } = useAuth();
+
+  if (!hasInitialized) return null;
 
   return (
     <>
       {loading && <Loader />}
       <Routes>
+        {/* 공개 페이지 */}
         <Route path="/" element={<Home />} />
         <Route path="/popular-artists" element={<PopularArtistsPage />} />
         <Route path="/popular-playlists" element={<PopularPlaylistsPage />} />
@@ -86,36 +92,52 @@ function AppContent() {
         <Route path="/join" element={<Join />} />
         <Route path="/join-success" element={<JoinSuccess />} />
         <Route path="/*" element={<ErrorPage />} />
-        {/* PrivateRoute로 보호된 라우트들 */}
-        <Route
-          path="/recommended-playlists"
-          element={<RecommendedPlaylistPage />}
-        />
-        <Route path="/recommended-tracks" element={<RecommendedTrackPage />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/search-result" element={<SearchResult />} />
-        <Route path="/playlist-details/:seq" element={<PlaylistDetails />} />
-        <Route path="/review/:spotifyPlaylistSeq" element={<Review />} />
-        <Route path="/music-analysis" element={<MusicAnalysis />} />
-        <Route path="/search-artist" element={<ArtistSearch />} />
-        <Route path="/recommendation" element={<Recommendation />} />
-        <Route path="/edit-artist" element={<EditArtistSearch />} />
-        <Route path="/edit-track" element={<EditTrackSearch />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/my-hits" element={<MyAllTimeHits />} />
-        <Route path="/my-hits-search" element={<MyAllTimeTrackSearch />} />
-        <Route path="/my-playlist" element={<MyPlaylist />} />
-        <Route
-          path="/my-playlist-details/:seq"
-          element={<MyPlaylistDetails />}
-        />
-        <Route path="/register-playlist" element={<RegisterPlaylist />} />
-        <Route path="/liked-playlist" element={<LikedPlaylists />} />
-        <Route path="/my-review" element={<MyReview />} />
-        <Route path="/my-friends" element={<MyFriends />} />
-        <Route path="/find-friends" element={<FindFriends />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
+
+        {/* 프라이빗 라우트 그룹 */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/search" element={<Search />} />
+          <Route path="/search-result" element={<SearchResult />} />
+          <Route
+            path="/recommended-playlists"
+            element={<RecommendedPlaylistPage />}
+          />
+          <Route
+            path="/recommended-tracks"
+            element={<RecommendedTrackPage />}
+          />
+          <Route path="/playlist-details/:seq" element={<PlaylistDetails />} />
+          <Route path="/review/:spotifyPlaylistSeq" element={<Review />} />
+          <Route path="/music-analysis" element={<MusicAnalysis />} />
+          <Route path="/search-artist" element={<ArtistSearch />} />
+          <Route path="/recommendation" element={<Recommendation />} />
+          <Route path="/edit-artist" element={<EditArtistSearch />} />
+          <Route path="/edit-track" element={<EditTrackSearch />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/my-hits" element={<MyAllTimeHits />} />
+          <Route path="/my-hits-search" element={<MyAllTimeTrackSearch />} />
+          <Route path="/my-playlist" element={<MyPlaylist />} />
+          <Route
+            path="/my-playlist-details/:seq"
+            element={<MyPlaylistDetails />}
+          />
+          <Route path="/register-playlist" element={<RegisterPlaylist />} />
+          <Route path="/liked-playlist" element={<LikedPlaylists />} />
+          <Route path="/my-review" element={<MyReview />} />
+          <Route path="/my-friends" element={<MyFriends />} />
+          <Route path="/find-friends" element={<FindFriends />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+        </Route>
       </Routes>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        hideProgressBar
+        closeOnClick
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+        draggable={false}
+        toastClassName="text-sm md:text-base z-[9999] shadow-md rounded-md flex items-center"
+      />
     </>
   );
 }
@@ -126,13 +148,9 @@ function AppInitializer() {
   const { setLoading } = useLoading();
 
   useEffect(() => {
-    // axiosInstance에 setAccessToken 함수 주입
     injectSetAccessToken(setAccessToken);
-
-    // axiosInstance에 setLoading 함수 주입
     injectSetLoading(setLoading);
 
-    // 페이지 로드 시 자동으로 토큰 갱신 시도
     let isVerifying = false;
 
     async function verifyTokenOnLoad() {
@@ -158,7 +176,8 @@ function AppInitializer() {
         setUserNickname(updatedUserNickname);
       } catch (error) {
         console.error("자동 로그인 실패:", error);
-        if (window.location.pathname !== "/login") {
+        const pathNameUrl = window.location.pathname;
+        if (!(pathNameUrl === "/login" || pathNameUrl === "/")) {
           window.location.href = "/login";
         }
       } finally {
@@ -167,10 +186,13 @@ function AppInitializer() {
       }
     }
 
-    // 로그인 페이지나 회원가입 페이지에서는 실행 안 함
-    const skipPaths = ["/login", "/join"];
-    if (!skipPaths.includes(window.location.pathname)) {
+    const path = window.location.pathname;
+    const shouldVerify = path !== "/login" && path !== "/join";
+
+    if (shouldVerify) {
       verifyTokenOnLoad();
+    } else {
+      setHasInitialized(true); // 공개 페이지는 바로 초기화 완료로 처리
     }
   }, [
     setAccessToken,
