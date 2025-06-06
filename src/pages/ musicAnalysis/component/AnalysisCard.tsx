@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -67,7 +69,7 @@ function MusicAnalysis({ toggleGenre, selectedGenre }: MusicAnalysisProps) {
         setGenre(genreList);
       })
       .catch((error) => {
-        alert("서버에서 오류가 발생했습니다.");
+        toast.error("서버에서 오류가 발생했습니다.");
       });
   }, [isLoggedIn]);
 
@@ -77,40 +79,42 @@ function MusicAnalysis({ toggleGenre, selectedGenre }: MusicAnalysisProps) {
   };
 
   return (
-    <div className=" border border-white rounded-[15px] shadow-md w-full p-6 md:p-11 flex flex-col gap-2">
-      {genre.slice(0, 6).map((genre, index) => (
-        <SelectButton
-          key={index}
-          onClick={() => toggleGenre(genre)}
-          selected={selectedGenre.includes(genre)}
-        >
-          {genre}
-        </SelectButton>
-      ))}
+    <>
+      <div className=" border border-white rounded-[15px] shadow-md w-full p-6 md:p-11 flex flex-col gap-2">
+        {genre.slice(0, 6).map((genre, index) => (
+          <SelectButton
+            key={index}
+            onClick={() => toggleGenre(genre)}
+            selected={selectedGenre.includes(genre)}
+          >
+            {genre}
+          </SelectButton>
+        ))}
 
-      {isClickShowMore && (
-        <div className="flex flex-col gap-2">
-          {genre.slice(6).map((genre, index) => (
-            <SelectButton
-              key={index + 6}
-              onClick={() => toggleGenre(genre)}
-              selected={selectedGenre.includes(genre)}
-            >
-              {genre}
-            </SelectButton>
-          ))}
-        </div>
-      )}
+        {isClickShowMore && (
+          <div className="flex flex-col gap-2">
+            {genre.slice(6).map((genre, index) => (
+              <SelectButton
+                key={index + 6}
+                onClick={() => toggleGenre(genre)}
+                selected={selectedGenre.includes(genre)}
+              >
+                {genre}
+              </SelectButton>
+            ))}
+          </div>
+        )}
 
-      {!isOpenMoreOptions && genre.length > 6 && (
-        <button
-          className="underline text-text-base text-sm hover:text-primary font-bold mt-2 flex justify-end"
-          onClick={handleShowMore}
-        >
-          더 보기
-        </button>
-      )}
-    </div>
+        {!isOpenMoreOptions && genre.length > 6 && (
+          <button
+            className="underline text-text-base text-sm hover:text-primary font-bold mt-2 flex justify-end"
+            onClick={handleShowMore}
+          >
+            더 보기
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -158,7 +162,7 @@ function ArtistAnalysis({
       if (subject === "korea") setKorea(data);
       else setGlobal(data);
     } catch (error) {
-      alert("서버에서 오류가 발생했습니다.");
+      toast.error("서버에서 오류가 발생했습니다.");
     }
   };
 
@@ -207,12 +211,12 @@ function ArtistAnalysis({
     );
 
     if (isSelectedElsewhere) {
-      alert("검색 시 이미 선택하신 아티스트입니다.");
+      toast.error("검색 시 이미 선택하신 아티스트입니다.");
       return;
     }
 
     if (selectedArtists.length >= 5) {
-      alert("아티스트는 최대 5명까지만 선택할 수 있어요!");
+      toast.error("아티스트는 최대 5명까지만 선택할 수 있어요!");
       return;
     }
 
@@ -255,7 +259,7 @@ function ArtistAnalysis({
         * {selectedButton === "korea" ? "한국" : "해외"} 기준, 인기 아티스트
       </p>
       <div className="border border-text-base rounded-[15px] shadow-md w-full p-6 md:p-8 md:px-[60px]">
-        <div className="flex flex-wrap gap-6 justify-between">
+        <div className="flex flex-wrap gap-6 justify-evenly">
           {artistData.map((artist, index) => {
             const isSelected = selectedArtists.some(
               (a) => a.seq === artist.seq
@@ -264,7 +268,7 @@ function ArtistAnalysis({
             return (
               <div
                 key={index}
-                className={`w-[123px] md:w-auto flex flex-col gap-1 group cursor-pointer ${
+                className={`w-[123px] md:w-[190px] flex flex-col gap-1 group cursor-pointer ${
                   isSelected
                     ? "ring-2 ring-purple-600 ring-offset-2 rounded-lg"
                     : ""

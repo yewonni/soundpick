@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef, useEffect } from "react";
 import prevIcon from "../../images/chevron-left.svg";
 import FinishButton from "../../components/FinishButton";
@@ -37,7 +39,7 @@ export default function EditProfile() {
         setPreview(imageUrl ? `${baseUrl}${imageUrl}` : sample);
       } catch (err) {
         console.error("프로필 정보를 불러오는 데 실패했습니다.", err);
-        alert("프로필 정보를 불러오지 못했습니다.");
+        toast.error("프로필 정보를 불러오지 못했습니다.");
       }
     };
 
@@ -95,7 +97,7 @@ export default function EditProfile() {
       await editProfile({ nickname, introduction });
       setUserNickname(nickname);
 
-      alert("프로필이 저장되었습니다.");
+      toast.success("프로필이 저장되었습니다.");
       setIsDirty(false);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -105,10 +107,10 @@ export default function EditProfile() {
           fieldErrors[field] = e.message;
         });
         setFormError(fieldErrors);
-        alert("입력값을 확인해주세요.");
+        toast.error("입력값을 확인해주세요.");
       } else {
         console.error(err);
-        alert("저장에 실패했습니다.");
+        toast.error("저장에 실패했습니다.");
       }
     }
   };

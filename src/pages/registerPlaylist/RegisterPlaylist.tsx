@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
 import prevIcon from "../../images/chevron-left.svg";
 import FinishButton from "../../components/FinishButton";
@@ -39,15 +41,15 @@ export default function RegisterPlaylist() {
 
   const handlePlaylistRegister = async () => {
     if (!playlistName.trim()) {
-      alert("플레이리스트 제목을 입력해주세요.");
+      toast.error("플레이리스트 제목을 입력해주세요.");
       return;
     }
     if (!playlistDescription.trim()) {
-      alert("플레이리스트 소개글을 입력해주세요.");
+      toast.error("플레이리스트 소개글을 입력해주세요.");
       return;
     }
     if (!file) {
-      alert("플레이리스트 이미지를 등록해주세요.");
+      toast.error("플레이리스트 이미지를 등록해주세요.");
       return;
     }
 
@@ -63,11 +65,11 @@ export default function RegisterPlaylist() {
         await uploadMyPlaylistImage(file, spotifyPlaylistId);
       }
 
-      alert("성공적으로 등록되었습니다.");
+      toast.success("성공적으로 등록되었습니다.");
       setIsDirty(false);
     } catch (error) {
       console.error("플리 등록 실패", error);
-      alert("플레이리스트 등록에 실패했습니다.");
+      toast.error("플레이리스트 등록에 실패했습니다.");
     }
   };
 

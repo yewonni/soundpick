@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import likeBtn from "../../../images/like-icon.svg";
@@ -29,7 +31,7 @@ export default function LikeAndComment({
     try {
       if (isLiked) {
         await deleteLike([{ spotifyPlaylistSeq: playlistSeq }]);
-        alert("저장된 플레이리스트가 삭제되었습니다.");
+        toast.success("저장된 플레이리스트가 삭제되었습니다.");
       } else {
         await likePlaylist(playlistSeq);
         setIsModalOpen(true);
@@ -37,7 +39,7 @@ export default function LikeAndComment({
 
       toggleLike();
     } catch (error) {
-      console.error("좋아요 처리 실패", error);
+      toast.error("좋아요 실패");
     }
   };
 

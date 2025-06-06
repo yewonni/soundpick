@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import prevIcon from "../../images/chevron-left.svg";
 import { useNavigate } from "react-router-dom";
@@ -53,7 +55,7 @@ export default function MyReview() {
       await dispatch(deleteComments({ spotifyPlaylistSeq, seq })).unwrap();
       await fetchMyReview();
     } catch {
-      alert("삭제에 실패했습니다.");
+      toast.error("삭제에 실패했습니다.");
     }
   };
 

@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "./components/Header";
@@ -44,7 +46,7 @@ export default function Home() {
 
   useEffect(() => {
     if (showSpotifyAlert) {
-      alert("Spotify 로그인이 필요합니다.");
+      toast.error("Spotify 로그인이 필요합니다.");
 
       const handleSpotifyLogin = async () => {
         try {
@@ -98,6 +100,10 @@ export default function Home() {
 
       <Main />
       <Footer />
+      <TasteAnalysisModal
+        isOpen={isOpenTasteModal}
+        onClose={handleTasteModalClose}
+      />
       <TasteAnalysisModal
         isOpen={isOpenTasteModal}
         onClose={handleTasteModalClose}

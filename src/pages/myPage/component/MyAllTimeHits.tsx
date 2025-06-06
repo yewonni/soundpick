@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import prevIcon from "../../../images/chevron-left.svg";
@@ -52,7 +54,7 @@ export default function MyAllTimeHits() {
   // 선택된 트랙들 삭제하기
   const handleDeleteSelected = async () => {
     if (deletedTracks.length === 0) {
-      alert("삭제할 곡을 선택해주세요.");
+      toast.error("삭제할 곡을 선택해주세요.");
       return;
     }
 
@@ -68,14 +70,14 @@ export default function MyAllTimeHits() {
         );
 
         if (validTracksToDelete.length === 0) {
-          alert(
+          toast.error(
             "삭제할 수 있는 트랙이 없습니다. (아직 저장되지 않은 트랙들입니다)"
           );
           return;
         }
 
         if (validTracksToDelete.length !== tracksToDelete.length) {
-          alert("일부 트랙은 아직 저장되지 않아 삭제할 수 없습니다.");
+          toast.error("일부 트랙은 아직 저장되지 않아 삭제할 수 없습니다.");
         }
 
         const deletePayload: TrackToDelete[] = validTracksToDelete.map(
@@ -89,13 +91,13 @@ export default function MyAllTimeHits() {
 
         if (deleteMyAllTimeTrack.fulfilled.match(result)) {
           setDeletedTracks([]);
-          alert("선택한 곡이 삭제되었습니다.");
+          toast.success("선택한 곡이 삭제되었습니다.");
         } else {
           throw new Error("삭제 실패");
         }
       } catch (error) {
         console.error("삭제 실패:", error);
-        alert("삭제에 실패했습니다.");
+        toast.error("삭제에 실패했습니다.");
       }
     }
   };
@@ -112,7 +114,7 @@ export default function MyAllTimeHits() {
       );
 
       if (newTracks.length === 0) {
-        alert("변경사항이 없습니다.");
+        toast.error("변경사항이 없습니다.");
         return;
       }
 
@@ -131,7 +133,7 @@ export default function MyAllTimeHits() {
       const result = await dispatch(addMyAllTimeTrack(tracksToAdd));
 
       if (addMyAllTimeTrack.fulfilled.match(result)) {
-        alert("신규 트랙이 저장되었습니다!");
+        toast.success("신규 트랙이 저장되었습니다!");
 
         await dispatch(fetchMyAllTimeHits());
         navigate("/mypage");
@@ -140,7 +142,7 @@ export default function MyAllTimeHits() {
       }
     } catch (error) {
       console.error("저장 실패:", error);
-      alert("저장에 실패했습니다.");
+      toast.error("저장에 실패했습니다.");
     }
   };
 

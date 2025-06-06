@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import home from "../../images/home.svg";
@@ -34,7 +36,7 @@ export default function MusicSurvey() {
       return;
     }
     if (step === 1 && selectedGenre.length >= 3) {
-      alert("장르는 최대 3개까지만 선택할 수 있습니다.");
+      toast.error("장르는 최대 3개까지만 선택할 수 있습니다.");
       return;
     }
     setSelectedGenre((prev) => [...prev, genreName]);
@@ -53,13 +55,13 @@ export default function MusicSurvey() {
   const handleNext = async () => {
     if (step === 1) {
       if (selectedGenre.length === 0) {
-        alert("장르는 최소 1개 이상 선택해야 합니다.");
+        toast.error("장르는 최소 1개 이상 선택해야 합니다.");
         return;
       }
       setStep(2);
     } else if (step === 2) {
       if (selectedArtists.length === 0) {
-        alert("아티스트는 최소 1명 이상 선택해야 합니다.");
+        toast.error("아티스트는 최소 1명 이상 선택해야 합니다.");
         return;
       }
       setStep(3);

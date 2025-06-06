@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import prevIcon from "../../images/chevron-left.svg";
 import SearchBar from "../../components/SearchBar";
@@ -63,7 +65,7 @@ export default function FindFriends() {
       }
     } catch (error) {
       console.error("팔로우/언팔로우 실패:", error);
-      alert("요청에 실패했어요. 다시 시도해주세요.");
+      toast.error("요청에 실패했어요. 다시 시도해주세요.");
     }
   };
 
@@ -96,10 +98,15 @@ export default function FindFriends() {
         </p>
 
         {!isSearched ? (
-          <div className="flex flex-col gap-1 items-center justify-center text-secondary mt-20">
+          <div className="flex flex-col gap-1 items-center justify-center mt-20 ">
             <img src={sampleImg} alt="샘플 이미지" className="w-24 h-24 mb-4" />
-            <p>찾고 싶은 친구를 검색해보세요!</p>
-            <p>검색 결과는 여기에 표시됩니다</p>
+            <p className="animate-pulse text-secondary ">
+              찾고 싶은 친구를 검색해보세요!
+            </p>
+            <p className="text-sm text-primary mt-2">
+              전체 친구 리스트 보려면... 검색창 살짝 누르고 엔터! 🤫
+            </p>
+
             {error && <p>검색에 실패했습니다.</p>}
           </div>
         ) : !loading && friends.length === 0 ? (
