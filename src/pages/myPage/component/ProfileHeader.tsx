@@ -1,6 +1,6 @@
 import menu from "../../../images/hamburger.svg";
 import homeIcon from "../../../images/home.svg";
-import sample from "../../../images/sample.png";
+import sample from "../../../images/music-cat-full.png";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../../api/profile/getProfile";
 import { useEffect, useState } from "react";
