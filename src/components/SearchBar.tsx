@@ -12,31 +12,30 @@ export default function SearchBar({
   onSubmit,
   ...rest
 }: SearchBarProps) {
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && onSubmit) {
-      onSubmit();
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSubmit) onSubmit();
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <form onSubmit={handleSubmit} className="relative w-full max-w-md">
       <input
         type="text"
-        className="w-full min-w-[300px] p-2 pl-0 text-sm border-b-2 bg-transparent border-b-white text-white placeholder:text-gray-100 focus:outline-none"
+        className="w-full min-w-[300px] p-2 pl-0 text-sm border-b-2 bg-transparent border-b-white text-white placeholder:text-gray-100 focus:outline-none appearance-none rounded-none"
         placeholder={placeholderText}
         value={value}
         onChange={onChange}
-        onKeyDown={handleKeyPress}
         {...rest}
       />
 
       <svg
-        className="absolute right-1 top-1/2 transform -translate-y-1/2"
+        className="absolute right-1 top-1/2 transform -translate-y-1/2 cursor-pointer"
         width="26"
         height="28"
         viewBox="0 0 26 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        onClick={onSubmit}
       >
         <path
           fillRule="evenodd"
@@ -45,6 +44,6 @@ export default function SearchBar({
           fill="white"
         />
       </svg>
-    </div>
+    </form>
   );
 }
