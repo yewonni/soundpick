@@ -1,8 +1,9 @@
-import backIcon from "../../../images/chevron-left.svg";
-import catImg from "../../../images/music-cat-full.png";
-import plus from "../../../images/plus-icon.svg";
-import check from "../../../images/check-on.svg";
-import SearchBar from "../../../components/SearchBar";
+import backIcon from "../images/chevron-left.svg";
+import catImg from "../images/music-cat-full.png";
+import plus from "../images/plus-icon.svg";
+import check from "../images/check-on.svg";
+import SearchBar from "./SearchBar";
+import Pagination from "./Pagination";
 
 type Item = {
   imageSrc: string;
@@ -19,7 +20,6 @@ type Props = {
   onKeywordChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch: () => void;
   onToggleSelect: (item: Item) => void;
-
   onBack: () => void;
   error?: string;
   isSearched: boolean;
@@ -28,6 +28,9 @@ type Props = {
   currentCount?: number;
   canSelectMore?: boolean;
   itemType?: string;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 };
 
 export default function GenericSearchUI({
@@ -46,12 +49,13 @@ export default function GenericSearchUI({
   currentCount = 0,
   canSelectMore = true,
   itemType = "항목",
+  currentPage,
+  totalPages,
+  onPageChange,
 }: Props) {
-  // 아이템 클릭 핸들러 수정
   const handleItemClick = (item: Item) => {
     const isSelected = selectedItems.includes(item.seq ?? "");
 
-    // 선택 해제하는 경우는 항상 허용
     if (isSelected) {
       onToggleSelect(item);
       return;
@@ -89,9 +93,9 @@ export default function GenericSearchUI({
         </div>
       </header>
 
-      <main className="w-full min-h-screen md:flex md:px-[20%] md:py-6">
+      <main className="w-full min-h-screen md:flex md:flex-col md:px-[20%] md:py-6">
         <section className="w-full">
-          <div className="p-4 md:p-0 flex justify-center w-full md:mb-10">
+          <div className="p-4 md:p-0 flex justify-center w-full md:mb-8">
             <SearchBar
               onSubmit={onSearch}
               value={keyword}
@@ -100,7 +104,7 @@ export default function GenericSearchUI({
             />
           </div>
 
-          <div className="space-y-2 md:mt-5 md:border md:border-bg-peach rounded-md md:p-3">
+          <div className="space-y-2 md:mt-6 md:border md:border-bg-peach rounded-md md:p-4">
             {!loading && !error && (
               <>
                 {!isSearched ? (
@@ -110,13 +114,13 @@ export default function GenericSearchUI({
                       alt="음악 고양이"
                       className="w-[120px] md:w-[180px]"
                     />
-                    <p className="text-base md:text-lg">
+                    <p className="text-primary md:text-lg animate-pulse">
                       찾고 싶은 {title}
                       {itemType === "아티스트" ? "를" : "을"} 검색해보세요!
                     </p>
 
-                    <p className="text-sm text-gray-100">
-                      아티스트명이나 곡 제목을 영문으로 입력해보세요
+                    <p className="text-sm text-gray-100 ">
+                      Spotify 기준, 영문 검색을 권장해요 :)
                     </p>
                   </div>
                 ) : items.length === 0 ? (
@@ -128,16 +132,16 @@ export default function GenericSearchUI({
                     <article
                       key={item.title}
                       onClick={() => handleItemClick(item)}
-                      className="flex items-center justify-between px-4 py-2 md:py-5 rounded cursor-pointer"
+                      className="flex items-center justify-between px-4 py-3 md:py-5 rounded border shadow-sm hover:bg-bg-sub cursor-pointer transition"
                     >
                       <div className="flex gap-4 items-center">
                         <img
                           src={item.imageSrc || catImg}
                           alt={item.title || `${title} 이미지 없음`}
-                          className="w-[50px] h-[50px] md:w-[100px] md:h-[100px] rounded-sm object-cover bg-gray-100"
+                          className="w-[50px] h-[50px] md:w-[80px] md:h-[80px] rounded-sm object-cover bg-gray-100"
                         />
-                        <div className="flex flex-col gap-2 max-w-[180px] md:max-w-none">
-                          <h2 className="font-bold text-sm md:text-base text-text-base truncate">
+                        <div className="flex flex-col gap-1 max-w-[180px] md:max-w-none">
+                          <h2 className="font-bold text-sm md:text-base text-text-base truncate max-w-[600px]">
                             {item.title || `알 수 없음`}
                           </h2>
                           {item.subTitle && (
@@ -171,6 +175,15 @@ export default function GenericSearchUI({
             )}
           </div>
         </section>
+        {isSearched && items.length > 0 && (
+          <div className="mt-10 mb-10">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={onPageChange}
+            />
+          </div>
+        )}
       </main>
     </>
   );
