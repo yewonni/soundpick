@@ -9,6 +9,7 @@ interface MyPlaylistResponse {
   data: {
     content: [
       {
+        memberPlaylistHistorySeq: string;
         spotifyPlaylistId: string;
         spotifyPlaylistSeq: string;
         name: string;
@@ -34,8 +35,11 @@ export const registerMyPlaylist = (data: MyPlaylistRequest) => {
 };
 
 //플리 내용 수정
-export const editMyPlaylist = (data: MyPlaylistRequest) => {
-  return axiosInstance.put("/api/spotify/playlist", data);
+export const editMyPlaylist = (
+  data: MyPlaylistRequest,
+  spotifyPlaylistSeq: string
+) => {
+  return axiosInstance.put(`/api/spotify/playlist/${spotifyPlaylistSeq}`, data);
 };
 
 // 플리 이미지 등록
@@ -55,6 +59,18 @@ export const uploadMyPlaylistImage = (
       },
     }
   );
+};
+
+// 플리 삭제
+interface DeleteMyPlaylist {
+  memberPlaylistHistorySeq: string;
+}
+export const deleteMyPlaylist = (data: DeleteMyPlaylist[]) => {
+  return axiosInstance.request({
+    url: "/api/members/playlists",
+    method: "delete",
+    data,
+  });
 };
 
 // 트랙 추가
@@ -77,10 +93,10 @@ interface DeletePlaylistTracks {
 }
 export const deletePlaylistTrack = (
   data: DeletePlaylistTracks[],
-  spotifyPlaylistId: string
+  spotifyPlaylistSeq: string
 ) => {
   return axiosInstance.request({
-    url: `/api/spotify/playlist/${spotifyPlaylistId}`,
+    url: `/api/spotify/playlist/${spotifyPlaylistSeq}/tracks`,
     method: "delete",
     data,
   });
