@@ -13,6 +13,7 @@ interface ArtistsResponse {
         }[];
       }
     ];
+    totalElements: number;
   };
 }
 

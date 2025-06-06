@@ -12,6 +12,7 @@ interface SearchResponse {
         }[];
       }
     ];
+    totalElements: number;
   };
 }
 
@@ -29,6 +30,7 @@ interface TrackResponse {
         trackArtistNameList: string;
       }
     ];
+    totalElements: number;
   };
 }
 
