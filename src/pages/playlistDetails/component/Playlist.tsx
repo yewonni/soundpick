@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getPlaylistTracks } from "../../../api/playlistDetails/playlistDetails";
 import { Track } from "../../../api/playlistDetails/playlistDetails";
+import { openYoutubeSearch } from "../../../utils/openYoutubeSearch";
 
 interface PlaylistProps {
   isMobile: boolean;
@@ -19,18 +20,25 @@ export default function Playlist({
   const [playlistTrackData, setPlaylistTrackData] = useState<Track[] | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(false);
   const { seq } = useParams();
 
   useEffect(() => {
-    if (seq) {
-      getPlaylistTracks(seq)
-        .then((res) => {
+    const fetchPlaylistTracks = async () => {
+      try {
+        setIsLoading(true);
+        if (seq) {
+          const res = await getPlaylistTracks(seq);
           setPlaylistTrackData(res.data.data);
-        })
-        .catch((err) => {
-          console.error("트랙 불러오기 실패", err);
-        });
-    }
+        }
+      } catch (err) {
+        console.error("트랙 불러오기 실패", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPlaylistTracks();
   }, [seq]);
 
   return (
@@ -46,7 +54,12 @@ export default function Playlist({
           <div className="flex justify-center items-center">기타</div>
         </div>
       )}
-      {}
+      {isLoading && (
+        <p className="text-center text-sm text-secondary animate-pulse py-8">
+          트랙 목록 불러오는 중...
+        </p>
+      )}
+
       {playlistTrackData?.map((item, index) => (
         <article key={index} className="mb-4 cursor-pointer">
           {!isMobile && (
@@ -62,9 +75,13 @@ export default function Playlist({
               <div
                 className="flex items-center px-2 font-bold text-text-base text-sm hover:underline overflow-hidden whitespace-nowrap truncate max-w-[250px]"
                 title={item.name}
+                onClick={() =>
+                  openYoutubeSearch(item.name, item.trackArtists[0]?.name || "")
+                }
               >
                 {item.name}
               </div>
+
               <div
                 className="flex items-center text-gray-100 px-2 text-sm overflow-hidden whitespace-nowrap truncate max-w-[160px]"
                 title={item.trackArtists[0]?.name}
@@ -85,7 +102,12 @@ export default function Playlist({
 
           {isMobile && (
             <div className="flex md:hidden justify-between items-center w-full mt-3">
-              <div className="flex items-center gap-5">
+              <div
+                className="flex items-center gap-5"
+                onClick={() =>
+                  openYoutubeSearch(item.name, item.trackArtists[0]?.name || "")
+                }
+              >
                 <img
                   src={item?.imageList?.[0]?.url || catImg}
                   alt={item.name}
@@ -98,6 +120,7 @@ export default function Playlist({
                   >
                     {item.name}
                   </h2>
+
                   {item.trackArtists[0]?.name && (
                     <p
                       className="text-xs text-gray-100 overflow-hidden whitespace-nowrap truncate"

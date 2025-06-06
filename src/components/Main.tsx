@@ -18,6 +18,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import catImg from "../images/music-cat-full.png";
 import LoginModal from "./LoginModal";
+import { openYoutubeSearch } from "../utils/openYoutubeSearch";
 
 const SwiperSection = ({
   title,
@@ -65,6 +66,7 @@ const SwiperSection = ({
             imageSrc: artist.imageList[0]?.url ?? "",
             title: artist.name,
             seq: artist.seq,
+            detailPageUrl: artist.detailPageUrl,
           }));
           setDataList(data);
         }
@@ -93,15 +95,20 @@ const SwiperSection = ({
       console.error("데이터 불러오기 실패", error);
       setError("정보를 불러오는 데 실패했습니다.");
     }
-  }, [isLoggedIn, preferenceAnalyzed, isArtistSection, isPlaylistSection]);
+  }, [isLoggedIn, preferenceAnalyzed, title]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, title]);
 
   // 카드 클릭 핸들러
   const handleCardClick = (item: any) => {
     if (isArtistSection) {
+      if (title === SECTION_TITLES.POPULAR_ARTISTS && item.detailPageUrl) {
+        window.open(item.detailPageUrl, "_blank");
+      } else if (title === TASTE_MATCHING_MUSIC_TITLE) {
+        openYoutubeSearch(item.title, item.subTitle || "");
+      }
       return;
     } else if (isPlaylistSection) {
       if (!isLoggedIn && title === SECTION_TITLES.RECOMMENDED_PLAYLISTS) {

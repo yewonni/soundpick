@@ -5,6 +5,7 @@ import { getTrackRecommendations } from "../../api/analysis/recommendation";
 import HamburgerMenu from "../../components/HamburgerMenu";
 import { useAuth } from "../../context/AuthContext";
 import catImg from "../../images/music-cat-full.png";
+import { openYoutubeSearch } from "../../utils/openYoutubeSearch";
 
 export default function RecommendedTrackPage() {
   const { userNickname } = useAuth();
@@ -19,6 +20,7 @@ export default function RecommendedTrackPage() {
   const fetchRecommendedTracks = async () => {
     try {
       setError("");
+
       const res = await getTrackRecommendations();
       const trackData = res.data.data.content.map((track: any) => ({
         imageSrc: track.imageList[0]?.url ?? "",
@@ -59,7 +61,10 @@ export default function RecommendedTrackPage() {
               key={index}
               className="w-[45%] sm:w-[30%] md:w-[22%] flex-shrink-0 group relative cursor-pointer"
             >
-              <div className="w-full aspect-square rounded-lg overflow-hidden relative">
+              <div
+                className="w-full aspect-square rounded-lg overflow-hidden relative"
+                onClick={() => openYoutubeSearch(track.title, "")}
+              >
                 <img
                   src={track.imageSrc || catImg}
                   alt={track.title}
