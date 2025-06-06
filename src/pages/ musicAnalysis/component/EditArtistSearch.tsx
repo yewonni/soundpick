@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import GenericSearchUI from "./GenericSearchUI";
+import GenericSearchUI from "../../../components/GenericSearchUI";
 import { useAnalysisResult } from "../../../context/AnalysisResultContext";
 import { artistSearch } from "../../../api/search/artistSearch";
 import { useLoading } from "../../../context/LoadingContext";
@@ -22,11 +24,12 @@ export default function EditArtistSearch() {
   const { recommendationData } = useAnalysisResult();
   const { loading } = useLoading();
   const { selectedArtists, toggleArtist } = useArtistSelection();
-
   const [error, setError] = useState("");
   const [keyword, setKeyword] = useState("");
   const [searchedArtists, setSearchedArtists] = useState<Item[] | null>(null);
   const [isSearched, setIsSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   let artistList = recommendationData?.data.artistList || [];
   const deletedArtistSeqs = location.state?.deletedArtists || [];
@@ -54,17 +57,27 @@ export default function EditArtistSearch() {
       setError("");
       setIsSearched(true);
       setSearchedArtists([]);
-      const res = await artistSearch(0, 10, keyword);
+
+      const pageSize = 15;
+      const page = currentPage - 1;
+
+      const res = await artistSearch(page, pageSize, keyword);
+
+      const total = Number(res.data.data.totalElements);
+      const calculatedTotalPages = Math.ceil(total / pageSize);
+      const MAX_PAGE_LIMIT = 15;
+
       const searchData = res.data.data.content.map((result) => ({
         imageSrc: result.imageList[0]?.url ?? "",
-        title: result.name,
+        title: result.name ?? "unknown",
         seq: result.seq,
         spotifyArtistId: result.spotifyArtistId,
       }));
       setSearchedArtists(searchData);
+      setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
     } catch (error) {
       console.error(error, "오류가 발생했습니다.");
-      setError("검색에 실패했습니다.");
+      setError("검색 실패. 다시 시도해주세요.");
     }
   };
 
@@ -75,17 +88,22 @@ export default function EditArtistSearch() {
     const isCurrentlySelected = selectedArtists.some(
       (a) => a.seq === artist.seq
     );
-    const isAlreadyInRecommendation = artistList.some(
-      (a) => a.spotifyArtistId === artist.spotifyArtistId
-    );
 
-    if (isAlreadyInRecommendation) {
-      alert("이미 추천된 아티스트입니다.");
-      return;
+    if (artist.spotifyArtistId !== undefined) {
+      const originalArtistIds = artistList
+        .slice(0, 20)
+        .map((a) => a.spotifyArtistId);
+      const isAlreadyInRecommendation = originalArtistIds.includes(
+        artist.spotifyArtistId
+      );
+      if (isAlreadyInRecommendation) {
+        toast.error("이미 추천된 아티스트입니다.");
+        return;
+      }
     }
 
     if (!isCurrentlySelected && currentSelectedCount >= MAX_ARTISTS) {
-      alert(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
+      toast.error(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
       return;
     }
 
@@ -105,23 +123,43 @@ export default function EditArtistSearch() {
     });
   };
 
+  // 페이지네이션
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [keyword]);
+
+  useEffect(() => {
+    if (isSearched) {
+      handleSearch();
+    }
+  }, [currentPage]);
+
   return (
-    <GenericSearchUI
-      title="추천 아티스트"
-      onBack={handleBack}
-      items={displayedArtists}
-      selectedItems={selectedArtists.map((artist) => artist.seq ?? "")}
-      keyword={keyword}
-      onKeywordChange={handleInputChange}
-      onSearch={handleSearch}
-      onToggleSelect={toggleSelect}
-      error={error}
-      isSearched={isSearched}
-      loading={loading}
-      maxCount={MAX_ARTISTS}
-      currentCount={currentCount}
-      canSelectMore={canSelectMore()}
-      itemType="아티스트"
-    />
+    <>
+      <GenericSearchUI
+        title="추천 아티스트"
+        onBack={handleBack}
+        items={displayedArtists}
+        selectedItems={selectedArtists.map((artist) => artist.seq ?? "")}
+        keyword={keyword}
+        onKeywordChange={handleInputChange}
+        onSearch={handleSearch}
+        onToggleSelect={toggleSelect}
+        error={error}
+        isSearched={isSearched}
+        loading={loading}
+        maxCount={MAX_ARTISTS}
+        currentCount={currentCount}
+        canSelectMore={canSelectMore()}
+        itemType="아티스트"
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </>
   );
 }

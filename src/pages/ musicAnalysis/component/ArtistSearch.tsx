@@ -1,8 +1,9 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { artistSearch } from "../../../api/search/artistSearch";
-import GenericSearchUI from "./GenericSearchUI";
+import GenericSearchUI from "../../../components/GenericSearchUI";
 import { useLoading } from "../../../context/LoadingContext";
 import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
 
@@ -15,6 +16,8 @@ export default function ArtistSearch() {
   const [searchedArtists, setSearchedArtists] = useState<Item[] | null>(null);
   const [isSearched, setIsSearched] = useState(false);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   type Item = {
     imageSrc: string;
@@ -33,14 +36,24 @@ export default function ArtistSearch() {
     try {
       setIsSearched(true);
       setSearchedArtists([]);
-      const res = await artistSearch(0, 10, keyword);
+
+      const pageSize = 15;
+      const page = currentPage - 1;
+
+      const res = await artistSearch(page, pageSize, keyword);
+
+      const total = Number(res.data.data.totalElements);
+      const calculatedTotalPages = Math.ceil(total / pageSize);
+      const MAX_PAGE_LIMIT = 15;
+
       const searchData = res.data.data.content.map((result) => ({
         imageSrc: result.imageList[0]?.url ?? "",
-        title: result.name,
+        title: result.name ?? "",
         seq: result.seq,
         spotifyArtistId: result.spotifyArtistId,
       }));
       setSearchedArtists(searchData);
+      setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
     } catch (error) {
       console.error("검색 오류", error);
       setError("검색에 실패했습니다.");
@@ -66,12 +79,12 @@ export default function ArtistSearch() {
     );
 
     if (isAlreadyInRecommendation) {
-      alert("이미 선택된 아티스트입니다.");
+      toast.error("이미 선택된 아티스트입니다.");
       return;
     }
 
     if (selectedArtists.length >= MAX_ARTISTS) {
-      alert(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
+      toast.error(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
       return;
     }
 
@@ -97,23 +110,43 @@ export default function ArtistSearch() {
     }
   };
 
+  // 페이지네이션
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [keyword]);
+
+  useEffect(() => {
+    if (isSearched) {
+      handleSearch();
+    }
+  }, [currentPage]);
+
   return (
-    <GenericSearchUI
-      title="아티스트"
-      items={displayedArtists}
-      selectedItems={selectedArtists.map((a) => a.seq ?? "")}
-      keyword={keyword}
-      onKeywordChange={handleInputChange}
-      onSearch={handleSearch}
-      onToggleSelect={toggleSelect}
-      onBack={handleBack}
-      error={error}
-      isSearched={isSearched}
-      loading={loading}
-      maxCount={MAX_ARTISTS}
-      currentCount={selectedArtists.length}
-      canSelectMore={canSelectMore()}
-      itemType="아티스트"
-    />
+    <>
+      <GenericSearchUI
+        title="아티스트"
+        items={displayedArtists}
+        selectedItems={selectedArtists.map((a) => a.seq ?? "")}
+        keyword={keyword}
+        onKeywordChange={handleInputChange}
+        onSearch={handleSearch}
+        onToggleSelect={toggleSelect}
+        onBack={handleBack}
+        error={error}
+        isSearched={isSearched}
+        loading={loading}
+        maxCount={MAX_ARTISTS}
+        currentCount={selectedArtists.length}
+        canSelectMore={canSelectMore()}
+        itemType="아티스트"
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </>
   );
 }

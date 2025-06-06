@@ -13,6 +13,7 @@ import { useLoading } from "../../context/LoadingContext";
 import { useSearchInput } from "../../context/SearchContext";
 import catImg from "../../images/music-cat-full.png";
 import { DataCardProps } from "./component/SongResult";
+import Pagination from "../../components/Pagination";
 
 export default function SearchResult() {
   const { inputValue, setInputValue } = useSearchInput();
@@ -27,6 +28,8 @@ export default function SearchResult() {
   const [playlistResult, setPlaylistResult] = useState<MusicCardDataProps[]>(
     []
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // 검색 관련 함수들
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,47 +48,74 @@ export default function SearchResult() {
   useEffect(() => {
     if (!keyword) return;
 
-    setTrackResult([]);
-    setPlaylistResult([]);
-
     const fetchData = async () => {
       try {
         setIsSearched(false);
-        const [trackRes, playlistRes] = await Promise.all([
-          trackSearch(0, 10, keyword),
-          playlistSearch(0, 10, keyword),
-        ]);
 
-        const tracks = trackRes.data.data.content.map((item) => ({
-          imageSrc: item.imageList[0]?.url ?? catImg,
-          title: item.name,
-          subTitle: item.trackArtistNameList ?? "알 수 없음",
-          seq: item.spotifyTrackSeq,
-          spotifyTrackId: item.spotifyTrackId,
-        }));
+        const pageSize = 15;
+        const page = currentPage - 1;
+        if (isResultType === "song") {
+          const res = await trackSearch(page, pageSize, keyword);
+          const content = res.data.data.content;
+          const total = Number(res.data.data.totalElements);
+          const calculatedTotalPages = Math.ceil(total / pageSize);
+          const MAX_PAGE_LIMIT = 15;
 
-        const playlists = playlistRes.data.data.content.map((item) => ({
-          imageSrc: item.imageList[0]?.url ?? catImg,
-          title: item.name,
-          subTitle: "",
-          seq: item.seq,
-        }));
+          const tracks = content.map((item) => ({
+            imageSrc: item.imageList[0]?.url ?? catImg,
+            title: item.name,
+            subTitle:
+              Array.isArray(item.trackArtistNameList) &&
+              item.trackArtistNameList.length > 0
+                ? item.trackArtistNameList.join(", ")
+                : "unknown",
+            seq: item.spotifyTrackSeq,
+            spotifyTrackId: item.spotifyTrackId,
+          }));
 
-        setTrackResult(tracks);
-        setPlaylistResult(playlists);
+          setTrackResult(tracks);
+          setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
+        } else {
+          const res = await playlistSearch(page, pageSize, keyword);
+          const content = res.data.data.content;
+          const total = Number(res.data.data.totalElements);
+          const calculatedTotalPages = Math.ceil(total / pageSize);
+          const MAX_PAGE_LIMIT = 15;
+
+          setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
+
+          const playlists = content.map((item) => ({
+            imageSrc: item.imageList[0]?.url ?? catImg,
+            title: item.name,
+            subTitle: "",
+            seq: item.seq,
+          }));
+
+          setPlaylistResult(playlists);
+          setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
+        }
       } catch (error) {
         console.error("검색 에러:", error);
       } finally {
-        setIsSearched(true); // 무조건 마지막에 호출 (로딩 끝난 후 데이터를 불러오기 전 짧은 순간동안 검색결과 없음이 표시되는 플리커 현상 방지)
+        setIsSearched(true);
       }
     };
 
     fetchData();
-  }, [keyword]);
+  }, [keyword, currentPage, isResultType]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   useEffect(() => {
     setInputValue(keyword);
+    setCurrentPage(1);
   }, [keyword, setInputValue]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [isResultType]);
 
   return (
     <>
@@ -102,10 +132,7 @@ export default function SearchResult() {
           />
         </h1>
       </header>
-      <div
-        className="bg-[linear-gradient(360deg,_#f9d8d0,_#9e6c85)]
-"
-      >
+      <div className="bg-[linear-gradient(360deg,_#f9d8d0,_#9e6c85)]">
         <div className="px-4 pt-4 pb-0 md:px-[10%] md:py-0  text-white">
           <div className="md:hidden">
             <SearchBar
@@ -129,7 +156,7 @@ export default function SearchResult() {
             <p
               className={`cursor-pointer pb-1 ${
                 isResultType === "playlist"
-                  ? "text-text-base font-bold border-b-2  border-text-base"
+                  ? "text-text-base font-bold border-b-2 border-text-base"
                   : ""
               }`}
               onClick={() => handleResultType("playlist")}
@@ -157,6 +184,15 @@ export default function SearchResult() {
                 <PlaylistResult data={playlistResult} isMobile={isMobile} />
               )}
             </>
+          )}
+          {(isResultType === "song"
+            ? trackResult.length
+            : playlistResult.length) > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           )}
         </main>
       </div>
