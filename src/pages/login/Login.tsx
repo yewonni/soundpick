@@ -80,7 +80,7 @@ export default function Login() {
                 placeholder="ID"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
-                className="border-b border-b-text-base placeholder-text-base w-full py-2 focus:outline-none bg-transparent focus:bg-transparent"
+                className="border-b border-b-text-base placeholder-text-base w-full py-2 focus:outline-none bg-transparent focus:bg-transparent appearance-none rounded-none"
               />
               <label htmlFor="pw" className="sr-only">
                 비밀번호
@@ -92,7 +92,7 @@ export default function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-b border-b-text-base placeholder-text-base w-full py-2 focus:outline-none bg-transparent focus:bg-transparent"
+                className="border-b border-b-text-base placeholder-text-base w-full py-2 focus:outline-none bg-transparent focus:bg-transparent appearance-none rounded-none"
               />
               {errorMessage && (
                 <p className="text-xs text-text-subtle md:text-sm">
@@ -112,7 +112,7 @@ export default function Login() {
               로그인
             </Button>
             <p className="text-[#333] text-xs font-bold md:text-sm">
-              ※ 본 서비스는 Spotify 정보를 바탕으로 구성됩니다.
+              ※ 본 서비스는 Spotify 바탕으로 구성됩니다.
             </p>
           </form>
           <div className="flex gap-2 items-center justify-center mt-3 md:mt-4 text-xs md:text-sm text-text-base">

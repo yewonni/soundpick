@@ -20,8 +20,8 @@ export default function Input({ width = "md", ...props }: InputProps) {
 
   return (
     <input
-      className={`border-b border-text-base bg-transparent placeholder-gray-200
-     py-1 text-sm text-text-base focus:outline-none focus:ring-0 
+      className={`border-b border-b-text-base bg-transparent placeholder-gray-200
+     py-1 text-sm text-text-base focus:outline-none focus:ring-0 appearance-none rounded-none
      [&:-webkit-autofill]:appearance-none [&:-webkit-autofill]:bg-transparent
      [&:-webkit-autofill]:text-text-base [&:-webkit-autofill_selected]:bg-transparent
      [&:-webkit-autofill]:shadow-[0_0_0_30px_transparent_inset] ${getWidthClass()}`}
