@@ -28,6 +28,7 @@ export interface Track {
   playlistTrackSeq: string;
   spotifyPlaylistSeq: string;
   spotifyTrackSeq: string;
+  spotifyTrackId: string;
   spotifyPlaylistId: string;
   name: string;
   trackArtists: { name: string }[];
