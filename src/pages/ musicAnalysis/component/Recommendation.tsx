@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,6 +18,8 @@ import {
 import { useTrackSelection } from "../../../context/TrackSelectionContext";
 import { useArtistSelection } from "../../../context/ArtistSelectionContext";
 import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
+import { usePreventBack } from "../../../hooks/usePreventBack";
+import ConfirmExitModal from "../../../components/ConfirmExitModal";
 
 export default function Recommendation() {
   const navigate = useNavigate();
@@ -40,13 +44,19 @@ export default function Recommendation() {
     spotifyTrackId?: string;
   };
 
-  // 컴포넌트 마운트 시 Context 초기화 (새로운 분석 시작 시)
-  useEffect(() => {
-    if (!location.state?.currentStep || location.state.currentStep === 1) {
-      setDeletedTracks([]);
-      setDeletedArtists([]);
-    }
-  }, []);
+  // 브라우저 뒤로가기 방지
+  const { showConfirmModal, handleConfirm, handleCancel } = usePreventBack({
+    redirectPath: "/",
+    message: "",
+    onConfirm: () => {
+      setTracks([]);
+      setArtists([]);
+      resetArtists();
+    },
+    onCancel: () => {
+      console.log("사용자가 페이지에 머물기로 선택");
+    },
+  });
 
   // 추천 리스트가 최초 랜더링될 때 초기 리스트
   useEffect(() => {
@@ -252,7 +262,7 @@ export default function Recommendation() {
     const itemType = isTrackStep ? "트랙" : "아티스트";
 
     if (currentCount >= maxCount) {
-      alert(
+      toast.error(
         `${itemType}은 최대 ${maxCount}${
           isTrackStep ? "곡" : "명"
         }까지만 선택할 수 있어요!`
@@ -279,20 +289,20 @@ export default function Recommendation() {
   const handleNextStep = async () => {
     if (isTrackStep) {
       if (visibleTracks.length < MIN_TRACKS) {
-        alert(`트랙은 최소 ${MIN_TRACKS}개 이상 선택해주세요!`);
+        toast.error(`트랙은 최소 ${MIN_TRACKS}개 이상 선택해주세요!`);
         return;
       }
       if (visibleTracks.length > MAX_TRACKS) {
-        alert(`트랙은 최대 ${MAX_TRACKS}개까지만 선택할 수 있어요!`);
+        toast.error(`트랙은 최대 ${MAX_TRACKS}개까지만 선택할 수 있어요!`);
         return;
       }
     } else {
       if (visibleArtists.length < MIN_ARTISTS) {
-        alert(`아티스트는 최소 ${MIN_ARTISTS}명 이상 선택해주세요!`);
+        toast.error(`아티스트는 최소 ${MIN_ARTISTS}명 이상 선택해주세요!`);
         return;
       }
       if (visibleArtists.length > MAX_ARTISTS) {
-        alert(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
+        toast.error(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
         return;
       }
     }
@@ -448,6 +458,14 @@ export default function Recommendation() {
           />
         </div>
       </main>
+      <ConfirmExitModal
+        isOpen={showConfirmModal}
+        message="지금 나가면 추천 결과가 그대로 저장돼요. 괜찮으신가요?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        confirmText="홈으로 이동"
+        cancelText="계속 수정"
+      />
     </>
   );
 }
