@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -23,13 +25,11 @@ export default function Review() {
   const { comments, error } = useAppSelector((state) => state.comments);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
-
-  // 수정 상태
   const [editingSeq, setEditingSeq] = useState<string | null>(null);
   const [editComment, setEditComment] = useState<string>("");
   const [editRating, setEditRating] = useState<number>(0);
 
-  // 댓글 목록 처음에 불러오기
+  // 댓글 목록 불러오기
   useEffect(() => {
     if (!spotifyPlaylistSeq) return;
     dispatch(fetchComments({ page: 0, size: 10, spotifyPlaylistSeq }));
@@ -40,13 +40,11 @@ export default function Review() {
   };
 
   const handleSubmit = async () => {
-    console.log("버튼 클릭됨");
     if (!spotifyPlaylistSeq) {
-      console.log("spotifyPlaylistSeq 없음");
       return;
     }
     if (rating === 0) {
-      alert("별점을 선택해주세요.");
+      toast.error("별점을 선택해주세요.");
       return;
     }
 
@@ -64,10 +62,21 @@ export default function Review() {
       setComment("");
       setRating(0);
     } catch {
-      alert("댓글 등록에 실패했습니다.");
+      toast.error("댓글 등록에 실패했습니다.");
     }
   };
 
+  // 댓글 입력 수 제한
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const input = e.target.value;
+    if (input.length <= 20) {
+      setComment(input);
+    } else {
+      setComment(input.slice(0, 20));
+    }
+  };
+
+  // 댓글 삭제
   const handleDelete = async (seq: string) => {
     if (!spotifyPlaylistSeq) return;
     const ok = window.confirm("정말 삭제하시겠어요?");
@@ -77,7 +86,20 @@ export default function Review() {
       await dispatch(deleteComments({ spotifyPlaylistSeq, seq })).unwrap();
       await dispatch(fetchComments({ page: 0, size: 10, spotifyPlaylistSeq }));
     } catch {
-      alert("삭제에 실패했습니다.");
+      toast.error("삭제에 실패했습니다.");
+    }
+  };
+
+  //댓글 수정
+
+  const handleEditCommentChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const input = e.target.value;
+    if (input.length <= 20) {
+      setEditComment(input);
+    } else {
+      setEditComment(input.slice(0, 20));
     }
   };
 
@@ -96,7 +118,7 @@ export default function Review() {
   const handleEditSubmit = async () => {
     if (!spotifyPlaylistSeq || !editingSeq) return;
     if (editRating === 0) {
-      alert("별점을 선택해주세요.");
+      toast.error("별점을 선택해주세요.");
       return;
     }
 
@@ -113,7 +135,7 @@ export default function Review() {
       await dispatch(fetchComments({ page: 0, size: 10, spotifyPlaylistSeq }));
       handleEditCancel();
     } catch {
-      alert("수정에 실패했습니다.");
+      toast.error("수정에 실패했습니다.");
     }
   };
 
@@ -169,10 +191,9 @@ export default function Review() {
                 <div className="relative md:w-2/3">
                   <textarea
                     className="w-full h-[100px] p-3 text-sm border border-gray-300 rounded-md bg-white resize-none text-[#333] focus:outline-none focus:ring-2 focus:ring-[#BFCBFF] focus:border-[#BFCBFF] transition md:h-[120px] md:text-base"
-                    maxLength={20}
                     value={comment}
                     placeholder="자유롭게 감상평을 남겨주세요!"
-                    onChange={(e) => setComment(e.target.value)}
+                    onChange={handleCommentChange}
                   />
                   <span className="absolute bottom-3 right-3 text-gray-400 text-sm">
                     {comment.length}/20
@@ -238,9 +259,8 @@ export default function Review() {
                       <>
                         <textarea
                           value={editComment}
-                          onChange={(e) => setEditComment(e.target.value)}
+                          onChange={handleEditCommentChange}
                           className="w-full p-2 border rounded-md text-sm resize-none mb-2"
-                          maxLength={20}
                         />
                         <div className="flex gap-2 justify-end">
                           <button
