@@ -5,7 +5,6 @@ import prevIcon from "../../images/chevron-left.svg";
 import catImg from "../../images/music-cat-full.png";
 import Header from "../../components/Header";
 import useMediaQuery from "../../hooks/useMediaQuery";
-// import PlaylistModal from "../searchResult/component/PlaylistModal";
 import LikeAndComment from "./component/LikeAndComment";
 import Playlist from "./component/Playlist";
 import { useSearchInput } from "../../context/SearchContext";
