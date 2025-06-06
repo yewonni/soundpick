@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import closeIcon from "../images/close-btn.svg";
 import Button from "./Button";
 import { useAuth } from "../context/AuthContext";
@@ -10,6 +10,7 @@ interface HamburgerMenuProps {
 
 export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isLoggedIn, logout, userNickname, preferenceAnalyzed } = useAuth();
 
   return (
@@ -34,7 +35,16 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
         </p>
         <div className="flex justify-between items-baseline">
           {isLoggedIn ? (
-            <Button outline size="sm" onClick={() => navigate("/mypage")}>
+            <Button
+              outline
+              size="sm"
+              onClick={() => {
+                if (location.pathname !== "/mypage") {
+                  navigate("/mypage");
+                }
+                onClose?.();
+              }}
+            >
               마이페이지
             </Button>
           ) : (
@@ -42,6 +52,7 @@ export default function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
               로그인
             </Button>
           )}
+
           {isLoggedIn ? (
             <button
               className="text-sm text-[#333] font-semibold underline"
