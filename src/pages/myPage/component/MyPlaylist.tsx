@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import prevIcon from "../../../images/chevron-left.svg";
 import sample from "../../../images/music-cat-full.png";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +8,13 @@ import Checkbox from "../../../components/Checkbox";
 import RegisterButton from "../../../components/RegisterButton";
 import Button from "../../../components/Button";
 import { useAuth } from "../../../context/AuthContext";
-import { getMyPlaylist } from "../../../api/myPage/myPlaylist";
+import {
+  deleteMyPlaylist,
+  getMyPlaylist,
+} from "../../../api/myPage/myPlaylist";
 
 interface MyPlaylistType {
+  memberPlaylistHistorySeq: string;
   name: string;
   spotifyPlaylistSeq: string;
   description: string;
@@ -21,9 +27,9 @@ interface MyPlaylistType {
 
 export default function MyPlaylist() {
   const navigate = useNavigate();
-  const [isCircleChecked, setIsCircleChecked] = useState(false);
   const [myPlaylists, setMyPlaylists] = useState<MyPlaylistType[]>([]);
   const { userNickname } = useAuth();
+  const [deletedPlaylist, setDeletedPlaylist] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchMyPlaylists = async () => {
@@ -38,6 +44,34 @@ export default function MyPlaylist() {
 
     fetchMyPlaylists();
   }, []);
+
+  const toggleSelect = (id: string) => {
+    setDeletedPlaylist((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+    );
+  };
+
+  const handleMyPlaylistDelete = async () => {
+    if (!deletedPlaylist.length) {
+      toast.error("삭제할 플레이리스트를 선택해주세요");
+      return;
+    }
+
+    try {
+      await deleteMyPlaylist(
+        deletedPlaylist.map((id) => ({ memberPlaylistHistorySeq: id }))
+      );
+      setMyPlaylists((prev) =>
+        prev.filter(
+          (item) => !deletedPlaylist.includes(item.memberPlaylistHistorySeq)
+        )
+      );
+      setDeletedPlaylist([]);
+      toast.success("성공적으로 삭제되었습니다.");
+    } catch (error) {
+      console.error(error, "플레이리스트 삭제 실패");
+    }
+  };
 
   return (
     <>
@@ -58,8 +92,8 @@ export default function MyPlaylist() {
           >
             <Checkbox
               type="circle"
-              checked={isCircleChecked}
-              onChange={setIsCircleChecked}
+              checked={deletedPlaylist.includes(data.memberPlaylistHistorySeq)}
+              onChange={() => toggleSelect(data.memberPlaylistHistorySeq)}
             />
             <img
               src={data.imageList[0]?.url ? data.imageList[0]?.url : sample}
@@ -83,7 +117,7 @@ export default function MyPlaylist() {
           <RegisterButton onClick={() => navigate("/register-playlist")}>
             새 플레이리스트 만들기
           </RegisterButton>
-          <Button>삭제하기</Button>
+          <Button onClick={handleMyPlaylistDelete}>삭제하기</Button>
         </div>
       </main>
     </>
