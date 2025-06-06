@@ -126,7 +126,7 @@ axiosInstance.interceptors.request.use((config) => {
         const currentIsInitializing = getIsInitializing?.();
         const currentHasInitialized = getHasInitialized?.();
 
-        if (!currentIsInitializing && currentHasInitialized) {
+        if ((!currentIsInitializing && currentHasInitialized) || isLoggedIn) {
           resolve(config); // 바로 config를 반환 (axiosInstance 호출 아님)
         } else {
           setTimeout(checkAndRetry, 100);
@@ -249,10 +249,12 @@ axiosInstance.interceptors.response.use(
         }
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError, null);
-        console.error("토큰 갱신 실패", refreshError);
-        window.location.href = "/login";
-        return Promise.reject(refreshError);
+        if (window.location.pathname !== "/") {
+          processQueue(refreshError, null);
+          console.error("토큰 갱신 실패", refreshError);
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
+        }
       } finally {
         isRefreshing = false;
       }
