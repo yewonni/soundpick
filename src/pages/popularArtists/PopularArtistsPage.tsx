@@ -4,9 +4,16 @@ import { getArtists } from "../../api/analysis/artists";
 import { SECTION_TITLES } from "../../constants/constants";
 import HamburgerMenu from "../../components/HamburgerMenu";
 import catImg from "../../images/music-cat-full.png";
+
+interface Artist {
+  imageSrc: string;
+  title: string;
+  detailPageUrl: string;
+}
 export default function PopularArtistsPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [artists, setArtists] = useState<any[]>([]);
+
+  const [artists, setArtists] = useState<Artist[]>([]);
   const [error, setError] = useState("");
 
   const handleMenuOpen = () => setIsMenuOpen(true);
@@ -19,6 +26,7 @@ export default function PopularArtistsPage() {
       const artistData = res.data.data.content.map((artist) => ({
         imageSrc: artist.imageList[0]?.url ?? "",
         title: artist.name,
+        detailPageUrl: artist.detailPageUrl,
       }));
       setArtists(artistData);
     } catch (error) {
@@ -30,6 +38,12 @@ export default function PopularArtistsPage() {
   useEffect(() => {
     fetchArtists("korea");
   }, []);
+
+  const handleCardClick = (url: string) => {
+    if (url) {
+      window.open(url, "_blank");
+    }
+  };
 
   return (
     <>
@@ -54,6 +68,7 @@ export default function PopularArtistsPage() {
             <div
               key={index}
               className="w-[120px] md:w-[150px] flex-shrink-0 group relative cursor-pointer"
+              onClick={() => handleCardClick(artist.detailPageUrl)}
             >
               <div className="relative transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg rounded-full overflow-hidden">
                 <img

@@ -8,6 +8,7 @@ interface ArtistsResponse {
       seq: string;
       subject: string;
       name: string;
+      detailPageUrl: string;
       imageList: {
         url: string;
       }[];
