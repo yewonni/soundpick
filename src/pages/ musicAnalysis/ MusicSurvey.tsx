@@ -111,7 +111,7 @@ export default function MusicSurvey() {
                 </p>
                 <p className="">
                   {step === 1
-                    ? `${selectedGenre.length}곡`
+                    ? `${selectedGenre.length}개`
                     : `${selectedArtists.length}명`}
                 </p>
               </div>
