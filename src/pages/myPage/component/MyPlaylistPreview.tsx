@@ -31,15 +31,17 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
   const { userNickname } = useAuth();
   const [myPlaylists, setMyPlaylists] = useState<MyPlaylistType[]>([]);
   const { loading } = useLoading();
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchMyPlaylists = async () => {
       try {
+        setError(false);
         const response = await getMyPlaylist();
 
         setMyPlaylists(response.data.data.content);
       } catch (error) {
-        console.error(error, "나의 플리 가져오기 오류 발생");
+        setError(true);
       }
     };
 
@@ -93,12 +95,18 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
               ))}
             </div>
           )}
+          {error && (
+            <p className="text-primary">
+              나의 플레이리스트를 불러오는 데 실패했습니다.
+            </p>
+          )}
         </section>
       )}
       {isMobile && (
         <section className="bg-white shadow-lg p-6 pr-0 w-full md:hidden min-h-[200px]">
           <div className="flex justify-between items-center mb-4 pr-6">
             <h2 className="font-bold">{userNickname}'s 플레이리스트</h2>
+
             {myPlaylists.length > 0 && (
               <ViewButton onClick={() => navigate("/my-playlist")}>
                 전체보기
@@ -146,6 +154,11 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
                 ))}
               </Swiper>
             </div>
+          )}
+          {error && (
+            <p className="text-primary">
+              나의 플레이리스트를 불러오는 데 실패했습니다.
+            </p>
           )}
         </section>
       )}

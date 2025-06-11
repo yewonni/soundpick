@@ -20,16 +20,18 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
   const { isLoggedIn } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) return;
 
     const fetchProfile = async () => {
       try {
+        setError(false);
         const res = await getProfile();
         setProfile(res.data.data);
       } catch (error) {
-        console.error("서버 오류 발생", error);
+        setError(true);
       }
     };
 
@@ -65,6 +67,11 @@ export default function ProfileHeader({ onClick }: ProfileHeaderProps) {
           onClick={onClick}
         />
         {/* Desktop Profile  */}
+        {error && (
+          <p className="text-primary">
+            프로필 정보를 불러오는 데 실패했습니다.
+          </p>
+        )}
         <div className="relative flex flex-col justify-between items-center px-4 pt-[60px] mt-6 md:flex-row md:items-center md:pt-0 md:mt-10 md:px-0">
           <img
             src={profile?.imageUrl ? `${baseUrl}${profile.imageUrl}` : sample}

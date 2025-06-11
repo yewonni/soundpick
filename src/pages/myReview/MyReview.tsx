@@ -33,13 +33,15 @@ export default function MyReview() {
   const dispatch = useAppDispatch();
   const { loading } = useLoading();
   const [reviewData, setReviewData] = useState<ReviewItem[]>([]);
+  const [error, setError] = useState(false);
 
   const fetchMyReview = async () => {
     try {
+      setError(false);
       const res = await getMyReview();
       setReviewData(res.data.data.content);
     } catch (error) {
-      console.log("리뷰 불러오기 실패", error);
+      setError(true);
     }
   };
 
@@ -71,6 +73,9 @@ export default function MyReview() {
         <h1 className="font-bold text-lg ">내가 남긴 한 마디</h1>
       </header>
       <main className="w-full min-h-screen bg-bg-peach p-4 md:px-[20%]">
+        {error && (
+          <p className="text-primary">리뷰를 불러오는 데 실패했습니다.</p>
+        )}
         <p className="font-bold text-primary py-1 border-b border-b-bg-secondary">
           총 {reviewData.length}개
         </p>

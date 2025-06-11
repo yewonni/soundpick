@@ -13,17 +13,19 @@ export default function MyFriends() {
   const [following, setFollowing] = useState<Following[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState(false);
 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const fetchFollowingList = async (page: number) => {
     try {
+      setError(false);
       const res = await getFollowingList(page - 1);
       setFollowing(res.data.data.content);
       setCurrentPage(res.data.data.number + 1);
       setTotalPages(res.data.data.totalPages);
     } catch (error) {
-      console.error("팔로잉 목록 불러오기 실패:", error);
+      setError(true);
     }
   };
 
@@ -58,6 +60,11 @@ export default function MyFriends() {
             새로운 친구 찾기
           </button>
         </div>
+        {error && (
+          <p className="text-primary">
+            팔로잉 목록을 불러오는 데 실패했습니다.
+          </p>
+        )}
 
         {!loading && following.length === 0 ? (
           <div className="text-center text-[#666] mt-20">

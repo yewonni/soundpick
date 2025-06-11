@@ -23,10 +23,12 @@ export default function PlaylistModal({
 }: PlaylistModalProps) {
   const { loading } = useLoading();
   const [myPlaylists, setMyPlaylists] = useState<Playlist[]>([]);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
+        setError(false);
         const res = await getMyPlaylist();
         const content = res.data.data.content;
         const playlists = content.map((item) => ({
@@ -36,7 +38,7 @@ export default function PlaylistModal({
         }));
         setMyPlaylists(playlists);
       } catch (error) {
-        console.error("플레이리스트 불러오기 실패:", error);
+        setError(true);
       }
     };
 
@@ -77,6 +79,7 @@ export default function PlaylistModal({
           </div>
 
           <div className="flex flex-col gap-2 text-xs text-gray-700 max-h-60 overflow-y-auto">
+            {error && <p>플레이리스트 불러오기 실패</p>}
             {!loading && myPlaylists.length === 0 ? (
               <p className="text-center text-gray-400 text-sm py-4">
                 생성된 플레이리스트가 없습니다.

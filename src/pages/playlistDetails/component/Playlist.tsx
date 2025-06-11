@@ -8,31 +8,27 @@ import { openYoutubeSearch } from "../../../utils/openYoutubeSearch";
 
 interface PlaylistProps {
   isMobile: boolean;
-  onClick: () => void;
-  onClose: () => void;
 }
 
-export default function Playlist({
-  isMobile,
-  onClick,
-  onClose,
-}: PlaylistProps) {
+export default function Playlist({ isMobile }: PlaylistProps) {
   const [playlistTrackData, setPlaylistTrackData] = useState<Track[] | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
   const { seq } = useParams();
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchPlaylistTracks = async () => {
       try {
+        setError(false);
         setIsLoading(true);
         if (seq) {
           const res = await getPlaylistTracks(seq);
           setPlaylistTrackData(res.data.data);
         }
       } catch (err) {
-        console.error("트랙 불러오기 실패", err);
+        setError(true);
       } finally {
         setIsLoading(false);
       }
@@ -59,7 +55,9 @@ export default function Playlist({
           트랙 목록 불러오는 중...
         </p>
       )}
-
+      {error && (
+        <p className="text-primary">트랙 목록을 불러오는 데 실패했습니다.</p>
+      )}
       {playlistTrackData?.map((item, index) => (
         <article key={index} className="mb-4 cursor-pointer">
           {!isMobile && (
@@ -90,12 +88,7 @@ export default function Playlist({
               </div>
 
               <div className="flex justify-center items-center">
-                <img
-                  src={sideMenu}
-                  alt="메뉴열기"
-                  className="cursor-pointer"
-                  onClick={onClick}
-                />
+                <img src={sideMenu} alt="메뉴" className="cursor-pointer" />
               </div>
             </div>
           )}
@@ -131,12 +124,7 @@ export default function Playlist({
                   )}
                 </div>
               </div>
-              <img
-                src={sideMenu}
-                alt="메뉴열기"
-                className="cursor-pointer ml-2"
-                onClick={onClose}
-              />
+              <img src={sideMenu} alt="메뉴" className="cursor-pointer ml-2" />
             </div>
           )}
         </article>

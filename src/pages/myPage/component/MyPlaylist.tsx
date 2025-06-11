@@ -30,15 +30,17 @@ export default function MyPlaylist() {
   const [myPlaylists, setMyPlaylists] = useState<MyPlaylistType[]>([]);
   const { userNickname } = useAuth();
   const [deletedPlaylist, setDeletedPlaylist] = useState<string[]>([]);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchMyPlaylists = async () => {
       try {
+        setError(false);
         const response = await getMyPlaylist();
 
         setMyPlaylists(response.data.data.content);
       } catch (error) {
-        console.error(error, "나의 플리 가져오기 오류 발생");
+        setError(true);
       }
     };
 
@@ -69,7 +71,7 @@ export default function MyPlaylist() {
       setDeletedPlaylist([]);
       toast.success("성공적으로 삭제되었습니다.");
     } catch (error) {
-      console.error(error, "플레이리스트 삭제 실패");
+      toast.error("삭제에 실패했습니다.");
     }
   };
 
@@ -85,6 +87,11 @@ export default function MyPlaylist() {
         <h1 className="font-bold text-lg ">{userNickname}’s 플레이리스트</h1>
       </header>
       <main className="w-full min-h-screen  p-4 md:px-[20%]">
+        {error && (
+          <p className="text-primary">
+            나의 플레이리스트를 불러오는 데 실패했습니다.
+          </p>
+        )}
         {myPlaylists?.map((data, index) => (
           <article
             key={index}

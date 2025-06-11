@@ -34,13 +34,15 @@ export default function LikedPlaylistsPreview({
   const navigate = useNavigate();
   const { loading } = useLoading();
   const [playlists, setPlaylists] = useState<PlaylistsType[]>([]);
+  const [error, setError] = useState(false);
 
   const fetchLikedPlaylists = async () => {
     try {
+      setError(false);
       const res = await getLikedPlaylists();
       setPlaylists(res.data.data.content);
     } catch (error) {
-      console.log("플레이리스트 불러오기 실패", error);
+      setError(true);
     }
   };
 
@@ -54,6 +56,11 @@ export default function LikedPlaylistsPreview({
         <section className="bg-white shadow-lg p-6 rounded-lg min-h-[250px]">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-bold">내가 좋아한 플레이리스트</h2>
+            {error && (
+              <p className="text-primary">
+                플레이리스트 목록을 불러오는 데 실패했습니다.
+              </p>
+            )}
             {playlists.length > 0 && (
               <ViewButton onClick={() => navigate("/liked-playlist")}>
                 전체보기
@@ -99,6 +106,11 @@ export default function LikedPlaylistsPreview({
         <section className="bg-white shadow-lg p-6 pr-0 w-full md:hidden min-h-[200px]">
           <div className="flex justify-between items-center mb-4 pr-6">
             <h2 className="font-bold">내가 좋아한 플레이리스트</h2>
+            {error && (
+              <p className="text-primary">
+                플레이리스트 목록을 불러오는 데 실패했습니다.
+              </p>
+            )}
             {playlists.length > 0 && (
               <ViewButton onClick={() => navigate("/liked-playlist")}>
                 전체보기
