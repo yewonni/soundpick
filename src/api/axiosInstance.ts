@@ -17,13 +17,6 @@ let failedQueue: Array<{
   reject: (error?: any) => void;
 }> = [];
 
-// 대기 중인 요청들을 위한 큐
-let pendingRequests: Array<{
-  config: any;
-  resolve: (value?: any) => void;
-  reject: (error?: any) => void;
-}> = [];
-
 // 함수 주입
 export const injectSetLoading = (fn: (value: boolean) => void) => {
   setLoadingGlobal = fn;
@@ -62,16 +55,6 @@ const processQueue = (error: any, token: string | null = null) => {
     }
   });
   failedQueue = [];
-};
-
-// 대기 중인 요청들 처리
-const processPendingRequests = () => {
-  const requests = [...pendingRequests];
-  pendingRequests = [];
-
-  requests.forEach(({ config, resolve, reject }) => {
-    axiosInstance(config).then(resolve).catch(reject);
-  });
 };
 
 const axiosInstance = axios.create({
@@ -127,7 +110,7 @@ axiosInstance.interceptors.request.use((config) => {
         const currentHasInitialized = getHasInitialized?.();
 
         if ((!currentIsInitializing && currentHasInitialized) || isLoggedIn) {
-          resolve(config); // 바로 config를 반환 (axiosInstance 호출 아님)
+          resolve(config);
         } else {
           setTimeout(checkAndRetry, 100);
         }
