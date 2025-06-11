@@ -25,32 +25,26 @@ export default function PlaylistDetails() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const { seq } = useParams();
-
   const { setInputValue } = useSearchInput();
-  const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
-
   const [playlistData, setPlaylistData] = useState<PlaylistData | null>(null);
-
-  const handlePlaylistModalOpen = () => {
-    setIsPlaylistModalOpen(true);
-  };
-
-  const handlePlaylistModalClose = () => {
-    setIsPlaylistModalOpen(false);
-  };
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    setInputValue("");
+    const fetchPlaylistDetails = async () => {
+      setInputValue("");
 
-    if (seq) {
-      getPlaylistDetails(seq)
-        .then((res) => {
-          setPlaylistData(res.data.data);
-        })
-        .catch((err) => {
-          console.error("플리 불러오기 실패", err);
-        });
-    }
+      if (!seq) return;
+
+      try {
+        setError(false);
+        const res = await getPlaylistDetails(seq);
+        setPlaylistData(res.data.data);
+      } catch (error) {
+        setError(true);
+      }
+    };
+
+    fetchPlaylistDetails();
   }, [seq, setInputValue]);
 
   return (
@@ -80,6 +74,11 @@ export default function PlaylistDetails() {
           initialCount={playlistData?.likeCount ?? 0}
         >
           <main className="p-4  min-h-screen md:px-[10%] md:pt-10 ">
+            {error && (
+              <p className="text-primary">
+                플레이리스트를 불러오는 데 실패했습니다.
+              </p>
+            )}
             <article className="mb-4 pb-5 border-b border-gray-300 md:border-b-0 md:pb-0">
               <div className="flex gap-4 md:gap-6 items-start">
                 <img
@@ -89,7 +88,7 @@ export default function PlaylistDetails() {
                 />
                 <div className="flex flex-col gap-2 w-full">
                   <h2 className="font-bold text-lg md:text-2xl">
-                    {playlistData?.name || "알 수 없음"}
+                    {playlistData?.name || "unknown"}
                   </h2>
 
                   <div className="flex justify-between items-center mt-2">
@@ -115,17 +114,10 @@ export default function PlaylistDetails() {
                 playlistData={playlistData}
               />
             )}
-            <Playlist
-              isMobile={isMobile}
-              onClick={handlePlaylistModalOpen}
-              onClose={handlePlaylistModalClose}
-            />
+            <Playlist isMobile={isMobile} />
           </main>
         </LikeProvider>
       )}
-      {/* {isPlaylistModalOpen && (
-        <PlaylistModal onClose={handlePlaylistModalClose} />
-      )} */}
     </>
   );
 }
