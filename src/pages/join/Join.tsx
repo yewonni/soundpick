@@ -28,6 +28,7 @@ export default function Join() {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors, isValid },
   } = useForm<JoinFormDataType>({
     resolver: zodResolver(joinSchema),
@@ -48,8 +49,7 @@ export default function Join() {
 
   // 아이디 중복 확인
   const handleCheckUserId = async () => {
-    const userId = (document.getElementById("userId") as HTMLInputElement)
-      ?.value;
+    const userId = getValues("userId");
 
     if (!userId) {
       toast.error("아이디를 입력해주세요.");
@@ -57,16 +57,15 @@ export default function Join() {
     }
 
     try {
-      const response = await checkUserId(userId);
-      if (response.data.data.duplicate) {
+      const { data } = await checkUserId(userId);
+      if (data.data.duplicate) {
         toast.error("이미 사용 중인 아이디입니다.");
         setIsUserIdChecked(false);
       } else {
         toast.success("사용 가능한 아이디입니다.");
         setIsUserIdChecked(true);
       }
-    } catch (err) {
-      console.error("아이디 중복확인 오류", err);
+    } catch {
       toast.error("아이디 중복확인 중 오류가 발생했습니다.");
     }
   };
@@ -91,7 +90,6 @@ export default function Join() {
         setIsNicknameChecked(true);
       }
     } catch (err) {
-      console.error("닉네임 중복확인 오류", err);
       toast.error("닉네임 중복확인 중 오류가 발생했습니다.");
     }
   };
@@ -131,14 +129,11 @@ export default function Join() {
         phoneNumber: data.phoneNumber,
       };
 
-      const response = await signUp(requestData);
-      console.log("회원가입 성공", response.data);
+      await signUp(requestData);
+
       navigate("/join-success");
     } catch (error: any) {
-      console.error("회원가입 에러:", error);
-
       if (error.response) {
-        console.error("서버 응답:", error.response.data);
         toast.error(
           `회원가입 실패: ${
             error.response.data.message || "서버 오류가 발생했습니다."
@@ -242,8 +237,8 @@ export default function Join() {
                 width="full"
                 {...register("passwordConfirm")}
                 onChange={(e) => {
-                  register("passwordConfirm").onChange(e); // 기존 register 동작 유지
-                  checkPasswordMatch(e); // 추가 검증
+                  register("passwordConfirm").onChange(e);
+                  checkPasswordMatch(e);
                 }}
               />
               {errors.passwordConfirm && (
@@ -269,15 +264,15 @@ export default function Join() {
                   placeholder="이메일 아이디"
                   width="full"
                   {...register("email")}
-                  onChange={(e) => setValue("email", e.target.value)} // 직접 react-hook-form에 반영
+                  onChange={(e) => setValue("email", e.target.value)}
                 />
 
                 <p className="text-text-base">@</p>
                 <DomainSelect
                   value={emailDomain}
                   onChange={(value) => {
-                    setEmailDomain(value); // 도메인 선택 시 상태 업데이트
-                    setValue("emailDomain", value); // 폼 상태 업데이트
+                    setEmailDomain(value);
+                    setValue("emailDomain", value);
                   }}
                 />
               </div>
@@ -330,7 +325,6 @@ export default function Join() {
           </form>
         </article>
       </main>
-      \
     </>
   );
 }
