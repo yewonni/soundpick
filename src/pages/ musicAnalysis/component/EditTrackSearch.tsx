@@ -7,17 +7,16 @@ import { useAnalysisResult } from "../../../context/AnalysisResultContext";
 import { trackSearch } from "../../../api/search/mainSearch";
 import { useLoading } from "../../../context/LoadingContext";
 import { useTrackSelection } from "../../../context/TrackSelectionContext";
+import { RECOMMENDATION_LIMITS } from "../../../constants/constants";
 
-type Item = {
+interface Item {
   imageSrc: string;
   title: string;
   subTitle?: string;
   seq?: string;
   spotifyTrackId?: string;
   trackArtistNameList?: string[];
-};
-
-const MAX_TRACKS = 20;
+}
 
 export default function EditTrackSearch() {
   const navigate = useNavigate();
@@ -53,6 +52,11 @@ export default function EditTrackSearch() {
 
   const handleSearch = async () => {
     try {
+      if (!keyword.trim()) {
+        toast.error("검색어를 입력해주세요.");
+        return;
+      }
+
       setError("");
       setIsSearched(true);
       setSearchedTracks([]);
@@ -81,37 +85,45 @@ export default function EditTrackSearch() {
       setSearchedTracks(searchData);
       setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
     } catch (error) {
-      console.error(error, "오류가 발생했습니다.");
-      setError("검색 실패. 다시 시도해주세요.");
+      setError("검색에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
   const displayedTracks: Item[] = searchedTracks || [];
 
   const toggleSelect = (track: Item) => {
-    const currentSelectedCount = selectedTracks.length;
     const isCurrentlySelected = selectedTracks.some((t) => t.seq === track.seq);
+    const originalTrackIds = trackList
+      .slice(0, 20)
+      .map((t) => t.spotifyTrackId ?? "");
 
-    // 이미 추천에 포함되어 있는 곡이면 선택 불가
-    const isAlreadyInRecommendation = trackList.some(
-      (t) => t.spotifyTrackId === track.spotifyTrackId
+    const selectedTrackSeqs = selectedTracks.map((t) => t.seq ?? "");
+    const newlyAddedSeqs = selectedTrackSeqs.filter(
+      (seq) => !originalTrackSeqs.includes(seq)
     );
 
-    if (isAlreadyInRecommendation) {
-      toast.error("이미 추천된 곡입니다.");
-      return;
-    }
+    const currentCount =
+      originalTrackIds.length - deletedTrackSeqs.length + newlyAddedSeqs.length;
 
-    if (!isCurrentlySelected && currentSelectedCount >= MAX_TRACKS) {
-      toast.error(`트랙은 최대 ${MAX_TRACKS}곡까지만 선택할 수 있어요!`);
-      return;
+    if (!isCurrentlySelected) {
+      if (originalTrackIds.includes(track.spotifyTrackId ?? "")) {
+        toast.error("이미 추천된 곡입니다.");
+        return;
+      }
+
+      if (currentCount >= RECOMMENDATION_LIMITS.MAX_TRACKS) {
+        toast.error(
+          `트랙은 최대 ${RECOMMENDATION_LIMITS.MAX_TRACKS}곡까지만 선택할 수 있어요!`
+        );
+        return;
+      }
     }
 
     toggleTrack(track);
   };
 
   const canSelectMore = () => {
-    return currentCount < MAX_TRACKS;
+    return currentCount < RECOMMENDATION_LIMITS.MAX_TRACKS;
   };
 
   const handleBack = () => {
@@ -129,7 +141,10 @@ export default function EditTrackSearch() {
   };
 
   useEffect(() => {
-    setCurrentPage(1);
+    if (keyword.trim()) {
+      setCurrentPage(1);
+      setIsSearched(false);
+    }
   }, [keyword]);
 
   return (
@@ -146,7 +161,7 @@ export default function EditTrackSearch() {
         error={error}
         isSearched={isSearched}
         loading={loading}
-        maxCount={MAX_TRACKS}
+        maxCount={RECOMMENDATION_LIMITS.MAX_TRACKS}
         currentCount={currentCount}
         canSelectMore={canSelectMore()}
         itemType="트랙"

@@ -5,14 +5,14 @@ import check from "../images/check-on.svg";
 import SearchBar from "./SearchBar";
 import Pagination from "./Pagination";
 
-type Item = {
+interface Item {
   imageSrc: string;
   title: string;
   subTitle?: string;
   seq?: string;
-};
+}
 
-type Props = {
+interface Props {
   title: string;
   items: Item[];
   selectedItems: string[];
@@ -31,7 +31,7 @@ type Props = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-};
+}
 
 export default function GenericSearchUI({
   title,

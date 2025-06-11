@@ -6,6 +6,14 @@ import { artistSearch } from "../../../api/search/artistSearch";
 import GenericSearchUI from "../../../components/GenericSearchUI";
 import { useLoading } from "../../../context/LoadingContext";
 import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
+import { ANALYSIS_LIMITS } from "../../../constants/constants";
+
+interface Item {
+  imageSrc: string;
+  title: string;
+  seq?: string;
+  spotifyArtistId?: string;
+}
 
 export default function ArtistSearch() {
   const navigate = useNavigate();
@@ -19,21 +27,17 @@ export default function ArtistSearch() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  type Item = {
-    imageSrc: string;
-    title: string;
-    seq?: string;
-    spotifyArtistId?: string;
-  };
-
-  const MAX_ARTISTS = 5;
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
 
   const handleSearch = async () => {
     try {
+      if (!keyword.trim()) {
+        toast.error("검색어를 입력해주세요.");
+        return;
+      }
+
       setIsSearched(true);
       setSearchedArtists([]);
 
@@ -55,8 +59,8 @@ export default function ArtistSearch() {
       setSearchedArtists(searchData);
       setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
     } catch (error) {
-      console.error("검색 오류", error);
-      setError("검색에 실패했습니다.");
+      setError("검색에 실패했습니다. 다시 시도해주세요.");
+      setSearchedArtists([]);
     }
   };
 
@@ -67,13 +71,11 @@ export default function ArtistSearch() {
       (a) => a.seq === artist.seq
     );
 
-    // 이미 선택된 아티스트라면 토글 해제만 수행 (중복 체크 생략)
     if (isCurrentlySelected) {
       toggleArtist(artist);
       return;
     }
 
-    // 새로운 선택인 경우에만 중복 체크 수행
     const isAlreadyInRecommendation = selectedArtists.some(
       (a) => a.spotifyArtistId === artist.spotifyArtistId
     );
@@ -83,17 +85,18 @@ export default function ArtistSearch() {
       return;
     }
 
-    if (selectedArtists.length >= MAX_ARTISTS) {
-      toast.error(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
+    if (selectedArtists.length >= ANALYSIS_LIMITS.MAX_ARTISTS) {
+      toast.error(
+        `아티스트는 최대 ${ANALYSIS_LIMITS.MAX_ARTISTS}명까지만 선택할 수 있어요!`
+      );
       return;
     }
 
-    // 새로운 아티스트 추가
     toggleArtist(artist);
   };
 
   const canSelectMore = () => {
-    return selectedArtists.length < MAX_ARTISTS;
+    return selectedArtists.length < ANALYSIS_LIMITS.MAX_ARTISTS;
   };
 
   const handleBack = () => {
@@ -116,7 +119,10 @@ export default function ArtistSearch() {
   };
 
   useEffect(() => {
-    setCurrentPage(1);
+    if (keyword.trim()) {
+      setCurrentPage(1);
+      setIsSearched(false);
+    }
   }, [keyword]);
 
   useEffect(() => {
@@ -139,7 +145,7 @@ export default function ArtistSearch() {
         error={error}
         isSearched={isSearched}
         loading={loading}
-        maxCount={MAX_ARTISTS}
+        maxCount={ANALYSIS_LIMITS.MAX_ARTISTS}
         currentCount={selectedArtists.length}
         canSelectMore={canSelectMore()}
         itemType="아티스트"

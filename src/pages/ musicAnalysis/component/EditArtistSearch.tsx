@@ -7,17 +7,17 @@ import { useAnalysisResult } from "../../../context/AnalysisResultContext";
 import { artistSearch } from "../../../api/search/artistSearch";
 import { useLoading } from "../../../context/LoadingContext";
 import { useArtistSelection } from "../../../context/ArtistSelectionContext";
+import { RECOMMENDATION_LIMITS } from "../../../constants/constants";
 
-type Item = {
+interface Item {
   imageSrc: string;
   title: string;
   subTitle?: string;
   seq?: string;
   spotifyArtistId?: string;
   trackArtistNameList?: string[];
-};
+}
 
-const MAX_ARTISTS = 20;
 export default function EditArtistSearch() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,6 +54,10 @@ export default function EditArtistSearch() {
 
   const handleSearch = async () => {
     try {
+      if (!keyword.trim()) {
+        toast.error("검색어를 입력해주세요.");
+        return;
+      }
       setError("");
       setIsSearched(true);
       setSearchedArtists([]);
@@ -84,34 +88,42 @@ export default function EditArtistSearch() {
   const displayedArtists: Item[] = searchedArtists || [];
 
   const toggleSelect = (artist: Item) => {
-    const currentSelectedCount = selectedArtists.length;
     const isCurrentlySelected = selectedArtists.some(
       (a) => a.seq === artist.seq
     );
+    const originalArtistIds = artistList
+      .slice(0, 20)
+      .map((a) => a.spotifyArtistId);
+    const selectedArtistSeqs = selectedArtists.map((a) => a.seq ?? "");
 
-    if (artist.spotifyArtistId !== undefined) {
-      const originalArtistIds = artistList
-        .slice(0, 20)
-        .map((a) => a.spotifyArtistId);
-      const isAlreadyInRecommendation = originalArtistIds.includes(
-        artist.spotifyArtistId
-      );
-      if (isAlreadyInRecommendation) {
+    const newlyAddedSeqs = selectedArtistSeqs.filter(
+      (seq) => !originalArtistSeqs.includes(seq)
+    );
+
+    const currentCount =
+      originalArtistSeqs.length -
+      deletedArtistSeqs.length +
+      newlyAddedSeqs.length;
+
+    if (!isCurrentlySelected) {
+      if (originalArtistIds.includes(artist.spotifyArtistId ?? "")) {
         toast.error("이미 추천된 아티스트입니다.");
         return;
       }
-    }
 
-    if (!isCurrentlySelected && currentSelectedCount >= MAX_ARTISTS) {
-      toast.error(`아티스트는 최대 ${MAX_ARTISTS}명까지만 선택할 수 있어요!`);
-      return;
+      if (currentCount >= RECOMMENDATION_LIMITS.MAX_ARTISTS) {
+        toast.error(
+          `아티스트는 최대 ${RECOMMENDATION_LIMITS.MAX_ARTISTS}명까지만 선택할 수 있어요!`
+        );
+        return;
+      }
     }
 
     toggleArtist(artist);
   };
 
   const canSelectMore = () => {
-    return selectedArtists.length < MAX_ARTISTS;
+    return currentCount < RECOMMENDATION_LIMITS.MAX_ARTISTS;
   };
 
   const handleBack = () => {
@@ -129,7 +141,10 @@ export default function EditArtistSearch() {
   };
 
   useEffect(() => {
-    setCurrentPage(1);
+    if (keyword.trim()) {
+      setCurrentPage(1);
+      setIsSearched(false);
+    }
   }, [keyword]);
 
   useEffect(() => {
@@ -152,7 +167,7 @@ export default function EditArtistSearch() {
         error={error}
         isSearched={isSearched}
         loading={loading}
-        maxCount={MAX_ARTISTS}
+        maxCount={RECOMMENDATION_LIMITS.MAX_ARTISTS}
         currentCount={currentCount}
         canSelectMore={canSelectMore()}
         itemType="아티스트"

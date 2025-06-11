@@ -8,14 +8,14 @@ import { useLoading } from "../../../context/LoadingContext";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { toggleTrack } from "../../../store/MyAllTimeSlice";
 
-type Item = {
+interface Item {
   imageSrc: string;
   title: string;
   subTitle?: string;
   seq?: string;
   spotifyTrackId?: string;
   trackArtistNameList?: string[];
-};
+}
 
 const MAX_TRACKS = 10;
 
@@ -39,6 +39,11 @@ export default function MyAllTimeTrackSearch() {
 
   const handleSearch = async () => {
     try {
+      if (!keyword.trim()) {
+        toast.error("검색어를 입력해주세요.");
+        return;
+      }
+
       setError("");
       setIsSearched(true);
       setSearchedTracks([]);
@@ -67,7 +72,6 @@ export default function MyAllTimeTrackSearch() {
       setSearchedTracks(searchData);
       setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
     } catch (error) {
-      console.error(error, "오류가 발생했습니다.");
       setError("검색 실패. 다시 시도해주세요.");
     }
   };
