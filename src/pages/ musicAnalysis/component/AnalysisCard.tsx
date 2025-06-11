@@ -28,24 +28,26 @@ export default function AnalysisCard({
   navigate,
   selectedGenreToPersist = [],
 }: AnalysisCardProps) {
-  if (step === 1) {
-    return (
-      <MusicAnalysis
-        toggleGenre={onToggleGenre}
-        selectedGenre={selectedGenre}
-      />
-    );
-  } else if (step === 2) {
-    return (
-      <ArtistAnalysis
-        navigate={navigate}
-        selectedGenreToPersist={selectedGenreToPersist}
-      />
-    );
-  } else if (step === 3) {
-    return <RecommendationCard selectedGenre={selectedGenre} />;
+  switch (step) {
+    case 1:
+      return (
+        <MusicAnalysis
+          toggleGenre={onToggleGenre}
+          selectedGenre={selectedGenre}
+        />
+      );
+    case 2:
+      return (
+        <ArtistAnalysis
+          navigate={navigate}
+          selectedGenreToPersist={selectedGenreToPersist}
+        />
+      );
+    case 3:
+      return <RecommendationCard selectedGenre={selectedGenre} />;
+    default:
+      return null;
   }
-  return null;
 }
 // 장르 선택하기
 interface MusicAnalysisProps {
@@ -61,16 +63,17 @@ function MusicAnalysis({ toggleGenre, selectedGenre }: MusicAnalysisProps) {
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    getGenre(0, 10)
-      .then((response) => {
+    (async () => {
+      try {
+        const response = await getGenre(0, 10);
         const genreList = response.data.data.content.map(
           (item: { name: string }) => item.name
         );
         setGenre(genreList);
-      })
-      .catch((error) => {
+      } catch (error) {
         toast.error("서버에서 오류가 발생했습니다.");
-      });
+      }
+    })();
   }, [isLoggedIn]);
 
   const handleShowMore = () => {
@@ -169,7 +172,6 @@ function ArtistAnalysis({
   useEffect(() => {
     if (!isInitializedRef.current) {
       if (!location.state?.isFromSearch) {
-        // 첫 진입일 경우에만 초기화
         resetArtists();
       }
       isInitializedRef.current = true;
@@ -198,13 +200,10 @@ function ArtistAnalysis({
       (a) => a.seq === artist.seq
     );
 
-    // 선택 해제인 경우
     if (isCurrentlySelected) {
       toggleArtist(artist);
       return;
     }
-
-    // 다른 방법으로 이미 선택된 아티스트인지 체크
     const isSelectedElsewhere = selectedArtists.some(
       (a) =>
         a.spotifyArtistId === artist.spotifyArtistId && a.seq !== artist.seq
@@ -317,7 +316,7 @@ function RecommendationCard({ selectedGenre }: { selectedGenre: string[] }) {
         setRecommendationData(response.data);
         navigate("/recommendation");
       } catch (error) {
-        console.error("취향 분석 실패", error);
+        console.error(error);
       }
     };
 
