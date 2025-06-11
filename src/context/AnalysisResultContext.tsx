@@ -1,38 +1,5 @@
 import { createContext, useState, ReactNode, useContext } from "react";
-
-export interface AnalysisResultType {
-  data: {
-    artistList: [
-      {
-        spotifyArtistId: string;
-        recommendArtistSeq: string;
-        name: string;
-        imageList: [
-          {
-            url: string;
-          }
-        ];
-      }
-    ];
-    trackList: [
-      {
-        spotifyTrackId: string;
-        recommendTrackSeq: string;
-        name: string;
-        trackArtists: [
-          {
-            name: string;
-          }
-        ];
-        imageList: [
-          {
-            url: string;
-          }
-        ];
-      }
-    ];
-  };
-}
+import { AnalysisResultType } from "../api/analysis/myPreference";
 
 interface AnalysisResultContextType {
   recommendationData: AnalysisResultType | null;
