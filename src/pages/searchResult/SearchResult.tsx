@@ -14,6 +14,7 @@ import { useSearchInput } from "../../context/SearchContext";
 import catImg from "../../images/music-cat-full.png";
 import { DataCardProps } from "./component/SongResult";
 import Pagination from "../../components/Pagination";
+import { toast } from "react-toastify";
 
 export default function SearchResult() {
   const { inputValue, setInputValue } = useSearchInput();
@@ -95,7 +96,7 @@ export default function SearchResult() {
           setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
         }
       } catch (error) {
-        console.error("검색 에러:", error);
+        toast.error("검색 요청 중 오류가 발생했습니다.");
       } finally {
         setIsSearched(true);
       }
