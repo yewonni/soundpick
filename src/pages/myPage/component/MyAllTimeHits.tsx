@@ -96,7 +96,6 @@ export default function MyAllTimeHits() {
           throw new Error("삭제 실패");
         }
       } catch (error) {
-        console.error("삭제 실패:", error);
         toast.error("삭제에 실패했습니다.");
       }
     }
@@ -141,7 +140,6 @@ export default function MyAllTimeHits() {
         throw new Error("저장 실패");
       }
     } catch (error) {
-      console.error("저장 실패:", error);
       toast.error("저장에 실패했습니다.");
     }
   };

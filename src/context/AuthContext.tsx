@@ -5,7 +5,6 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { AxiosHeaders } from "axios";
 import axiosInstance, {
   injectAccessTokenGetter,
   injectIsLoggedInGetter,
@@ -15,7 +14,6 @@ import axiosInstance, {
 } from "../api/axiosInstance";
 import { encryptWithRSAFromServer } from "../utils/crypto";
 
-// 응답 타입 지정
 interface LoginResponse {
   code: number;
   message: string;

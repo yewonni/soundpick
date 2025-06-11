@@ -68,7 +68,6 @@ export default function RegisterPlaylist() {
       toast.success("성공적으로 등록되었습니다.");
       setIsDirty(false);
     } catch (error) {
-      console.error("플리 등록 실패", error);
       toast.error("플레이리스트 등록에 실패했습니다.");
     }
   };

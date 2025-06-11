@@ -43,7 +43,7 @@ export default function Login() {
 
       navigate("/", { state: { spotifyLoginRequired: spotifyRequired } });
     } catch (error) {
-      console.error("로그인 실패", error);
+      setErrorMessage("로그인에 실패했습니다.");
       if (error instanceof Error && (error as any).response?.data?.message) {
         setErrorMessage((error as any).response.data.message);
       } else {

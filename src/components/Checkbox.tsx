@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, useState } from "react";
+import { InputHTMLAttributes, useState } from "react";
 
 interface CheckboxProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {

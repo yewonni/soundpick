@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface DomainSelectProps {
   value: string;
@@ -25,18 +25,16 @@ export default function DomainSelect({ value, onChange }: DomainSelectProps) {
     };
   }, []);
 
-  // 도메인 선택 시, 드롭다운을 닫고 값 변경
   const handleSelect = (domain: string) => {
     onChange(domain);
-    setIsOpen(false); // 선택 후 드롭다운 닫기
+    setIsOpen(false);
   };
 
   return (
     <div ref={selectRef} className="relative w-full">
-      {/* 선택된 도메인 텍스트 */}
       <div
         className="flex items-center justify-between p-3  text-sm font-medium text-text-base border border-text-base rounded-lg cursor-pointer bg-transparent"
-        onClick={() => setIsOpen(!isOpen)} // 클릭 시 드롭다운 열고 닫기
+        onClick={() => setIsOpen(!isOpen)}
       >
         <span>{value || "도메인 선택"}</span>
         <svg
@@ -58,7 +56,6 @@ export default function DomainSelect({ value, onChange }: DomainSelectProps) {
         </svg>
       </div>
 
-      {/* 옵션 리스트 */}
       {isOpen && (
         <div
           className="absolute z-10 w-full mt-1 bg-primary border border-text-base rounded-lg shadow-lg"

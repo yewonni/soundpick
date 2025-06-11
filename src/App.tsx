@@ -192,7 +192,7 @@ function AppInitializer() {
     if (shouldVerify) {
       verifyTokenOnLoad();
     } else {
-      setHasInitialized(true); // 공개 페이지는 바로 초기화 완료로 처리
+      setHasInitialized(true);
     }
   }, [
     setAccessToken,

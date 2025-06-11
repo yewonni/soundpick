@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes } from "react";
 
 interface RegisterButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;

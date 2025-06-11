@@ -6,7 +6,7 @@ const useMediaQuery = (query: string): boolean => {
   useEffect(() => {
     const media = window.matchMedia(query);
     const listener = () => setMatches(media.matches);
-    listener(); // 초기 체크
+    listener();
     media.addEventListener("change", listener);
     return () => media.removeEventListener("change", listener);
   }, [query]);

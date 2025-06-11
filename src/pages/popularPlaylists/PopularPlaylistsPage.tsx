@@ -30,7 +30,6 @@ export default function PopularPlaylistsPage() {
       }));
       setPlaylists(playlistData);
     } catch (error) {
-      console.error("추천 플레이리스트 불러오기 실패", error);
       setError("추천 플레이리스트 정보를 불러오는 데 실패했습니다.");
     }
   };

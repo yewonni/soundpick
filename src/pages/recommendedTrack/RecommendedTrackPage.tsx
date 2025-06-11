@@ -28,7 +28,6 @@ export default function RecommendedTrackPage() {
       }));
       setTracks(trackData);
     } catch (error) {
-      console.error("곡 불러오기 실패", error);
       setError("곡 정보를 불러오는 데 실패했습니다.");
     }
   };

@@ -64,7 +64,6 @@ export default function FindFriends() {
         dispatch(follow(memberSeq));
       }
     } catch (error) {
-      console.error("팔로우/언팔로우 실패:", error);
       toast.error("요청에 실패했어요. 다시 시도해주세요.");
     }
   };

@@ -104,10 +104,6 @@ export default function Home() {
         isOpen={isOpenTasteModal}
         onClose={handleTasteModalClose}
       />
-      <TasteAnalysisModal
-        isOpen={isOpenTasteModal}
-        onClose={handleTasteModalClose}
-      />
     </>
   );
 }

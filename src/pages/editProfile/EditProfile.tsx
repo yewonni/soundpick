@@ -38,7 +38,6 @@ export default function EditProfile() {
         setIntroduction(introduction);
         setPreview(imageUrl ? `${baseUrl}${imageUrl}` : sample);
       } catch (err) {
-        console.error("프로필 정보를 불러오는 데 실패했습니다.", err);
         toast.error("프로필 정보를 불러오지 못했습니다.");
       }
     };
@@ -46,7 +45,7 @@ export default function EditProfile() {
     fetchProfile();
   }, [baseUrl]);
 
-  // 유효성 검사 함수 (입력값 변경 때마다 호출)
+  // 유효성 검사
   const validate = (name: string, value: string) => {
     try {
       if (name === "nickname") {
@@ -67,6 +66,7 @@ export default function EditProfile() {
     }
   };
 
+  // 프로필 업데이트
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
@@ -86,6 +86,7 @@ export default function EditProfile() {
     setIsDirty(true);
   };
 
+  // 저장하기 및 api 호출
   const handleSave = async () => {
     try {
       profileEditSchema.parse({ nickname, introduction });
@@ -109,7 +110,6 @@ export default function EditProfile() {
         setFormError(fieldErrors);
         toast.error("입력값을 확인해주세요.");
       } else {
-        console.error(err);
         toast.error("저장에 실패했습니다.");
       }
     }

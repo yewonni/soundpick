@@ -29,7 +29,6 @@ export default function RecommendedPlaylistPage() {
       }));
       setPlaylists(playlistData);
     } catch (error) {
-      console.error("플레이리스트 불러오기 실패", error);
       setError("플레이리스트 정보를 불러오는 데 실패했습니다.");
     }
   };
