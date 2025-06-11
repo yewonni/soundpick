@@ -21,93 +21,61 @@ export default function MyAllTimeHitsPreview({ isMobile }: MyAllTimeHitsData) {
     dispatch(fetchMyAllTimeHits());
   }, [dispatch]);
 
-  return (
-    <>
-      {isMobile && (
-        <section className="bg-white rounded-md shadow-lg p-6 w-[90%] ">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-bold">My All-Time Hits!</h2>
-            <img
-              src={nextIcon}
-              alt="상세보기"
-              className="cursor-pointer"
-              onClick={() => navigate("/my-hits")}
-            />
-          </div>
-          {!loading && originalList.length === 0 ? (
-            <div className="text-center text-[#666] text-sm py-8 flex flex-col gap-2 h-[80%] justify-center">
-              <p> 아직 My All-Time Hits가 없어요.</p>
-              <p>나만의 특별한 히트 리스트를 완성해보세요!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              {originalList?.slice(0, 6).map((song) => (
-                <article
-                  key={song.spotifyTrackSeq}
-                  className="flex gap-3 items-center overflow-hidden"
-                >
-                  <img
-                    src={song.imageList[0]?.url}
-                    alt={song.name}
-                    className="w-[50px] h-[50px] rounded-md flex-shrink-0 cursor-pointer"
-                  />
-                  <div className="flex flex-col gap-1 min-w-0 text-left">
-                    <h3 className="text-sm font-bold truncate cursor-pointer">
-                      {truncateText(song.name, 12)}
-                    </h3>
-                    <p className="text-xs text-[#333] truncate cursor-pointer">
-                      {truncateText(song.trackArtistNameList.join(","), 10)}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+  const list = originalList.slice(0, 6);
+  const imageSize = isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]";
+  const titleTextSize = isMobile ? "text-sm" : "text-base";
 
-      {!isMobile && (
-        <section className="bg-white rounded-md shadow-lg p-6 h-full min-h-[530px]">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-bold">My All-Time Hits!</h2>
-            <img
-              src={nextIcon}
-              alt="상세보기"
-              className="cursor-pointer"
-              onClick={() => navigate("/my-hits")}
-            />
-          </div>
-          {!loading && originalList.length === 0 ? (
-            <div className="text-center text-[#666] text-sm py-8 flex flex-col gap-2 h-[80%] justify-center">
-              <p> 아직 My All-Time Hits가 없어요.</p>
-              <p>나만의 특별한 히트 리스트를 완성해보세요!</p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {originalList?.slice(0, 6).map((song) => (
-                <article
-                  key={song.spotifyTrackSeq}
-                  className="flex gap-3 items-center overflow-hidden"
+  return (
+    <section
+      className={`bg-white rounded-md shadow-lg p-6 ${
+        isMobile ? "w-[90%]" : "h-full min-h-[530px]"
+      }`}
+    >
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="font-bold">My All-Time Hits!</h2>
+        <img
+          src={nextIcon}
+          alt="상세보기"
+          className="cursor-pointer"
+          onClick={() => navigate("/my-hits")}
+        />
+      </div>
+
+      {!loading && list.length === 0 ? (
+        <div className="text-center text-[#666] text-sm py-8 flex flex-col gap-2 h-[80%] justify-center">
+          <p> 아직 My All-Time Hits가 없어요.</p>
+          <p>나만의 특별한 히트 리스트를 완성해보세요!</p>
+        </div>
+      ) : (
+        <div
+          className={
+            isMobile ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4"
+          }
+        >
+          {list.map((song) => (
+            <article
+              key={song.spotifyTrackSeq}
+              className="flex gap-3 items-center overflow-hidden"
+            >
+              <img
+                src={song.imageList[0]?.url}
+                alt={song.name}
+                className={`${imageSize} rounded-md flex-shrink-0 cursor-pointer`}
+              />
+              <div className="flex flex-col gap-1 min-w-0 text-left">
+                <h3
+                  className={`${titleTextSize} font-bold truncate cursor-pointer`}
                 >
-                  <img
-                    src={song.imageList[0]?.url}
-                    alt={song.name}
-                    className="w-[60px] h-[60px] rounded-md flex-shrink-0 cursor-pointer"
-                  />
-                  <div className="flex flex-col gap-1 min-w-0 text-left">
-                    <h3 className="text-base font-bold truncate cursor-pointer">
-                      {song.name}
-                    </h3>
-                    <p className="text-xs text-[#333] truncate cursor-pointer">
-                      {truncateText(song.trackArtistNameList.join(","), 10)}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
+                  {truncateText(song.name, 12)}
+                </h3>
+                <p className="text-xs text-[#333] truncate cursor-pointer">
+                  {truncateText(song.trackArtistNameList.join(","), 10)}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
       )}
-    </>
+    </section>
   );
 }
