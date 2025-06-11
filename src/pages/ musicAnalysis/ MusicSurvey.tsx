@@ -8,6 +8,7 @@ import AnalysisCard from "./component/AnalysisCard";
 import AnalysisExitModal from "./component/AnalysisExitModal";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import { useArtistAnalysis } from "../../context/ArtistAnalysisContext";
+import { ANALYSIS_LIMITS } from "../../constants/constants";
 
 export default function MusicSurvey() {
   const location = useLocation();
@@ -35,8 +36,10 @@ export default function MusicSurvey() {
       setSelectedGenre((prev) => prev.filter((g) => g !== genreName));
       return;
     }
-    if (step === 1 && selectedGenre.length >= 3) {
-      toast.error("장르는 최대 3개까지만 선택할 수 있습니다.");
+    if (step === 1 && selectedGenre.length >= ANALYSIS_LIMITS.MAX_GENRES) {
+      toast.error(
+        `장르는 최대 ${ANALYSIS_LIMITS.MAX_GENRES}개까지만 선택할 수 있습니다.`
+      );
       return;
     }
     setSelectedGenre((prev) => [...prev, genreName]);
@@ -54,14 +57,18 @@ export default function MusicSurvey() {
   // 다음 단계로 이동
   const handleNext = async () => {
     if (step === 1) {
-      if (selectedGenre.length === 0) {
-        toast.error("장르는 최소 1개 이상 선택해야 합니다.");
+      if (selectedGenre.length < ANALYSIS_LIMITS.MIN_GENRES) {
+        toast.error(
+          `장르는 최소 ${ANALYSIS_LIMITS.MIN_GENRES}개 이상 선택해야 합니다.`
+        );
         return;
       }
       setStep(2);
     } else if (step === 2) {
-      if (selectedArtists.length === 0) {
-        toast.error("아티스트는 최소 1명 이상 선택해야 합니다.");
+      if (selectedArtists.length < ANALYSIS_LIMITS.MIN_ARTISTS) {
+        toast.error(
+          `아티스트는 최소 ${ANALYSIS_LIMITS.MIN_ARTISTS}명 이상 선택해야 합니다.`
+        );
         return;
       }
       setStep(3);
@@ -90,7 +97,9 @@ export default function MusicSurvey() {
                 : "가장 좋아하는 아티스트는 누구인가요?"}
             </h1>
             <p className="text-primary text-sm font-medium md:text-base">
-              {step === 1 ? "(최대 3개 선택)" : "(최대 5명 선택)"}
+              {step === 1
+                ? `(최대 ${ANALYSIS_LIMITS.MAX_GENRES}개 선택)`
+                : `(최대 ${ANALYSIS_LIMITS.MAX_ARTISTS}명 선택)`}
             </p>
           </header>
         )}
