@@ -48,6 +48,11 @@ export default function Review() {
       return;
     }
 
+    if (comment === "") {
+      toast.error("감상평을 작성해주세요.");
+      return;
+    }
+
     try {
       await dispatch(
         addComments({
@@ -79,12 +84,10 @@ export default function Review() {
   // 댓글 삭제
   const handleDelete = async (seq: string) => {
     if (!spotifyPlaylistSeq) return;
-    const ok = window.confirm("정말 삭제하시겠어요?");
-    if (!ok) return;
-
     try {
       await dispatch(deleteComments({ spotifyPlaylistSeq, seq })).unwrap();
       await dispatch(fetchComments({ page: 0, size: 10, spotifyPlaylistSeq }));
+      toast.success("성공적으로 삭제되었습니다.");
     } catch {
       toast.error("삭제에 실패했습니다.");
     }
