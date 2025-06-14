@@ -34,8 +34,54 @@ soundpick은 사용자의 음악 취향을 분석해 곡, 플레이리스트, �
 
 - **백엔드**: spotify 제공 API / 자체 서버 활용
 
+  
 
 ## 🗂️ 프로젝트 폴더 구조
+<details>
+<summary> 구조 펼치기 </summary>
+
+📦 src  
+ ┣ 📂api  
+ ┃ ┣ 📂analysis          
+ ┃ ┣ 📂join              
+ ┃ ┣ 📂login       
+ ┃ ┣ 📂main               
+ ┃ ┣ 📂myPage            
+ ┃ ┣ 📂playlistDetails  
+ ┃ ┣ 📂profile           
+ ┃ ┣ 📂search            
+ ┃ ┗ 📜axiosInstance.ts  
+
+ ┣ 📂components       
+ ┣ 📂constants           
+ ┣ 📂context             
+ ┣ 📂hooks              
+ ┣ 📂images              
+
+ ┣ 📂pages         
+ ┃ ┣ 📂musicAnalysis    
+ ┃ ┣ 📂404error          
+ ┃ ┣ 📂editProfile  
+ ┃ ┣ 📂join             
+ ┃ ┣ 📂login             
+ ┃ ┣ 📂myPage           
+ ┃ ┣ 📂playlistDetails   
+ ┃ ┣ 📂popularArtists      
+ ┃ ┣ 📂popularPlaylists   
+ ┃ ┣ 📂recommendedTrack   
+ ┃ ┣ 📂recommendedPlaylist   
+ ┃ ┣ 📂search / searchResult   
+ ┗ ┗ 📂... 기타 페이지  
+
+ ┣ 📂store               // Redux 스토어 및 슬라이스  
+ ┣ 📂types               // 타입 정의 파일  
+ ┣ 📂utils               // 유틸 함수 및 유효성 검사  
+
+ ┣ 📜App.tsx / Home.tsx  
+ ┣ 📜index.tsx / index.css  
+ ┗ 📜App.css / declarations.d.ts  
+</details>
+
 
 ## 🌟 페이지별 기능
   
