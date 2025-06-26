@@ -14,23 +14,35 @@ import { useSearchInput } from "../../context/SearchContext";
 import catImg from "../../images/music-cat-full.png";
 import { DataCardProps } from "./component/SongResult";
 import Pagination from "../../components/Pagination";
-import { toast } from "react-toastify";
+import { showToast } from "../../utils/toast";
 
 export default function SearchResult() {
   const { inputValue, setInputValue } = useSearchInput();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const { loading } = useLoading();
-  const [isSearched, setIsSearched] = useState(false);
-  const [isResultType, setIsResultType] = useState<"song" | "playlist">("song");
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("q") ?? "";
+  const typeParam = searchParams.get("type") as "song" | "playlist" | null;
+  const [isSearched, setIsSearched] = useState(false);
+  const [isResultType, setIsResultType] = useState<"song" | "playlist">(
+    typeParam ?? "song"
+  );
+
   const [trackResult, setTrackResult] = useState<DataCardProps[]>([]);
   const [playlistResult, setPlaylistResult] = useState<MusicCardDataProps[]>(
     []
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    setInputValue(keyword);
+    setCurrentPage(1);
+    if (typeParam) {
+      setIsResultType(typeParam);
+    }
+  }, [keyword, typeParam, setInputValue]);
 
   // 검색 관련 함수들
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +56,9 @@ export default function SearchResult() {
 
   const handleResultType = (resultType: "song" | "playlist") => {
     setIsResultType(resultType);
+    navigate(
+      `/search-result?q=${encodeURIComponent(keyword)}&type=${resultType}`
+    );
   };
 
   useEffect(() => {
@@ -96,7 +111,7 @@ export default function SearchResult() {
           setTotalPages(Math.min(calculatedTotalPages, MAX_PAGE_LIMIT));
         }
       } catch (error) {
-        toast.error("검색 요청 중 오류가 발생했습니다.");
+        showToast("검색 요청 중 오류가 발생했습니다.");
       } finally {
         setIsSearched(true);
       }
@@ -108,11 +123,6 @@ export default function SearchResult() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
-  useEffect(() => {
-    setInputValue(keyword);
-    setCurrentPage(1);
-  }, [keyword, setInputValue]);
 
   useEffect(() => {
     setCurrentPage(1);
