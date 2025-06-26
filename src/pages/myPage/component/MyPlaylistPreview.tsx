@@ -51,7 +51,7 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
   return (
     <>
       {!isMobile && (
-        <section className="bg-white shadow-lg p-6 h-full rounded-lg">
+        <section className="bg-white shadow-lg p-6 h-full min-h-[530px] rounded-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-bold">{userNickname}'s 플레이리스트</h2>
             {myPlaylists.length > 0 && (
@@ -60,8 +60,8 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
               </ViewButton>
             )}
           </div>
-          {!loading && myPlaylists.length === 0 ? (
-            <div className="flex flex-col gap-2 justify-center items-center mt-16">
+          {!loading && myPlaylists.length === 0 && !error ? (
+            <div className="flex flex-col gap-2 justify-center items-center h-[80%]">
               <p className="text-sm text-[#666] ">
                 나만의 플레이리스트 만들어볼까요?
               </p>
@@ -76,7 +76,7 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
                   key={`${item.name}-${index}`}
                   className="flex flex-col items-start"
                   onClick={() =>
-                    navigate(`/playlist-details/${item.spotifyPlaylistSeq}`)
+                    navigate(`/my-playlist-details/${item.spotifyPlaylistSeq}`)
                   }
                 >
                   <img
@@ -96,8 +96,8 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
             </div>
           )}
           {error && (
-            <p className="text-primary">
-              나의 플레이리스트를 불러오는 데 실패했습니다.
+            <p className="text-[#e57373]">
+              '플리 불러오기 실패' 다시 시도해주세요.
             </p>
           )}
         </section>
@@ -113,7 +113,7 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
               </ViewButton>
             )}
           </div>
-          {!loading && myPlaylists.length === 0 ? (
+          {!loading && myPlaylists.length === 0 && !error ? (
             <div className="flex flex-col gap-2 justify-center items-center pr-6 mt-12">
               <p className="text-sm text-[#666] ">
                 나만의 플레이리스트 만들어볼까요?
@@ -142,7 +142,9 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
                       alt={item.name}
                       className="w-[95px] h-[95px] rounded-md mb-2"
                       onClick={() =>
-                        navigate(`/playlist-details/${item.spotifyPlaylistSeq}`)
+                        navigate(
+                          `/my-playlist-details/${item.spotifyPlaylistSeq}`
+                        )
                       }
                     />
                     <div className="w-full text-left flex flex-col gap-1 pl-1">
@@ -156,8 +158,8 @@ export default function MyPlaylistPreview({ isMobile }: MyPlaylistPreviewData) {
             </div>
           )}
           {error && (
-            <p className="text-primary">
-              나의 플레이리스트를 불러오는 데 실패했습니다.
+            <p className="text-[#e57373] text-sm ">
+              '플리 불러오기 실패' 다시 시도해주세요.
             </p>
           )}
         </section>
