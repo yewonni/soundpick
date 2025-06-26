@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import catImg from "../../../images/music-cat-full.png";
 import { getLikedPlaylists } from "../../../api/myPage/likedPlaylists";
 import { useLoading } from "../../../context/LoadingContext";
+import Button from "../../../components/Button";
 
 interface LikedPlaylistsPreviewData {
   isMobile: boolean;
@@ -53,7 +54,7 @@ export default function LikedPlaylistsPreview({
   return (
     <>
       {!isMobile && (
-        <section className="bg-white shadow-lg p-6 rounded-lg min-h-[250px]">
+        <section className="bg-white shadow-lg p-6 rounded-lg h-full min-h-[530px] ">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-bold">내가 좋아한 플레이리스트</h2>
             {error && (
@@ -69,9 +70,11 @@ export default function LikedPlaylistsPreview({
           </div>
 
           {!loading && playlists.length === 0 ? (
-            <p className="text-[#666] text-sm mt-16 text-center">
-              마음에 드는 플레이리스트 검색 후 좋아요를 눌러보세요!
-            </p>
+            <div className="flex flex-col items-center justify-center h-[360px] text-center text-sm text-[#666] gap-2">
+              <p>아직 좋아한 플레이리스트가 없어요.</p>
+              <p> 마음에 드는 플레이리스트를 찾아 좋아요를 눌러보세요!</p>
+              <Button onClick={() => navigate("/search")}> 둘러보기</Button>
+            </div>
           ) : (
             <div className="grid grid-cols-4 gap-4 ">
               {playlists.slice(0, 4).map((item, index) => (
@@ -119,10 +122,12 @@ export default function LikedPlaylistsPreview({
           </div>
 
           {!loading && playlists.length === 0 ? (
-            <p className="text-[#666] text-sm text-center mt-12 pr-6 ">
-              마음에 드는 플레이리스트 검색 후 <br className="md:hidden" />{" "}
-              좋아요를 눌러보세요!
-            </p>
+            <div className="flex flex-col gap-2 justify-center items-center pr-6 mt-10">
+              <p className="text-sm text-[#666] ">
+                마음에 드는 플리에 좋아요를 눌러보세요!
+              </p>
+              <Button onClick={() => navigate("/search")}> 둘러보기</Button>
+            </div>
           ) : (
             <div className="overflow-visible">
               <Swiper
