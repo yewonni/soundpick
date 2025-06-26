@@ -1,9 +1,6 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import prevIcon from "../../../images/chevron-left.svg";
-import FinishButton from "../../../components/FinishButton";
 import RegisterButton from "../../../components/RegisterButton";
 import sample from "../../../images/music-cat-full.png";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +15,7 @@ import {
   resetState,
 } from "../../../store/MyAllTimeSlice";
 import { useLoading } from "../../../context/LoadingContext";
+import { showToast } from "../../../utils/toast";
 
 interface TrackToDelete {
   preferenceTrackSeq: string;
@@ -54,7 +52,7 @@ export default function MyAllTimeHits() {
   // 선택된 트랙들 삭제하기
   const handleDeleteSelected = async () => {
     if (deletedTracks.length === 0) {
-      toast.error("삭제할 곡을 선택해주세요.");
+      showToast("삭제할 곡을 선택해주세요.");
       return;
     }
 
@@ -70,14 +68,14 @@ export default function MyAllTimeHits() {
         );
 
         if (validTracksToDelete.length === 0) {
-          toast.error(
+          showToast(
             "삭제할 수 있는 트랙이 없습니다. (아직 저장되지 않은 트랙들입니다)"
           );
           return;
         }
 
         if (validTracksToDelete.length !== tracksToDelete.length) {
-          toast.error("일부 트랙은 아직 저장되지 않아 삭제할 수 없습니다.");
+          showToast("일부 트랙은 아직 저장되지 않아 삭제할 수 없습니다.");
         }
 
         const deletePayload: TrackToDelete[] = validTracksToDelete.map(
@@ -91,12 +89,12 @@ export default function MyAllTimeHits() {
 
         if (deleteMyAllTimeTrack.fulfilled.match(result)) {
           setDeletedTracks([]);
-          toast.success("선택한 곡이 삭제되었습니다.");
+          showToast("선택한 곡이 삭제되었습니다.", "success");
         } else {
           throw new Error("삭제 실패");
         }
       } catch (error) {
-        toast.error("삭제에 실패했습니다.");
+        showToast("삭제에 실패했습니다.");
       }
     }
   };
@@ -113,7 +111,7 @@ export default function MyAllTimeHits() {
       );
 
       if (newTracks.length === 0) {
-        toast.error("변경사항이 없습니다.");
+        showToast("변경사항이 없습니다.");
         return;
       }
 
@@ -132,7 +130,7 @@ export default function MyAllTimeHits() {
       const result = await dispatch(addMyAllTimeTrack(tracksToAdd));
 
       if (addMyAllTimeTrack.fulfilled.match(result)) {
-        toast.success("신규 트랙이 저장되었습니다!");
+        showToast("신규 트랙이 저장되었습니다!", "success");
 
         await dispatch(fetchMyAllTimeHits());
         navigate("/mypage");
@@ -140,7 +138,7 @@ export default function MyAllTimeHits() {
         throw new Error("저장 실패");
       }
     } catch (error) {
-      toast.error("저장에 실패했습니다.");
+      showToast("저장에 실패했습니다.");
     }
   };
 
@@ -160,17 +158,14 @@ export default function MyAllTimeHits() {
 
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-between md:justify-center md:px-[20%] md:relative items-center">
+      <header className="p-4 bg-bg-sub flex justify-center relative  md:px-[20%] items-center">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer md:absolute md:left-[20%]"
+          className="cursor-pointer absolute md:left-[20%] left-4 "
           onClick={handleGoBack}
         />
         <h1 className="font-bold text-lg ">My All-Time Hits</h1>
-        <div className="md:hidden">
-          <FinishButton onClick={handleGoBack} />
-        </div>
       </header>
       <main className="p-4 md:px-[20%]">
         <div className="md:flex md:justify-between md:items-center md:py-2">
