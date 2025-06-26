@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
@@ -15,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { joinSchema } from "../../utils/validations/joinSchema";
 import DomainSelect from "./component/DomainSelect";
 import { encryptWithRSAFromServer } from "../../utils/crypto";
+import { showToast } from "../../utils/toast";
 
 export default function Join() {
   const navigate = useNavigate();
@@ -23,12 +22,17 @@ export default function Join() {
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [isUserIdChecked, setIsUserIdChecked] = useState(false);
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+  const [userIdSuccessMessage, setUserIdSuccessMessage] = useState("");
+  const [nicknameSuccessMessage, setNicknameSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     setValue,
     getValues,
+    setError,
+    clearErrors,
     formState: { errors, isValid },
   } = useForm<JoinFormDataType>({
     resolver: zodResolver(joinSchema),
@@ -52,21 +56,25 @@ export default function Join() {
     const userId = getValues("userId");
 
     if (!userId) {
-      toast.error("아이디를 입력해주세요.");
+      setError("userId", { type: "manual", message: "아이디를 입력해주세요." });
       return;
     }
 
     try {
       const { data } = await checkUserId(userId);
       if (data.data.duplicate) {
-        toast.error("이미 사용 중인 아이디입니다.");
+        setError("userId", {
+          type: "manual",
+          message: "이미 사용 중인 아이디입니다.",
+        });
         setIsUserIdChecked(false);
       } else {
-        toast.success("사용 가능한 아이디입니다.");
+        clearErrors("userId");
+        setUserIdSuccessMessage("사용 가능한 아이디입니다.");
         setIsUserIdChecked(true);
       }
     } catch {
-      toast.error("아이디 중복확인 중 오류가 발생했습니다.");
+      showToast("아이디 중복확인 중 오류가 발생했습니다.");
     }
   };
 
@@ -76,47 +84,62 @@ export default function Join() {
       ?.value;
 
     if (!nickname) {
-      toast.error("닉네임을 입력해주세요.");
+      setError("nickname", {
+        type: "manual",
+        message: "닉네임을 입력해주세요.",
+      });
       return;
     }
 
     try {
       const response = await checkNickname(nickname);
       if (response.data.data.duplicate) {
-        toast.error("이미 사용 중인 닉네임입니다.");
+        setError("nickname", {
+          type: "manual",
+          message: "이미 사용 중인 닉네임입니다.",
+        });
         setIsNicknameChecked(false);
       } else {
-        toast.success("사용 가능한 닉네임입니다.");
+        clearErrors("nickname");
+        setNicknameSuccessMessage("사용 가능한 닉네임입니다.");
         setIsNicknameChecked(true);
       }
     } catch (err) {
-      toast.error("닉네임 중복확인 중 오류가 발생했습니다.");
+      showToast("닉네임 중복확인 중 오류가 발생했습니다.");
     }
   };
 
   const handleJoinSubmit = async (data: JoinFormDataType) => {
-    if (!isTermsChecked) {
-      toast.error("이용약관에 동의해주세요.");
-      return;
-    }
-    if (!isUserIdChecked || !isNicknameChecked) {
-      toast.error("중복확인을 완료해주세요.");
-      return;
-    }
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
     try {
+      if (!isTermsChecked) {
+        showToast("이용약관에 동의해주세요.");
+        setIsSubmitting(false);
+        return;
+      }
+      if (!isUserIdChecked || !isNicknameChecked) {
+        showToast("중복확인을 완료해주세요.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const fullEmail = `${data.email}@${data.emailDomain}`;
 
       const { encrypted: encryptedPassword, rsaSeq } =
         await encryptWithRSAFromServer(data.password);
 
       if (!encryptedPassword) {
-        toast.error("비밀번호 암호화에 실패했습니다. 다시 시도해주세요.");
+        showToast("비밀번호 암호화에 실패했습니다. 다시 시도해주세요.");
+        setIsSubmitting(false);
         return;
       }
 
       if (!rsaSeq) {
-        toast.error("RSA 시퀀스 번호를 가져오는데 실패했습니다.");
+        showToast("RSA 시퀀스 번호를 가져오는데 실패했습니다.");
+        setIsSubmitting(false);
         return;
       }
 
@@ -134,18 +157,19 @@ export default function Join() {
       navigate("/join-success");
     } catch (error: any) {
       if (error.response) {
-        toast.error(
+        showToast(
           `회원가입 실패: ${
             error.response.data.message || "서버 오류가 발생했습니다."
           }`
         );
       } else if (error.request) {
-        toast.error("서버에 연결할 수 없습니다. 인터넷 연결을 확인해주세요.");
+        showToast("서버에 연결할 수 없습니다. 인터넷 연결을 확인해주세요.");
       } else {
-        toast.error(
+        showToast(
           `회원가입 실패: ${error.message || "알 수 없는 오류가 발생했습니다."}`
         );
       }
+      setIsSubmitting(false);
     }
   };
 
@@ -178,6 +202,11 @@ export default function Join() {
                   placeholder="닉네임 입력"
                   width="sm"
                   {...register("nickname")}
+                  onChange={(e) => {
+                    register("nickname").onChange(e);
+                    setNicknameSuccessMessage("");
+                    setIsNicknameChecked(false);
+                  }}
                 />
                 <Button type="button" onClick={handleCheckNickname}>
                   중복확인
@@ -186,6 +215,11 @@ export default function Join() {
               {errors.nickname && (
                 <p className="text-xs text-purple-600">
                   {errors.nickname.message}
+                </p>
+              )}
+              {nicknameSuccessMessage && (
+                <p className="text-xs text-purple-950">
+                  {nicknameSuccessMessage}
                 </p>
               )}
             </div>
@@ -201,6 +235,11 @@ export default function Join() {
                   placeholder="아이디 입력"
                   width="sm"
                   {...register("userId")}
+                  onChange={(e) => {
+                    register("userId").onChange(e);
+                    setUserIdSuccessMessage("");
+                    setIsUserIdChecked(false);
+                  }}
                 />
                 <Button type="button" onClick={handleCheckUserId}>
                   중복확인
@@ -209,6 +248,11 @@ export default function Join() {
               {errors.userId && (
                 <p className="text-xs text-purple-600">
                   {errors.userId.message}
+                </p>
+              )}
+              {userIdSuccessMessage && (
+                <p className="text-xs text-purple-950">
+                  {userIdSuccessMessage}
                 </p>
               )}
             </div>
@@ -241,11 +285,6 @@ export default function Join() {
                   checkPasswordMatch(e);
                 }}
               />
-              {errors.passwordConfirm && (
-                <p className="text-xs text-purple-600">
-                  {errors.passwordConfirm.message}
-                </p>
-              )}
               {passwordMismatch && (
                 <p className="text-xs text-purple-600">
                   비밀번호가 일치하지 않습니다.
@@ -264,7 +303,6 @@ export default function Join() {
                   placeholder="이메일 아이디"
                   width="full"
                   {...register("email")}
-                  onChange={(e) => setValue("email", e.target.value)}
                 />
 
                 <p className="text-text-base">@</p>
@@ -317,9 +355,9 @@ export default function Join() {
               <Button
                 size="full"
                 type="submit"
-                disabled={!isTermsChecked || !isValid}
+                disabled={!isTermsChecked || !isValid || isSubmitting}
               >
-                가입하기
+                {isSubmitting ? "가입 중..." : "가입하기"}
               </Button>
             </div>
           </form>
