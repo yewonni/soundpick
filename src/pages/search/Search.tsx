@@ -37,7 +37,7 @@ export default function Search() {
       <main className="min-h-[300px] flex justify-center items-center">
         <article>
           <p className="text-primary text-sm animate-pulse">
-            지금 듣고 싶은 음악을 검색해보세요!
+            찾고 싶은 음악이나 플리를 검색해보세요!
           </p>
         </article>
       </main>
