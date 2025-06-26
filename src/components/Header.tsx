@@ -60,7 +60,7 @@ export default function Header({ onClick }: HeaderProps) {
             src={logo}
             alt="Logo"
             onClick={() => navigate("/")}
-            className="md:w-[180px] md:h-[150px] cursor-pointer"
+            className="w-[130px] h-[60px] md:w-[180px] md:h-[150px] cursor-pointer"
           />
         </h1>
         <button className="md:hidden">
@@ -71,15 +71,15 @@ export default function Header({ onClick }: HeaderProps) {
             onClick={handleMobileSearchClick}
           />
         </button>
-        <div className="hidden md:block w-[320px]">
+        <div className="hidden md:block w-[240px] min-w-[200px] flex-grow mx-4 overflow-hidden">
           <SearchBar
             onSubmit={handleSearch}
             value={inputValue}
             onChange={handleInputChange}
-            placeholder="음악, 플레이리스트명으로 검색하기"
+            placeholder="음악, 플레이리스트명으로 검색"
           />
         </div>
-        <div className="hidden md:flex gap-6 text-lg text-white ml-auto justify-end">
+        <div className="hidden md:flex flex-wrap gap-2 justify-end items-center text-white whitespace-nowrap text-lg">
           {isLoggedIn ? (
             <>
               <button
