@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -17,6 +15,7 @@ import starOn from "../../images/star-on.svg";
 import Button from "../../components/Button";
 import reviewIcon from "../../images/review-icon.svg";
 import Header from "../../components/Header";
+import { showToast } from "../../utils/toast";
 
 export default function Review() {
   const navigate = useNavigate();
@@ -44,12 +43,12 @@ export default function Review() {
       return;
     }
     if (rating === 0) {
-      toast.error("별점을 선택해주세요.");
+      showToast("별점을 선택해주세요.");
       return;
     }
 
     if (comment === "") {
-      toast.error("감상평을 작성해주세요.");
+      showToast("한줄평을 작성해주세요.");
       return;
     }
 
@@ -67,7 +66,7 @@ export default function Review() {
       setComment("");
       setRating(0);
     } catch {
-      toast.error("댓글 등록에 실패했습니다.");
+      showToast("댓글 등록에 실패했습니다.");
     }
   };
 
@@ -87,9 +86,9 @@ export default function Review() {
     try {
       await dispatch(deleteComments({ spotifyPlaylistSeq, seq })).unwrap();
       await dispatch(fetchComments({ page: 0, size: 10, spotifyPlaylistSeq }));
-      toast.success("성공적으로 삭제되었습니다.");
+      showToast("성공적으로 삭제되었습니다.", "success");
     } catch {
-      toast.error("삭제에 실패했습니다.");
+      showToast("삭제에 실패했습니다.");
     }
   };
 
@@ -121,7 +120,7 @@ export default function Review() {
   const handleEditSubmit = async () => {
     if (!spotifyPlaylistSeq || !editingSeq) return;
     if (editRating === 0) {
-      toast.error("별점을 선택해주세요.");
+      showToast("별점을 선택해주세요.");
       return;
     }
 
@@ -138,7 +137,7 @@ export default function Review() {
       await dispatch(fetchComments({ page: 0, size: 10, spotifyPlaylistSeq }));
       handleEditCancel();
     } catch {
-      toast.error("수정에 실패했습니다.");
+      showToast("수정에 실패했습니다.");
     }
   };
 
@@ -190,12 +189,12 @@ export default function Review() {
                   </div>
                 </div>
 
-                {/* 감상평 */}
+                {/* 한줄평 */}
                 <div className="relative md:w-2/3">
                   <textarea
                     className="w-full h-[100px] p-3 text-sm border border-gray-300 rounded-md bg-white resize-none text-[#333] focus:outline-none focus:ring-2 focus:ring-[#BFCBFF] focus:border-[#BFCBFF] transition md:h-[120px] md:text-base"
                     value={comment}
-                    placeholder="자유롭게 감상평을 남겨주세요!"
+                    placeholder="자유롭게 한줄평을 남겨주세요!"
                     onChange={handleCommentChange}
                   />
                   <span className="absolute bottom-3 right-3 text-gray-400 text-sm">
@@ -205,9 +204,7 @@ export default function Review() {
               </div>
 
               <div className="flex justify-end mt-4">
-                <Button default onClick={handleSubmit}>
-                  등록하기
-                </Button>
+                <Button onClick={handleSubmit}>등록하기</Button>
               </div>
             </div>
           </section>

@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import prevIcon from "../../images/chevron-left.svg";
 import SearchBar from "../../components/SearchBar";
@@ -21,7 +19,7 @@ import {
   setCurrentPage,
   setTotalPages,
 } from "../../store/followSlice";
-
+import { showToast } from "../../utils/toast";
 export default function FindFriends() {
   const navigate = useNavigate();
   const { loading } = useLoading();
@@ -64,7 +62,7 @@ export default function FindFriends() {
         dispatch(follow(memberSeq));
       }
     } catch (error) {
-      toast.error("요청에 실패했어요. 다시 시도해주세요.");
+      showToast("요청에 실패했어요. 다시 시도해주세요.");
     }
   };
 

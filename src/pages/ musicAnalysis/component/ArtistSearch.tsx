@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { artistSearch } from "../../../api/search/artistSearch";
@@ -7,6 +5,7 @@ import GenericSearchUI from "../../../components/GenericSearchUI";
 import { useLoading } from "../../../context/LoadingContext";
 import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
 import { ANALYSIS_LIMITS } from "../../../constants/constants";
+import { showToast } from "../../../utils/toast";
 
 interface Item {
   imageSrc: string;
@@ -34,7 +33,7 @@ export default function ArtistSearch() {
   const handleSearch = async () => {
     try {
       if (!keyword.trim()) {
-        toast.error("검색어를 입력해주세요.");
+        showToast("검색어를 입력해주세요.");
         return;
       }
 
@@ -81,12 +80,12 @@ export default function ArtistSearch() {
     );
 
     if (isAlreadyInRecommendation) {
-      toast.error("이미 선택된 아티스트입니다.");
+      showToast("이미 선택된 아티스트입니다.");
       return;
     }
 
     if (selectedArtists.length >= ANALYSIS_LIMITS.MAX_ARTISTS) {
-      toast.error(
+      showToast(
         `아티스트는 최대 ${ANALYSIS_LIMITS.MAX_ARTISTS}명까지만 선택할 수 있어요!`
       );
       return;

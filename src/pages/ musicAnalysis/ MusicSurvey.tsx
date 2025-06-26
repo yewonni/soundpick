@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import home from "../../images/home.svg";
@@ -9,6 +7,7 @@ import AnalysisExitModal from "./component/AnalysisExitModal";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import { useArtistAnalysis } from "../../context/ArtistAnalysisContext";
 import { ANALYSIS_LIMITS } from "../../constants/constants";
+import { showToast } from "../../utils/toast";
 
 export default function MusicSurvey() {
   const location = useLocation();
@@ -37,7 +36,7 @@ export default function MusicSurvey() {
       return;
     }
     if (step === 1 && selectedGenre.length >= ANALYSIS_LIMITS.MAX_GENRES) {
-      toast.error(
+      showToast(
         `장르는 최대 ${ANALYSIS_LIMITS.MAX_GENRES}개까지만 선택할 수 있습니다.`
       );
       return;
@@ -58,7 +57,7 @@ export default function MusicSurvey() {
   const handleNext = async () => {
     if (step === 1) {
       if (selectedGenre.length < ANALYSIS_LIMITS.MIN_GENRES) {
-        toast.error(
+        showToast(
           `장르는 최소 ${ANALYSIS_LIMITS.MIN_GENRES}개 이상 선택해야 합니다.`
         );
         return;
@@ -66,7 +65,7 @@ export default function MusicSurvey() {
       setStep(2);
     } else if (step === 2) {
       if (selectedArtists.length < ANALYSIS_LIMITS.MIN_ARTISTS) {
-        toast.error(
+        showToast(
           `아티스트는 최소 ${ANALYSIS_LIMITS.MIN_ARTISTS}명 이상 선택해야 합니다.`
         );
         return;

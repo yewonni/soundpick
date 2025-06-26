@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import prevIcon from "../../images/chevron-left.svg";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +9,7 @@ import { getMyReview } from "../../api/myPage/review";
 import { useAppDispatch } from "../../store/hooks";
 import { deleteComments } from "../../store/commentsSlice";
 import { useLoading } from "../../context/LoadingContext";
+import { showToast } from "../../utils/toast";
 
 interface ReviewItem {
   seq: string;
@@ -57,7 +56,7 @@ export default function MyReview() {
       await dispatch(deleteComments({ spotifyPlaylistSeq, seq })).unwrap();
       await fetchMyReview();
     } catch {
-      toast.error("삭제에 실패했습니다.");
+      showToast("삭제에 실패했습니다.");
     }
   };
 

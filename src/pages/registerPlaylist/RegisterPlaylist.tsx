@@ -1,8 +1,5 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
 import prevIcon from "../../images/chevron-left.svg";
-import FinishButton from "../../components/FinishButton";
 import { useNavigate } from "react-router-dom";
 import sample from "../../images/playlistSample.svg";
 import Button from "../../components/Button";
@@ -10,6 +7,7 @@ import {
   registerMyPlaylist,
   uploadMyPlaylistImage,
 } from "../../api/myPage/myPlaylist";
+import { showToast } from "../../utils/toast";
 export default function RegisterPlaylist() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -41,15 +39,15 @@ export default function RegisterPlaylist() {
 
   const handlePlaylistRegister = async () => {
     if (!playlistName.trim()) {
-      toast.error("플레이리스트 제목을 입력해주세요.");
+      showToast("플레이리스트 제목을 입력해주세요.");
       return;
     }
     if (!playlistDescription.trim()) {
-      toast.error("플레이리스트 소개글을 입력해주세요.");
+      showToast("플레이리스트 소개글을 입력해주세요.");
       return;
     }
     if (!file) {
-      toast.error("플레이리스트 이미지를 등록해주세요.");
+      showToast("플레이리스트 이미지를 등록해주세요.");
       return;
     }
 
@@ -65,10 +63,11 @@ export default function RegisterPlaylist() {
         await uploadMyPlaylistImage(file, spotifyPlaylistId);
       }
 
-      toast.success("성공적으로 등록되었습니다.");
+      showToast("성공적으로 등록되었습니다.", "success");
+      navigate(-1);
       setIsDirty(false);
     } catch (error) {
-      toast.error("플레이리스트 등록에 실패했습니다.");
+      showToast("플레이리스트 등록에 실패했습니다.");
     }
   };
 
@@ -85,35 +84,38 @@ export default function RegisterPlaylist() {
 
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-between md:justify-center md:px-[20%] md:relative">
+      <header className="p-4 bg-bg-sub flex justify-center relative  md:px-[20%] items-center">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer md:absolute md:left-[20%]"
+          className="cursor-pointer absolute md:left-[20%] left-4 "
           onClick={handleBack}
         />
         <h1 className="font-bold text-lg ">새 플레이리스트 만들기</h1>
-        <div className="md:hidden">
-          <FinishButton onClick={handleBack} />
-        </div>
       </header>
       <main className="w-full min-h-screen bg-bg-peach p-4 py-7 md:px-[20%]">
         <section className="flex flex-col items-center gap-4">
           <h2 className="sr-only">플레이리스트 등록하기</h2>
-          <img
-            onClick={handleImageClick}
-            src={preview}
-            alt="플레이리스트 이미지"
-            className="w-[150px] h-[150px] object-cover rounded-md cursor-pointer mb-3"
-          />
+          <div className="flex flex-col items-center">
+            <img
+              onClick={handleImageClick}
+              src={preview}
+              alt="플레이리스트 이미지"
+              className="w-[150px] h-[150px] object-cover rounded-md cursor-pointer mb-3"
+            />
 
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
+            <p className="text-xs text-bg-sub mt-1 md:text-sm">
+              플레이리스트 이미지를 등록해주세요 (필수)
+            </p>
+          </div>
+
           <label htmlFor="playlistTitle" className="sr-only">
             플레이리스트 제목
           </label>

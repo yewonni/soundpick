@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import prevIcon from "../../../images/chevron-left.svg";
 import sample from "../../../images/music-cat-full.png";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +10,8 @@ import {
   deleteMyPlaylist,
   getMyPlaylist,
 } from "../../../api/myPage/myPlaylist";
+import { useLoading } from "../../../context/LoadingContext";
+import { showToast } from "../../../utils/toast";
 
 interface MyPlaylistType {
   memberPlaylistHistorySeq: string;
@@ -27,6 +27,7 @@ interface MyPlaylistType {
 
 export default function MyPlaylist() {
   const navigate = useNavigate();
+  const { loading } = useLoading();
   const [myPlaylists, setMyPlaylists] = useState<MyPlaylistType[]>([]);
   const { userNickname } = useAuth();
   const [deletedPlaylist, setDeletedPlaylist] = useState<string[]>([]);
@@ -55,7 +56,7 @@ export default function MyPlaylist() {
 
   const handleMyPlaylistDelete = async () => {
     if (!deletedPlaylist.length) {
-      toast.error("삭제할 플레이리스트를 선택해주세요");
+      showToast("삭제할 플레이리스트를 선택해주세요");
       return;
     }
 
@@ -69,9 +70,9 @@ export default function MyPlaylist() {
         )
       );
       setDeletedPlaylist([]);
-      toast.success("성공적으로 삭제되었습니다.");
+      showToast("성공적으로 삭제되었습니다.", "success");
     } catch (error) {
-      toast.error("삭제에 실패했습니다.");
+      showToast("삭제에 실패했습니다.");
     }
   };
 
@@ -92,6 +93,13 @@ export default function MyPlaylist() {
             나의 플레이리스트를 불러오는 데 실패했습니다.
           </p>
         )}
+        {!loading && !error && myPlaylists.length === 0 && (
+          <div className="min-h-11">
+            <p className="text-sm text-center text-gray-100 mt-10">
+              등록한 플레이리스트가 없습니다.
+            </p>
+          </div>
+        )}
         {myPlaylists?.map((data, index) => (
           <article
             key={index}
@@ -110,22 +118,29 @@ export default function MyPlaylist() {
                 navigate(`/my-playlist-details/${data.spotifyPlaylistSeq}`)
               }
             />
-            <h2
-              className="font-bold md:hover:underline text-white truncate overflow-hidden whitespace-nowrap max-w-[200px] md:max-w-none hover:underline"
-              onClick={() =>
-                navigate(`/my-playlist-details/${data.spotifyPlaylistSeq}`)
-              }
-            >
-              {data.name}
-            </h2>
+            <div className="flex flex-col gap-2">
+              <h2
+                className="font-bold md:hover:underline text-white truncate overflow-hidden whitespace-nowrap max-w-[200px] md:max-w-none hover:underline"
+                onClick={() =>
+                  navigate(`/my-playlist-details/${data.spotifyPlaylistSeq}`)
+                }
+              >
+                {data.name}
+              </h2>
+              <p className="text-sm text-gray-200 truncate overflow-hidden whitespace-nowrap max-w-[200px] md:max-w-none ">
+                {data.description}
+              </p>
+            </div>
           </article>
         ))}
-        <div className="mt-5 flex justify-between">
-          <RegisterButton onClick={() => navigate("/register-playlist")}>
-            새 플레이리스트 만들기
-          </RegisterButton>
-          <Button onClick={handleMyPlaylistDelete}>삭제하기</Button>
-        </div>
+        {!loading && (
+          <div className="mt-5 flex justify-between">
+            <RegisterButton onClick={() => navigate("/register-playlist")}>
+              새 플레이리스트 만들기
+            </RegisterButton>
+            <Button onClick={handleMyPlaylistDelete}>삭제하기</Button>
+          </div>
+        )}
       </main>
     </>
   );

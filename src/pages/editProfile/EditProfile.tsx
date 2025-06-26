@@ -1,8 +1,5 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef, useEffect } from "react";
 import prevIcon from "../../images/chevron-left.svg";
-import FinishButton from "../../components/FinishButton";
 import { useNavigate } from "react-router-dom";
 import sample from "../../images/profile.svg";
 import Button from "../../components/Button";
@@ -11,6 +8,7 @@ import { uploadProfile, editProfile } from "../../api/profile/editProfile";
 import { getProfile } from "../../api/profile/getProfile";
 import { profileEditSchema } from "../../utils/validations/profileSchema";
 import { z } from "zod";
+import { showToast } from "../../utils/toast";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -38,7 +36,7 @@ export default function EditProfile() {
         setIntroduction(introduction);
         setPreview(imageUrl ? `${baseUrl}${imageUrl}` : sample);
       } catch (err) {
-        toast.error("프로필 정보를 불러오지 못했습니다.");
+        showToast("프로필 정보를 불러오지 못했습니다.");
       }
     };
 
@@ -98,7 +96,8 @@ export default function EditProfile() {
       await editProfile({ nickname, introduction });
       setUserNickname(nickname);
 
-      toast.success("프로필이 저장되었습니다.");
+      showToast("프로필이 저장되었습니다.", "success");
+      navigate("/mypage");
       setIsDirty(false);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -108,9 +107,9 @@ export default function EditProfile() {
           fieldErrors[field] = e.message;
         });
         setFormError(fieldErrors);
-        toast.error("입력값을 확인해주세요.");
+        showToast("입력값을 확인해주세요.");
       } else {
-        toast.error("저장에 실패했습니다.");
+        showToast("저장에 실패했습니다.");
       }
     }
   };
@@ -138,17 +137,14 @@ export default function EditProfile() {
 
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-between md:justify-center md:relative md:px-[20%] items-center">
+      <header className="p-4 bg-bg-sub flex justify-center relative  md:px-[20%] items-center">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer md:absolute md:left-[20%]"
+          className="cursor-pointer absolute md:left-[20%] left-4 "
           onClick={handleBack}
         />
         <h1 className="font-bold text-lg">프로필 수정</h1>
-        <div className="md:hidden">
-          <FinishButton onClick={handleSave} />
-        </div>
       </header>
       <main className="w-full min-h-screen bg-bg-peach p-4 md:px-[20%]">
         <div className="flex justify-center flex-col items-center mt-4">
@@ -167,6 +163,10 @@ export default function EditProfile() {
           />
           <p className="font-bold text-sm mt-2 text-primary md:text-base">
             profile
+          </p>
+
+          <p className="text-xs text-bg-sub mt-1 md:text-sm">
+            이미지를 눌러서 사진을 등록할 수 있어요!
           </p>
         </div>
         <div className="flex gap-3 items-center mb-2 mt-7  text-sm  md:text-base">
@@ -225,7 +225,7 @@ export default function EditProfile() {
             {formError.introduction}
           </p>
         )}
-        <div className="justify-end mt-4 hidden md:flex">
+        <div className="justify-end mt-4 flex">
           <Button onClick={handleSave}>저장하기</Button>
         </div>
       </main>

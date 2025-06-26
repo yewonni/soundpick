@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -29,6 +27,7 @@ import {
   DeletedArtistItem,
   ArtistStateItem,
 } from "../../../types/recommendationType";
+import { showToast } from "../../../utils/toast";
 
 export default function Recommendation() {
   const navigate = useNavigate();
@@ -236,26 +235,26 @@ export default function Recommendation() {
   const handleNextStep = async () => {
     if (isTrackStep) {
       if (visibleTracks.length < RECOMMENDATION_LIMITS.MIN_TRACKS) {
-        toast.error(
+        showToast(
           `트랙은 최소 ${RECOMMENDATION_LIMITS.MIN_TRACKS}개 이상 선택해주세요!`
         );
         return;
       }
       if (visibleTracks.length > RECOMMENDATION_LIMITS.MAX_TRACKS) {
-        toast.error(
+        showToast(
           `트랙은 최대 ${RECOMMENDATION_LIMITS.MAX_TRACKS}개까지만 선택할 수 있어요!`
         );
         return;
       }
     } else {
       if (visibleArtists.length < RECOMMENDATION_LIMITS.MIN_ARTISTS) {
-        toast.error(
+        showToast(
           `아티스트는 최소 ${RECOMMENDATION_LIMITS.MIN_ARTISTS}명 이상 선택해주세요!`
         );
         return;
       }
       if (visibleArtists.length > RECOMMENDATION_LIMITS.MAX_ARTISTS) {
-        toast.error(
+        showToast(
           `아티스트는 최대 ${RECOMMENDATION_LIMITS.MAX_ARTISTS}명까지만 선택할 수 있어요!`
         );
         return;
@@ -303,7 +302,7 @@ export default function Recommendation() {
 
       setStep((prev) => prev + 1);
     } catch (error) {
-      toast.error("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+      showToast("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
       return;
     }
   };

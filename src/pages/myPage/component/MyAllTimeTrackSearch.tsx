@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GenericSearchUI from "../../../components/GenericSearchUI";
@@ -7,6 +5,7 @@ import { trackSearch } from "../../../api/search/mainSearch";
 import { useLoading } from "../../../context/LoadingContext";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { toggleTrack } from "../../../store/MyAllTimeSlice";
+import { showToast } from "../../../utils/toast";
 
 interface Item {
   imageSrc: string;
@@ -40,7 +39,7 @@ export default function MyAllTimeTrackSearch() {
   const handleSearch = async () => {
     try {
       if (!keyword.trim()) {
-        toast.error("검색어를 입력해주세요.");
+        showToast("검색어를 입력해주세요.");
         return;
       }
 
@@ -102,7 +101,7 @@ export default function MyAllTimeTrackSearch() {
     }
 
     if (!canSelectMore()) {
-      toast.error("최대 10곡까지 선택할 수 있어요!");
+      showToast("최대 10곡까지 선택할 수 있어요!");
       return;
     }
 

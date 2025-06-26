@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -12,6 +10,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { myPreference } from "../../../api/analysis/myPreference";
 import { useAnalysisResult } from "../../../context/AnalysisResultContext";
 import { useArtistAnalysis } from "../../../context/ArtistAnalysisContext";
+import { showToast } from "../../../utils/toast";
 
 interface AnalysisCardProps {
   step: number;
@@ -71,7 +70,7 @@ function MusicAnalysis({ toggleGenre, selectedGenre }: MusicAnalysisProps) {
         );
         setGenre(genreList);
       } catch (error) {
-        toast.error("서버에서 오류가 발생했습니다.");
+        showToast("서버에서 오류가 발생했습니다.");
       }
     })();
   }, [isLoggedIn]);
@@ -165,7 +164,7 @@ function ArtistAnalysis({
       if (subject === "korea") setKorea(data);
       else setGlobal(data);
     } catch (error) {
-      toast.error("서버에서 오류가 발생했습니다.");
+      showToast("서버에서 오류가 발생했습니다.");
     }
   };
 
@@ -210,12 +209,12 @@ function ArtistAnalysis({
     );
 
     if (isSelectedElsewhere) {
-      toast.error("검색 시 이미 선택하신 아티스트입니다.");
+      showToast("검색 시 이미 선택하신 아티스트입니다.");
       return;
     }
 
     if (selectedArtists.length >= 5) {
-      toast.error("아티스트는 최대 5명까지만 선택할 수 있어요!");
+      showToast("아티스트는 최대 5명까지만 선택할 수 있어요!");
       return;
     }
 

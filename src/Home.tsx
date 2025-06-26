@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "./components/Header";
@@ -12,6 +10,7 @@ import { spotifyLogin } from "./api/login/spotifyLogin";
 import { useSearchInput } from "./context/SearchContext";
 import { UserStatus } from "./components/Browsing";
 import TasteAnalysisModal from "./components/TasteAnalysisModal";
+import { showToast } from "./utils/toast";
 
 export default function Home() {
   const location = useLocation();
@@ -46,7 +45,7 @@ export default function Home() {
 
   useEffect(() => {
     if (showSpotifyAlert) {
-      toast.error("Spotify 로그인이 필요합니다.");
+      showToast("Spotify 로그인이 필요합니다.");
 
       const handleSpotifyLogin = async () => {
         try {

@@ -1,10 +1,9 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import closeBtn from "../../../images/close-btn.svg";
 import { getMyPlaylist } from "../../../api/myPage/myPlaylist";
 import { useLoading } from "../../../context/LoadingContext";
 import { addPlaylistTrack } from "../../../api/myPage/myPlaylist";
+import { showToast } from "../../../utils/toast";
 
 interface PlaylistModalProps {
   onClose: () => void;
@@ -51,7 +50,7 @@ export default function PlaylistModal({
     }));
 
     await addPlaylistTrack(tracksData, spotifyPlaylistSeq);
-    toast.success("트랙이 성공적으로 담겼습니다!");
+    showToast("트랙이 성공적으로 담겼습니다!", "success");
     onClose();
   };
 

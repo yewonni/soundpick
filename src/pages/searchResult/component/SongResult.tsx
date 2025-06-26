@@ -1,11 +1,10 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import sideMenu from "../../../images/side-menu.svg";
 import Checkbox from "../../../components/Checkbox";
 import catImg from "../../../images/music-cat-full.png";
 import PlaylistModal from "./PlaylistModal";
 import { openYoutubeSearch } from "../../../utils/openYoutubeSearch";
+import { showToast } from "../../../utils/toast";
 
 export interface DataCardProps {
   imageSrc: string;
@@ -26,7 +25,7 @@ export default function SongResult({ data, isMobile }: SongResultProps) {
 
   const handlePlaylistModalOpen = () => {
     if (myTracks.length === 0) {
-      toast.error("선택된 트랙이 없습니다.");
+      showToast("선택된 트랙이 없습니다.");
       return;
     }
     setIsPlaylistModalOpen(true);

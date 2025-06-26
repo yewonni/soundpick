@@ -1,12 +1,9 @@
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import prevIcon from "../../images/chevron-left.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import sample from "../../images/sample.png";
 import penIcon from "../../images/pencil.svg";
 import minus from "../../images/minus-icon.svg";
-import FinishButton from "../../components/FinishButton";
 import {
   getPlaylistDetails,
   getPlaylistTracks,
@@ -16,6 +13,7 @@ import {
   deletePlaylistTrack,
   editMyPlaylist,
 } from "../../api/myPage/myPlaylist";
+import { showToast } from "../../utils/toast";
 
 export interface PlaylistData {
   name: string;
@@ -82,9 +80,9 @@ export default function MyPlaylistDetails() {
       setMyPlaylistTrack((prev) =>
         prev ? prev.filter((track) => track.spotifyTrackId !== trackId) : null
       );
-      toast.success("트랙이 삭제되었습니다.");
+      showToast("트랙이 삭제되었습니다.", "success");
     } catch (error) {
-      toast.error("트랙 삭제에 실패했습니다.");
+      showToast("트랙 삭제에 실패했습니다.");
     }
   };
 
@@ -102,7 +100,7 @@ export default function MyPlaylistDetails() {
       setMyPlaylists(res.data.data);
       setIsEditing(false);
     } catch (error) {
-      toast.error("플레이리스트 수정에 실패했습니다.");
+      showToast("플레이리스트 수정에 실패했습니다.");
     } finally {
       setIsSaving(false);
     }
@@ -117,22 +115,19 @@ export default function MyPlaylistDetails() {
 
   return (
     <>
-      <header className="p-4 bg-bg-sub flex justify-between md:justify-center md:px-[20%] md:relative">
+      <header className="p-4 bg-bg-sub flex justify-center relative  md:px-[20%] items-center">
         <img
           src={prevIcon}
           alt="이전으로 가기"
-          className="cursor-pointer md:absolute md:left-[20%]"
+          className="cursor-pointer absolute md:left-[20%] left-4 "
           onClick={() => navigate(-1)}
         />
         <h1 className="font-bold text-lg ">{nickname}’s 플레이리스트</h1>
-        <div className="md:hidden">
-          <FinishButton onClick={() => navigate(-1)} />
-        </div>
       </header>
       <main className="w-full min-h-screen p-4  md:px-[20%] ">
         {error ? (
           <div className="text-center py-10 text-red-500">
-            데이터를 불러오지 못했습니다. <br /> 잠시 후 다시 시도해주세요.
+            데이터를 불러오지 못했습니다. <br /> 다시 시도해주세요.
           </div>
         ) : (
           <>
@@ -225,16 +220,16 @@ export default function MyPlaylistDetails() {
               {myPlaylistTrack && myPlaylistTrack.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-center py-10">
                   <p className="text-base text-gray-200 mb-2">
-                    아직 등록된 트랙이 없어요!
+                    아직 등록된 트랙이 없습니다.
                   </p>
                   <p className="text-sm text-text-base mb-4">
-                    홈에서 원하는 트랙을 검색해 추가해보세요
+                    원하는 곡을 검색해서 추가해보세요!
                   </p>
                   <button
                     onClick={() => navigate("/")}
                     className="px-4 py-2 text-sm md:text-base bg-primary text-white rounded-full hover:brightness-110 transition"
                   >
-                    트랙 추가하러 가기
+                    곡 추가하러 가기
                   </button>
                 </div>
               ) : (
