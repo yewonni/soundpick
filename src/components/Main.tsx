@@ -54,7 +54,7 @@ const SwiperSection = ({
           // 취향 저격 음악
           res = await getTrackRecommendations();
           const data = res.data.data.content.map((item: any) => ({
-            imageSrc: item.imageList[0]?.url ?? "",
+            imageSrc: item.imageList[0]?.url ?? catImg,
             title: item.name,
             seq: item.spotifyTrackSeq,
           }));
@@ -63,7 +63,7 @@ const SwiperSection = ({
           // 인기 아티스트
           res = await getArtists("korea", 0, 10);
           const data = res.data.data.content.map((artist: any) => ({
-            imageSrc: artist.imageList[0]?.url ?? "",
+            imageSrc: artist.imageList[0]?.url ?? catImg,
             title: artist.name,
             seq: artist.seq,
             detailPageUrl: artist.detailPageUrl,
@@ -75,7 +75,7 @@ const SwiperSection = ({
           // 맞춤 플레이리스트
           res = await getPlaylistRecommendations();
           const data = res.data.data.content.map((playlist: any) => ({
-            imageSrc: playlist.imageList[0]?.url ?? "",
+            imageSrc: playlist.imageList[0]?.url ?? catImg,
             title: playlist.name,
             seq: playlist.spotifyPlaylistSeq,
           }));
@@ -84,7 +84,7 @@ const SwiperSection = ({
           // 추천 플레이리스트
           res = await getPopularPlayList(0, 10);
           const data = res.data.data.content.map((playlist: any) => ({
-            imageSrc: playlist.imageList[0]?.url ?? "",
+            imageSrc: playlist.imageList[0]?.url ?? catImg,
             title: playlist.name,
             seq: playlist.spotifyPlaylistSeq,
           }));
