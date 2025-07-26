@@ -1,4 +1,5 @@
 import { MusicCardDataProps } from "../types/MusicCard";
+import catImg from "../images/music-cat-full.png";
 
 interface MusicCardProps extends MusicCardDataProps {
   isPlaylist?: boolean;
@@ -31,6 +32,10 @@ export default function MusicCard({
         <img
           src={imageSrc}
           alt={title}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = catImg;
+          }}
           className={`w-[123px] h-[123px] md:w-full ${
             isFeatured ? "md:h-72" : "md:h-48"
           } object-cover mb-1 md:rounded-lg rounded-md transition-all duration-300 ease-in-out ${
